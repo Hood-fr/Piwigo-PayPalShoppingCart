@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: PayPal Shopping Cart
-Version: auto
+Version: 2.7.c
 Description: Append PayPal Shopping Cart on Piwigo to sell photos
 Plugin URI: http://piwigo.org/ext/extension_view.php?eid=499
 Author: queguineur.fr
@@ -65,7 +65,7 @@ global $prefixeTable;
 defined('PPPPP_ID') or define('PPPPP_ID', basename(dirname(__FILE__)));
 define('PPPPP_PATH' , PHPWG_PLUGINS_PATH . basename(dirname(__FILE__)) . '/');
 define('PPPPP_SIZE_TABLE', $prefixeTable.'ppppp_size');
-define('PPPPP_VERSION', 'auto');
+define('PPPPP_VERSION', '2.7.c');
 
 function ppppp_append_form($tpl_source, &$smarty)
 {
