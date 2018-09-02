@@ -119,8 +119,8 @@ function ppppp_append_form($tpl_source, &$smarty)
     <td></td>
     <td>
     <form name="ppppp_promocode_form">
-        <input type="text" size=20 name="promocode" value="{\'Insert promo code\'|@translate}" oninput="pppppPriceCompute()" onchange="fillInPromoText()">
-
+        <input type="text" size=20 name="promocode" value="{\'Insert promo code\'|@translate}" oninput="pppppPriceCompute()" onchange="fillInPromoText()"><br/>
+        <img src="{PPPPP_PATH}include/payment-logos.png"  onLoad="pppppPriceCompute()" height=48>
     </form>
     </td>
   </tr>
