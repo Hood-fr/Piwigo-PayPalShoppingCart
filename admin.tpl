@@ -23,7 +23,7 @@ jQuery(document).ready(function() {
 {/literal}{/footer_script}
 
 <div class="titrePage">
-<h2>{'PayPal Shopping Cart'|@translate}</h2>
+<h2>{'PayPal Shopping Cart Mod'|@translate}</h2>
 </div>
 
 {if $tabsheet_selected=='currency'}
@@ -63,14 +63,63 @@ jQuery(document).ready(function() {
 </fieldset>
 </form>
 
+{elseif $tabsheet_selected=='support'}
+<h3>{'Support'|@translate}</h3>
+<form method=post>
+<fieldset>
+<legend>{'Append photo support'|@translate}</legend>
+<br>
+{'Support'|@translate} <input type=text name=support>
+{'Factor'|@translate} <input type=text name=factor>
+<br>
+<br>
+<input type=submit value="{'Append data'|@translate}">
+</fieldset>
+</form>
+<fieldset>
+<table class=table2>
+<tr class=throw>
+<th>{'Support'|@translate}</th>
+<th>{'Factor'|@translate}</th>
+<th>{'Action'|@translate}</th>
+</tr>
+{foreach from=$ppppp_array_support item=ppppp_row_support name=ppppp_row_support_loop}
+<tr class="{if $smarty.foreach.ppppp_row_support_loop.index is odd}row1{else}row2{/if}">
+<td>{$ppppp_row_support.support}</td>
+<td>{$ppppp_row_support.factor}</td>
+<td>
+<form method=post>
+<input type=hidden name=delete value='{$ppppp_row_support.id}'}>
+<input type=submit value="{'Delete data'|@translate}">
+</form>
+</td>
+</tr>
+{/foreach}
+</table>
+</fieldset>
+
 {elseif $tabsheet_selected=='size'}
 <h3>{'Size'|@translate}</h3>
 <form method=post>
 <fieldset>
 <legend>{'Append photo size'|@translate}</legend>
 <br>
-{'Size'|@translate} <input type=text name=size>
-{'Price'|@translate} <input type=text name=price>
+    <table>
+        <tr>
+            <td>{'Size'|@translate} <input type=text name=size></td>
+            <td>{'Price factor'|@translate} <input type=text name=price></td>
+            <td>{'GF'|@translate} <br>non<input type=radio name=GF value=0 checked="checked"><br>oui
+    <input type=radio name=GF value=1></td>
+            <td>{'SQ'|@translate} <br>non <input type=radio name=SQ value=0 checked="checked"><br>oui
+    <input type=radio name=SQ value=1></td>
+           <td>{'Pano52'|@translate} <br>non<input type=radio name=Pano52 value=0 checked="checked"><br>oui
+    <input type=radio name=Pano52 value=1></td>
+            <td>{'Pano31'|@translate} <br>non <input type=radio name=Pano31 value=0 checked="checked"><br>oui
+    <input type=radio name=Pano31 value=1></td>
+            <td>{'Pano41'|@translate} <br>non <input type=radio name=Pano41 value=0 checked="checked"><br>oui
+    <input type=radio name=Pano41 value=1></td>
+        </tr>
+    </table>
 <br>
 <br>
 <input type=submit value="{'Append data'|@translate}">
@@ -80,16 +129,70 @@ jQuery(document).ready(function() {
 <table class=table2>
 <tr class=throw>
 <th>{'Size'|@translate}</th>
-<th>{'Price'|@translate}</th>
-<th>{'Action'|@translate}</th>
+<th>{'Price factor'|@translate}</th>
+<th>{'GF'|@translate}</th>
+<th>{'SQ'|@translate}</th>
+<th>{'Pano52'|@translate}</th>
+<th>{'Pano31'|@translate}</th>
+<th>{'Pano41'|@translate}</th>
+    <th>{'Action'|@translate}</th>
 </tr>
 {foreach from=$ppppp_array_size item=ppppp_row_size name=ppppp_row_size_loop}
 <tr class="{if $smarty.foreach.ppppp_row_size_loop.index is odd}row1{else}row2{/if}">
 <td>{$ppppp_row_size.size}</td>
 <td>{$ppppp_row_size.price}</td>
-<td>
+<td>{$ppppp_row_size.GF}</td>
+<td>{$ppppp_row_size.SQ}</td>
+<td>{$ppppp_row_size.Pano52}</td>
+<td>{$ppppp_row_size.Pano31}</td>
+<td>{$ppppp_row_size.Pano41}</td>
+    <td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_size.id}'}>
+<input type=submit value="{'Delete data'|@translate}">
+</form>
+</td>
+</tr>
+{/foreach}
+</table>
+</fieldset>
+
+{elseif $tabsheet_selected=='code'}
+<h3>{'PromoCode'|@translate}</h3>
+<form method=post>
+<fieldset>
+<legend>{'Append promo code'|@translate}</legend>
+<br>
+    <table>
+        <tr>
+            <td>{'Code'|@translate} <input type=text name=code></td>
+            <td>{'Promo relative'|@translate} <input type=text name=reduc_rel></td>
+            <td>{'Promo absolute'|@translate} <input type=text name=reduc_abs></td>
+            <td>{'Promo shipping'|@translate} <input type=text name=reduc_ship></td>
+        </tr>
+    </table>
+<br>
+<br>
+<input type=submit value="{'Append data'|@translate}">
+</fieldset>
+</form>
+<fieldset>
+<table class=table2>
+<tr class=throw>
+<th>{'Code'|@translate}</th>
+<th>{'Promo relative'|@translate}</th>
+<th>{'Promo absolute'|@translate}</th>
+<th>{'Promo shipping'|@translate}</th>
+</tr>
+{foreach from=$ppppp_array_promocode item=ppppp_row_promocode name=ppppp_row_promcoode_loop}
+<tr class="{if $smarty.foreach.ppppp_row_promocode_loop.index is odd}row1{else}row2{/if}">
+<td>{$ppppp_row_promocode.code}</td>
+<td>{$ppppp_row_promocode.reduc_rel}</td>
+<td>{$ppppp_row_promocode.reduc_abs}</td>
+<td>{$ppppp_row_promocode.reduc_ship}</td>
+    <td>
+<form method=post>
+<input type=hidden name=delete value='{$ppppp_row_promocode.id}'}>
 <input type=submit value="{'Delete data'|@translate}">
 </form>
 </td>

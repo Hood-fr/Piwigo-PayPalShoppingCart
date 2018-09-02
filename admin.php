@@ -8,13 +8,13 @@
   publiée par la Free Software Foundation : soit la version 3 de cette
   licence, soit (à votre gré) toute version ultérieure.
   
-  Ce programme est distribué dans l’espoir qu’il vous sera utile, mais SANS
+  Ce programme est distribué dans l'espoir qu'il vous sera utile, mais SANS
   AUCUNE GARANTIE : sans même la garantie implicite de COMMERCIALISABILITÉ
-  ni d’ADÉQUATION À UN OBJECTIF PARTICULIER. Consultez la Licence Générale
+  ni d'ADÉQUATION À UN OBJECTIF PARTICULIER. Consultez la Licence Générale
   Publique GNU pour plus de détails.
   
   Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec
-  ce programme ; si ce n’est pas le cas, consultez :
+  ce programme ; si ce n'est pas le cas, consultez :
   <http://www.gnu.org/licenses/>.
 */
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
@@ -34,9 +34,15 @@ $tabsheet->add('currency',
                l10n('Currency'),
                $my_base_url.'&amp;tab=currency');
 $tabsheet->add('albums', l10n('Albums'), $my_base_url.'&amp;tab=albums');
+$tabsheet->add('support',
+               l10n('Support'),
+               $my_base_url.'&amp;tab=support');
 $tabsheet->add('size',
                l10n('Size'),
                $my_base_url.'&amp;tab=size');
+$tabsheet->add('code',
+               l10n('code'),
+               $my_base_url.'&amp;tab=code');
 $tabsheet->add('shipping',
                l10n('Shipping cost'),
                $my_base_url.'&amp;tab=shipping');			   
@@ -143,6 +149,38 @@ SELECT id,name,uppercats,global_rank
      break;
   
  
+  case 'support':
+    
+    if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_SUPPORT_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['support']) and isset($_POST['factor']))
+    {
+      single_insert(
+        PPPPP_SUPPORT_TABLE,
+        array(
+          'support' => pwg_db_real_escape_string($_POST['support']),
+          'factor' => pwg_db_real_escape_string($_POST['factor']),
+          )
+        );
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT * FROM '.PPPPP_SUPPORT_TABLE.';';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_support',$row);
+    }
+    
+    break;
+
   case 'size':
     
     if (isset($_POST['delete']))
@@ -160,7 +198,11 @@ SELECT id,name,uppercats,global_rank
         array(
           'size' => pwg_db_real_escape_string($_POST['size']),
           'price' => pwg_db_real_escape_string($_POST['price']),
-          )
+          'GF' => pwg_db_real_escape_string($_POST['GF']),
+          'SQ' => pwg_db_real_escape_string($_POST['SQ']),
+          'Pano52' => pwg_db_real_escape_string($_POST['Pano52']),
+          'Pano31' => pwg_db_real_escape_string($_POST['Pano31']),
+          'Pano41' => pwg_db_real_escape_string($_POST['Pano41']),           )
         );
 
       $page['infos'][] = l10n('Your configuration settings are saved');
@@ -174,6 +216,41 @@ SELECT id,name,uppercats,global_rank
     }
     
     break;
+        
+  case 'code':
+    
+    if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_PROMOCODE_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['code']) and isset($_POST['reduc_rel']))
+    {
+      single_insert(
+        PPPPP_PROMOCODE_TABLE,
+        array(
+          'code' => pwg_db_real_escape_string($_POST['code']),
+          'reduc_rel' => pwg_db_real_escape_string($_POST['reduc_rel']),
+          'reduc_abs' => pwg_db_real_escape_string($_POST['reduc_abs']),
+          'reduc_ship' => pwg_db_real_escape_string($_POST['reduc_ship']),
+      )
+        );
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.';';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_promocode',$row);
+    }
+    
+    break;
+
 
   case 'shipping':
     

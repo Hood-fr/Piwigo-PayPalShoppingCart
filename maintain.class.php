@@ -15,15 +15,64 @@ class PayPalShoppingCart_maintain extends PluginMaintain
     global $conf, $prefixeTable, $template;
 
     $query = "
+CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_support (
+  id tinyint(4) NOT NULL AUTO_INCREMENT,
+  support varchar(40) NOT NULL,
+  factor float NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY support (support)
+  ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+;";
+    pwg_query($query);
+
+
+    $query = "
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_size (
   id tinyint(4) NOT NULL AUTO_INCREMENT,
   size varchar(40) NOT NULL,
   price float NOT NULL,
+  GF tinyint(4) NOT NULL,
+  SQ tinyint(4) NOT NULL,
+  Pano52 tinyint(4) NOT NULL,
+  Pano31 tinyint(4) NOT NULL,
+  Pano41 tinyint(4) NOT NULL,
   PRIMARY KEY (id),
   UNIQUE KEY size (size)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 ;";
     pwg_query($query);
+
+      
+      $query = "
+CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_promocode (
+  id tinyint(4) NOT NULL AUTO_INCREMENT,
+  code varchar(40) NOT NULL,
+  reduc_rel float NOT NULL,
+  reduc_abs float NOT NULL,
+  reduc_ship float NOT NULL,
+  PRIMARY KEY (id),
+  UNIQUE KEY code (code)
+  ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+;";
+    pwg_query($query);
+    
+
+    $query = '
+SELECT COUNT(*)
+  FROM '.$prefixeTable.'ppppp_support
+;';
+    list($counter_support) = pwg_db_fetch_row(pwg_query($query));
+
+    if (0 == $counter_support)
+    {
+      single_insert(
+        $prefixeTable."ppppp_support",
+        array(
+          'support' => 'Poster',
+          'factor' => 2,
+          )
+        );
+    }
 
     $query = '
 SELECT COUNT(*)
@@ -38,10 +87,34 @@ SELECT COUNT(*)
         array(
           'size' => 'Classic',
           'price' => 40,
+          'GF' => 0,
+          'SQ' => 0,
+          'Pano52' => 0,
+          'Pano31' => 0,
+          'Pano41' => 0,
           )
         );
     }
 
+    $query = '
+SELECT COUNT(*)
+  FROM '.$prefixeTable.'ppppp_promocode
+;';
+    list($counter_support) = pwg_db_fetch_row(pwg_query($query));
+
+    if (0 == $counter_support)
+    {
+      single_insert(
+        $prefixeTable."ppppp_promocode",
+        array(
+          'code' => 'CODE',
+          'reduc_rel' => 0,
+          'reduc_abs' => 0,
+          'reduc_ship' => 0,
+          )
+        );
+    }
+      
     // add a new column to existing table
     $result = pwg_query('SHOW COLUMNS FROM `'.CATEGORIES_TABLE.'` LIKE "paypal_active";');
     if (!pwg_db_num_rows($result))
@@ -117,7 +190,13 @@ SELECT
  
     $query = "DROP TABLE ".$prefixeTable."ppppp_size;";
     pwg_query($query);
-    
+
+    $query = "DROP TABLE ".$prefixeTable."ppppp_support;";
+    pwg_query($query);
+
+    $query = "DROP TABLE ".$prefixeTable."ppppp_promocode;";
+    pwg_query($query);
+      
     $result = pwg_query('SHOW TABLES LIKE "'.$prefixeTable.'ppppp_config";');
     if (pwg_db_num_rows($result))
     {
