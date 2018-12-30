@@ -15,17 +15,60 @@ class PayPalShoppingCart_maintain extends PluginMaintain
     global $conf, $prefixeTable, $template;
 
     $query = "
+CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_countries (
+  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  CountryName varchar(20) NOT NULL,
+  CountryCode varchar(3) NOT NULL,
+  Currency varchar(3) NOT NULL,
+  PRIMARY KEY (Id)
+  ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+;";
+    pwg_query($query);
+
+    $query = "
+CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_prices (
+  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  Country varchar(3) NOT NULL,
+  Size tinyint(4) NOT NULL,
+  Support tinyint(4) NOT NULL,
+  MinRes float NOT NULL DEFAULT '180',
+  Price float NOT NULL,
+  Shipping float NOT NULL,
+  PRIMARY KEY (Id)
+  ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+;";
+    pwg_query($query);
+
+    $query = "
+CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_ratio (
+  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  RatioValue float NOT NULL,
+  RatioName varchar(20) NULL,
+  PRIMARY KEY (Id)
+  ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+;";
+    pwg_query($query);
+
+    $query = "
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_support (
-  id tinyint(4) NOT NULL AUTO_INCREMENT,
+  Id tinyint(4) NOT NULL AUTO_INCREMENT,
   support varchar(40) NOT NULL,
   factor float NOT NULL,
-  PRIMARY KEY (id),
+  PRIMARY KEY (Id),
   UNIQUE KEY support (support)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 ;";
     pwg_query($query);
 
-
+        $query = "
+CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_supportoptions (
+  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  OptionName varchar(40) NOT NULL,
+  PRIMARY KEY (Id)
+  ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+;";
+    pwg_query($query);
+    
     $query = "
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_size (
   id tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -42,15 +85,27 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_size (
 ;";
     pwg_query($query);
 
-      
+        $query = "
+CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_sizes (
+  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  Ratio tinyint(4) NOT NULL,
+  SizeName varchar(30) NOT NULL,
+  Height float NULL,
+  Length float NULL,
+  Units ENUM('cm','in','ft', ''),
+  PRIMARY KEY (Id)
+  ) ENGINE=MyISAM DEFAULT CHARSET=utf8
+;";
+    pwg_query($query);
+  
       $query = "
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_promocode (
-  id tinyint(4) NOT NULL AUTO_INCREMENT,
+  Id tinyint(4) NOT NULL AUTO_INCREMENT,
   code varchar(40) NOT NULL,
   reduc_rel float NOT NULL,
   reduc_abs float NOT NULL,
   reduc_ship float NOT NULL,
-  PRIMARY KEY (id),
+  PRIMARY KEY (Id),
   UNIQUE KEY code (code)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 ;";
@@ -126,6 +181,7 @@ SELECT COUNT(*)
       'fixed_shipping' => 0,
       'currency' => 'EUR',
       'apply_to_albums' => 'all',
+      'PayPalAccount' => get_webmaster_mail_address(),
       );
     
     // move the content of table ppppp_config into $conf['PayPalShoppingCart'], serialized

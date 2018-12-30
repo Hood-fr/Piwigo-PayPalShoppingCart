@@ -9,20 +9,20 @@ Author URI: http://www.queguineur.fr
 */
 /*
   Plugin Panier PayPal Pour Piwigo
-  Copyright (C) 2011 www.queguineur.fr — Tous droits réservés.
+  Copyright (C) 2011 www.queguineur.fr ï¿½ Tous droits rï¿½servï¿½s.
   
   Ce programme est un logiciel libre ; vous pouvez le redistribuer ou le
-  modifier suivant les termes de la “GNU General Public License” telle que
-  publiée par la Free Software Foundation : soit la version 3 de cette
-  licence, soit (à votre gré) toute version ultérieure.
+  modifier suivant les termes de la ï¿½GNU General Public Licenseï¿½ telle que
+  publiï¿½e par la Free Software Foundation : soit la version 3 de cette
+  licence, soit (ï¿½ votre grï¿½) toute version ultï¿½rieure.
   
-  Ce programme est distribué dans l’espoir qu’il vous sera utile, mais SANS
-  AUCUNE GARANTIE : sans même la garantie implicite de COMMERCIALISABILITÉ
-  ni d’ADÉQUATION À UN OBJECTIF PARTICULIER. Consultez la Licence Générale
-  Publique GNU pour plus de détails.
+  Ce programme est distribuï¿½ dans lï¿½espoir quï¿½il vous sera utile, mais SANS
+  AUCUNE GARANTIE : sans mï¿½me la garantie implicite de COMMERCIALISABILITï¿½
+  ni dï¿½ADï¿½QUATION ï¿½ UN OBJECTIF PARTICULIER. Consultez la Licence Gï¿½nï¿½rale
+  Publique GNU pour plus de dï¿½tails.
   
-  Vous devriez avoir reçu une copie de la Licence Générale Publique GNU avec
-  ce programme ; si ce n’est pas le cas, consultez :
+  Vous devriez avoir reï¿½u une copie de la Licence Gï¿½nï¿½rale Publique GNU avec
+  ce programme ; si ce nï¿½est pas le cas, consultez :
   <http://www.gnu.org/licenses/>.
 */
 /*
@@ -31,11 +31,11 @@ Historique
 Version initiale
 		
 1.0.1   10/02/2011
-Ajout du Plugin URI pour permettre les mises à jours
-Traduction en Anglais du Plugin Name et du nom du répertoire
+Ajout du Plugin URI pour permettre les mises ï¿½ jours
+Traduction en Anglais du Plugin Name et du nom du rï¿½pertoire
         
 1.0.2   10/02/2011
-Correction du problème de compatibilité avec exif view (double affichage des boutons)
+Correction du problï¿½me de compatibilitï¿½ avec exif view (double affichage des boutons)
 	
 1.0.3   15/02/2011
 Add lv_LV (Latvian) thanks to Aivars Baldone
@@ -44,8 +44,8 @@ Add lv_LV (Latvian) thanks to Aivars Baldone
 Add de_DE and it_IT (par Sugar888)
 
 1.0.5   27/02/2011
-Correction pb compatibilité avec certains thèmes
-Déplacement des boutons PayPal en début de table info
+Correction pb compatibilitï¿½ avec certains thï¿½mes
+Dï¿½placement des boutons PayPal en dï¿½but de table info
 
 1.0.6   05/03/2011
 Add sk_SK (by dodo)
@@ -65,110 +65,98 @@ global $prefixeTable;
 defined('PPPPP_ID') or define('PPPPP_ID', basename(dirname(__FILE__)));
 define('PPPPP_PATH' , PHPWG_PLUGINS_PATH . basename(dirname(__FILE__)) . '/');
 define('PPPPP_SIZE_TABLE', $prefixeTable.'ppppp_size');
+define('PPPPP_SIZES_TABLE', $prefixeTable.'ppppp_sizes');
 define('PPPPP_SUPPORT_TABLE', $prefixeTable.'ppppp_support');
+define('PPPPP_OPTION_TABLE', $prefixeTable.'ppppp_support_options');
 define('PPPPP_PROMOCODE_TABLE', $prefixeTable.'ppppp_promocode');
+define('PPPPP_PRICE_TABLE', $prefixeTable.'ppppp_prices');
+define('PPPPP_COUNTRY_TABLE', $prefixeTable.'ppppp_countries');
+define('PPPPP_PROVIDER_TABLE', $prefixeTable.'ppppp_providers');
+define('PPPPP_RATIO_TABLE', $prefixeTable.'ppppp_ratio');
 define('PPPPP_VERSION', '2.7.c');
 
 
 function ppppp_append_form($tpl_source, &$smarty)
 {
   global $theme;
+  
     
-
   $pattern = '#<.*\"infoTable\".*>#';
   $replacement = '
-  <tr>
-   <td class="label">{\'Buy this picture\'|@translate}</td>
-   <td>
-    <form name="ppppp_form" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="javascript:pppppValid()">
-     <!--//<form name="ppppp_form" target="paypal" action="mailto:webmaster@daedalum.org" method="post" onSubmit="javascript:pppppValid()">-->
-     <input type="hidden" name="add" value="1">
-     <input type="hidden" name="cmd" value="_cart">
-     <input type="hidden" name="business" value="{$ppppp_e_mail}">
-     <input type="hidden" name="item_name">
-     <input type="hidden" name="amount">
-     <input type="hidden" name="no_shipping" value="2"><!-- shipping address mandatory -->
-     <input type="hidden" name="handling_cart"><!--  value="{$ppppp_fixed_shipping}">--> 
-     <input type="hidden" name="currency_code" value="{$ppppp_currency}">
-     <select name="support_factor" onChange="pppppPriceCompute()">
-	  {foreach from=$ppppp_array_support item=ppppp_row_support}
-      <option value="{$ppppp_row_support.factor}">{$ppppp_row_support.support|@translate}</option>
-	  {/foreach}
-      </select>
-      <select name="size" onChange="pppppPriceCompute()">
-	  {foreach from=$ppppp_array_size item=ppppp_row_size}	
-      <option value="{$ppppp_row_size.price}">{$ppppp_row_size.size}</option>
-	  {/foreach}
-      </select>
-      <input type="text" size=7 name="price" value="{$ppppp_price} {$ppppp_currency}">
-     <input type="submit" value="{\'Add to cart\'|@translate}">
-    </form>
-    </td>
-   <td>
-    <form target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
-    <!--//<form target="paypal" action="mailto:webmaster@daedalum.org" method="post">-->
-     <input type="hidden" name="cmd" value="_cart">
-     <input type="hidden" name="business" value="{$ppppp_e_mail}">
-     <input type="hidden" name="display" value="1">
-     <input type="hidden" name="no_shipping" value="2">
-     <input type=submit value="{\'View Shopping Cart\'|@translate}">
-    </form>
-   </td>
-  </tr>
-  <tr>
-    <td></td>
-    <td>
-    <form name="ppppp_promocode_form">
-        <input type="text" size=20 name="promocode" value="{\'Insert promo code\'|@translate}" oninput="pppppPriceCompute()" onchange="fillInPromoText()"><br/>
-        <img src="{PPPPP_PATH}include/payment-logos.png"  onLoad="pppppPriceCompute()" height=48>
-    </form>
-    </td>
-  </tr>
-  
-  <p id="demo"></p>
- 
- {literal}
+  {literal}
  <script type="text/javascript">
  function pppppValid(){
   var amount=pppppPriceCompute();
-  var size=document.ppppp_form.size;
-  var price=document.ppppp_form.price;
+  var size=document.ppppp_size.size;
+  var support_type=document.ppppp_support.support;
+  var price=document.ppppp_price.price;
+  var shipping=document.ppppp_shipping.shipping;
   var ppppp_price=price.value.slice(0,price.value.length-4);
-  var support_type=document.ppppp_form.support_factor;
+  var ppppp_shipping=shipping.value.slice(0,price.value.length-4);
   var selectedSize=size[size.selectedIndex];
   var selectedSupport=support_type[support_type.selectedIndex];
-  document.ppppp_form.amount.value=ppppp_price;
-  //document.ppppp_form.item_name.value="Photo \"{/literal}{$current.TITLE}\", File {$INFO_FILE}, Ref {$COMMENT_IMG}, {\'Size\'|@translate} : {literal} "+selectedSupport.text+ " "+selectedSize.text;
-  document.ppppp_form.item_name.value="{/literal}Ref {$COMMENT_IMG}, {\'Size\'|@translate} : {literal} "+selectedSize.text+ " "+selectedSupport.text+" Photo \"{/literal}{$current.TITLE}\", {$INFO_FILE}{literal} ";
-  document.ppppp_form.amount.value=ppppp_price;
-  document.ppppp_form.handling_cart.value=ppppp_shipping;
+  //document.ppppp_add_to_cart.item_name.value="Photo \"{/literal}{$current.TITLE}\", File {$INFO_FILE}, Ref {$COMMENT_IMG}, {\'Size\'|@translate} : {literal} "+selectedSupport.text+ " "+selectedSize.text;
+  document.ppppp_add_to_cart.item_name.value="{/literal}Ref {$COMMENT_IMG}, {\'Size\'|@translate} : {literal} "+selectedSize.text+ " "+selectedSupport.text+" Photo \"{/literal}{$current.TITLE}\", {$INFO_FILE}{literal} ";
+  document.ppppp_add_to_cart.amount.value=ppppp_price;
+  document.ppppp_add_to_cart.handling_cart.value=ppppp_shipping;
   }
   
-  function pppppPriceCompute(){
+  
+function pppppPriceCompute(){
     pppppGetPromoCode();
-    var price=document.ppppp_form.price;
-    var size=document.ppppp_form.size;
-    var support_type=document.ppppp_form.support_factor;
+    var price=document.ppppp_price.price;
+    var size=document.ppppp_size.size;
+    var support_type=document.ppppp_support.support;
     var selectedSize=size[size.selectedIndex];
     var selectedSupport=support_type[support_type.selectedIndex];
     var currency = price.value.slice(-4,price.value.length);
-    var ppppp_price=price.value.slice(0,price.value.length-4);
-	var ppppp_raw_price= selectedSize.value * selectedSupport.value;
-    ppppp_shipping={/literal}{$ppppp_fixed_shipping}{literal};
-	var ppppp_price_class=ppppp_raw_price % 10;
-	if (ppppp_price_class<5)
-	{
-		ppppp_price=Math.round(ppppp_raw_price+5-ppppp_price_class);
-	}
-	else
-	{
-        ppppp_price=Math.round(ppppp_raw_price+9-ppppp_price_class);
-	}
-    ppppp_price=Math.round(ppppp_price*(100-reduc_rel)/100-reduc_abs);
-    ppppp_shipping=Math.round(ppppp_shipping-reduc_ship);
-    document.ppppp_form.price.value=ppppp_price + currency;
-  }
+    var pos = selectedSize.value.indexOf("&");
+    var raw_price = selectedSize.value.slice(0,pos);
+    var raw_shipping =  selectedSize.value.slice(pos+1,selectedSize.value.length);
+    var final_price = Math.round(raw_price*(100-reduc_rel)/100-reduc_abs);
+    var final_shipping = Math.round(raw_shipping-reduc_ship);
+    var final_total = final_price+final_shipping;
+    document.ppppp_price.price.value=final_price + currency;
+    document.ppppp_shipping.shipping.value=final_shipping + currency;
+    document.ppppp_total_price.total.value=final_total + currency;      
+}
 
+function pppppChangeCountry(){
+    
+}
+
+function pppppChangeSupport(){
+    var code=document.ppppp_promocode_form.promocode.value;
+    if(code=="Insert promo code"){
+        var promocode="";
+    }
+    else{
+        var promocode="&PromoCode="+code;
+    }
+    var support_type=document.ppppp_support.support;
+    var support_Id=support_type[support_type.selectedIndex];
+    var current_page = location.href;
+    var new_page = current_page;
+    var m = current_page.indexOf("&PromoCode");    
+    var n = current_page.indexOf("&Support");
+    if(n>0 && m>0)
+        {
+        new_page = current_page.slice(0,m) + promocode + "&Support=" + support_Id.value;
+        }
+    else if(n>0 && m<0)
+        {
+        new_page = current_page.slice(0,n) + promocode + "&Support=" + support_Id.value;
+        }
+    else if(n<0 && m>0)
+        {
+        new_page = current_page.slice(0,m) + promocode + "&Support=" + support_Id.value;
+        }
+    else if(n<0 && m<0)
+        {
+        new_page = current_page + promocode + "&Support=" + support_Id.value;
+        }
+    self.location.href=new_page;
+}
 
 function pppppGetPromoCode(){
     reduc_rel=0;
@@ -195,6 +183,130 @@ function fillInPromoText(){
 
  </script>
  {/literal}
+ 
+ <tbody>
+ <tr>
+    <td class="label">{\'Select shipping country\'|@translate}</td>
+    <td>
+    <form name="ppppp_country" method="post" >
+         <select name="currency" id="currency" onchange="return confirm(\'{\'Are you sure?\'|translate|@escape:javascript}\')">
+	  {foreach from=$ppppp_array_countries item=ppppp_row_country}
+          <option value="{$ppppp_row_country.Currency}&{$ppppp_row_country.CountryCode}"{if $ppppp_row_country.CountryCode==$ppppp_country_code} selected{/if}>{$ppppp_row_country.CountryName} ({$ppppp_row_country.Currency})</option>  
+	  {/foreach}
+      </select>
+      <input type="submit" value="{\'Select country\'|@translate}">
+    </form>
+    </td>
+ </tr>
+ {if $ppppp_support_found==false}
+ <tr>
+    <td class="label" colspan=2>Sorry the resolution of the digital file does not allow for reasonable printing size.</p>
+ </tr>
+ {else}
+ <tr>
+    <td class="label">{\'Select support\'|@translate}</td>
+    <td>
+    <form name="ppppp_support" action="{$ppppp_support_action}" method="get">
+        <select name="support" onChange="pppppChangeSupport()"> 
+         {foreach from=$ppppp_array_support item=ppppp_row_support}
+         <option value="{$ppppp_row_support.Id}"{if $ppppp_row_support.Id==$ppppp_support_id} selected{/if}>{$ppppp_row_support.SupportName|@translate}{if $ppppp_row_support.SupportOption1!="None"} {$ppppp_row_support.SupportOption1|@translate}{/if}{if $ppppp_row_support.SupportOption2!="None"} {$ppppp_row_support.SupportOption2|@translate}{/if}</option>
+	 {/foreach}
+        </select>
+        <!--//<input type="submit" value="{\'Select support\'|@translate}">-->
+    </form>
+    </td>
+ </tr>
+ <tr>
+    <td class="label">{\'Select size\'|@translate}</td>
+    <td>
+    <form name="ppppp_size" method="post" onSubmit="javascript:pppppChangeSize()">
+        <select name="size" onChange="pppppPriceCompute()"> //onChange="this.form.submit()">
+	  {foreach from=$ppppp_array_sizes item=ppppp_row_sizes}	
+          <option value="{$ppppp_row_sizes.Price}&{$ppppp_row_sizes.Shipping}">{$ppppp_row_sizes.Size}</option>
+	  {/foreach}
+        </select>
+        <!--//<input type="submit" value="{\'Select size\'|@translate}">-->
+    </form>
+    </td>
+ </tr>
+ <tr>
+    <td class="label">{\'Price\'|@translate}</td>
+    <td>
+    <form name="ppppp_price">
+        <input type="text" size=7 name="price" value="{$ppppp_price} {$ppppp_currency}">
+    </form>
+    </td>
+ </tr>
+ <tr>
+    <td class="label">{\'Shipping fees\'|@translate}</td>
+    <td>
+    <form name="ppppp_shipping">
+        <input type="text" size=7 name="shipping" value="{$ppppp_shipping} {$ppppp_currency}">
+    </form>
+    </td>
+ </tr>
+ <tr>
+    <td class="label">{\'Promo Code\'|@translate}</td>
+    <td>
+    <form name="ppppp_promocode_form" onsubmit="pppppPriceCompute()">
+        <input type="text" size=20 name="promocode" value="{$ppppp_promocode|@translate}" oninput="pppppPriceCompute()" onchange="fillInPromoText()"><br/>
+    </form>
+    </td>
+ </tr>
+  <tr>
+    <td class="label">{\'Total price\'|@translate}</td>
+    <td>
+    <form name="ppppp_total_price">
+        <input type="text" size=7 name="total" value="{$ppppp_total} {$ppppp_currency}">
+    </form>
+    </td>
+ </tr>
+ <tr>
+    <td class="label">{\'Buy this picture\'|@translate}</td>
+    <td>
+    <form name="ppppp_add_to_cart" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post" onSubmit="javascript:pppppValid()">
+    <!--//<form name="ppppp_add_to_cart" target="paypal" action="mailto:webmaster@daedalum.org" method="post" onSubmit="javascript:pppppValid()">-->
+     <input type="hidden" name="add" value="1">
+     <input type="hidden" name="cmd" value="_cart">
+     <input type="hidden" name="charset" value="utf-8">
+     <input type="hidden" name="business" value="{$ppppp_e_mail}">
+     <input type="hidden" name="item_name">
+     <input type="hidden" name="amount" value="{$ppppp_price}">
+     <input type="hidden" name="no_shipping" value="2"><!-- shipping address mandatory -->
+     <input type="hidden" name="handling_cart"><!--  value="{$ppppp_fixed_shipping}">--> 
+     <input type="hidden" name="currency_code" value="{$ppppp_currency}">
+     <input type="submit" value="{\'Add to cart\'|@translate}">
+     </form>
+
+    <form name="ppppp_checkout_cart" target="paypal" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+    <!--//<form name="ppppp_checkout_cart" target="paypal" action="mailto:webmaster@daedalum.org" method="post">-->
+     <input type="hidden" name="cmd" value="_cart">
+     <input type="hidden" name="business" value="{$ppppp_e_mail}">
+     <input type="hidden" name="display" value="1">
+     <input type="hidden" name="no_shipping" value="2">
+     <input type=submit value="{\'View Shopping Cart\'|@translate}">
+    </form>
+   </td>
+</tr>
+{/if}
+<tr>
+   <td colspan=2>
+        <form>
+        <a href="https://www.paypal.com/us/webapps/mpp/paypal-safety-and-security" target="_blank"><img src="{PPPPP_PATH}include/payment-logos.png" height=48 onLoad="pppppPriceCompute()"></a></br>
+        <input type="hidden" onLoad="pppppPriceCompute()">
+        </form>
+    </td>
+</tr>
+<tr>
+   <td colspan=2>
+        <a href="https://photos.daedalum.org/index.php?/page/daedalum_online_shop_terms_conditions" target="_blank">{\'Please click here for terms & conditions\'|@translate}</a>
+   </td>
+</tr>
+  
+  <p id="demo"></p>
+
+ </tbody>
+
  ';
 
   if (strpos($theme, 'stripped') === 0)
@@ -232,70 +344,25 @@ function ppppp_picture_handler($content,$current_picture)
   }
       
   $IMG_name=$current_picture['comment'];
+  
+  $min_res_tolerance=1.05;
+  $IMG_ratio=round(floatval($current_picture['width'])/floatval($current_picture['height']),1);
+  $src_size=$current_picture['src_image']->get_size();
+  $IMG_Height=floatval($src_size[1]);
+  $IMG_Length=floatval($src_size[0]);
+  
     
+  $template->assign(
+  array(
+    'F_ACTION'=>PHPWG_ROOT_PATH.'main.inc.php')
+  );  
+
   $template->set_prefilter('picture', 'ppppp_append_form');
   load_language('plugin.lang', PPPPP_PATH);
 
-    
- //   echo 'GF SQ 52 31 41 ', strpos($IMG_name, '_GF'), ' ', strpos($IMG_name, '_SQ'), ' ',strpos($IMG_name, '_52'), ' ', strpos($IMG_name, '_31'),' ', strpos($IMG_name, '_41'), '</br>';
+
     
   $queryFilterSize='WHERE 1';
-
-    if (strpos($IMG_name, '_SQ')!==false)
-    {
-       if (strpos($IMG_name, '_GF')!==false)
-        {
-            $queryFilterSize="WHERE `SQ`=1";
-        }
-        else
-        {
-            $queryFilterSize="WHERE (`SQ`=1 AND `GF`=0)";
-        }
-    }
-    elseif (strpos($IMG_name, '_52')!==false)
-    {
-        if (strpos($IMG_name, '_GF')!==false)
-        {
-            $queryFilterSize="WHERE `Pano52`=1";
-        }
-        else
-        {
-            $queryFilterSize="WHERE (`Pano52`=1 AND `GF`=0)";
-        }
-    }
-    elseif (strpos($IMG_name, '_31')!==false)
-    {
-        if (strpos($IMG_name, '_GF')!==false)
-        {
-            $queryFilterSize="WHERE `Pano31`=1";
-        }
-        else
-        {
-            $queryFilterSize="WHERE (`Pano31`=1 AND `GF`=0)";
-        }
-    }
-    elseif (strpos($IMG_name, '_41')!==false)
-    {
-        if (strpos($IMG_name, '_GF')!==false)
-        {
-            $queryFilterSize="WHERE `Pano41`=1";
-        }
-        else
-        {
-            $queryFilterSize="WHERE (`Pano41`=1 AND `GF`=0)";
-        }
-    }
-    else
-    {
-        if (strpos($IMG_name, '_GF')!==false)
-        {
-            $queryFilterSize="WHERE (`SQ`=0 AND `Pano52`=0 AND `Pano31`=0 AND `Pano41`=0)";
-        }
-        else
-        {
-            $queryFilterSize="WHERE (`SQ`=0 AND `Pano52`=0 AND `Pano31`=0  AND `Pano41`=0 AND `GF`=0)";
-        }
-    }
         
   $query='SELECT * FROM '.PPPPP_SIZE_TABLE.' '.$queryFilterSize.' '.@$conf['PayPalShoppingCart_sizes_order_by'].';';
         
@@ -306,29 +373,131 @@ function ppppp_picture_handler($content,$current_picture)
     $template->append('ppppp_array_size',$row);
   }
 
-  $query_support='SELECT * FROM '.PPPPP_SUPPORT_TABLE.' '.@$conf['PayPalShoppingCart_supports_order_by'].';';
-  $result_support = pwg_query($query_support);
-  while($row_support = pwg_db_fetch_assoc($result_support))
-  {
-    $template->append('ppppp_array_support',$row_support);
-  }
     
-  $query_promocode='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.' '.@$conf['PayPalShoppingCart_supports_order_by'].';';
+  $query_promocode='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.' '.@$conf['PayPalShoppingCart_promocode_order_by'].';';
   $result_promocode = pwg_query($query_promocode);
   while($row_promocode = pwg_db_fetch_assoc($result_promocode))
   {
     $template->append('ppppp_array_promocode',$row_promocode);
   }
+  
+  
+  $array_currency=array();
+  $query_country='SELECT * FROM '.PPPPP_COUNTRY_TABLE.' '.@$conf['PayPalShoppingCart_country_order_by'].';';
+  $result_country = pwg_query($query_country);
+  $country_count=0;
+  while($row_country = pwg_db_fetch_assoc($result_country))
+  {
+    $template->append('ppppp_array_countries',$row_country);
+    $concat_code = $row_country['Currency'] . "&" . $row_country['CountryCode'];
+    $array_currency[$concat_code]=$row_country['CountryCode'];
+      if($country_count==0){
+        $first_row_country_index=$row_country['CountryCode'];
+    }
+    $country_count=$country_count+1;  
+  }
+  
+    
+  $query_support='SELECT DISTINCT T2.Id AS Id, T2.SupportName, T3.OptionName AS SupportOption1, T4.OptionName AS SupportOption2'.
+        ' FROM '.PPPPP_PRICE_TABLE.' T1'.
+        ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T2 ON T1.Support = T2.Id'.
+        ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T2.SupportOption1 = T3.Id'.
+        ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T4 ON T2.SupportOption2 = T4.Id'.
+        ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
+        ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T6 ON T1.Size=T6.Id'.
+        ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T7 ON T6.Ratio=T7.Id'.
+        ' WHERE T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
+        ' AND T7.RatioValue='.$IMG_ratio.
+        ' AND T6.Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T6.Units="cm", 2.54, IF(T6.Units="ft", 1/12, 1))'.
+        ' ORDER BY T2.SupportName, SupportOption1, SupportOption2 ;';
+  $result_support = pwg_query($query_support);
+  $support_count=0;
+  while($row_support = pwg_db_fetch_assoc($result_support))
+  {
+    $template->append('ppppp_array_support',$row_support);
+    if($support_count==0){
+        $first_row_support_index=$row_support['Id'];
+    }
+    $support_count=$support_count+1;
+  }
 
+ if($support_count>0){
+    $support_found=true;
+    if(isset($_GET['Support']))
+       {
+         $support_Id=$_GET['Support'];
+         $query_sizes='SELECT DISTINCT T2.SizeName AS Size, T3.RatioValue, T2.Height AS Height, T2.Length AS Length, T2.Units, T1.Price, T1.Shipping'.
+                 ' FROM '.PPPPP_PRICE_TABLE.' T1'.
+                 ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
+                 ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T3 ON T2.Ratio=T3.Id'.
+                 ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T4 ON T1.Provider = T4.Provider'.
+                 ' WHERE T3.RatioValue='.$IMG_ratio.
+                 ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
+                 ' AND T4.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
+                 ' AND T1.Support="'.$support_Id."\"".
+                 ' ORDER BY Size, Height;';
+       } 
+    else
+       {
+         $support_Id=$first_row_support_index;
+         $query_sizes='SELECT DISTINCT T2.SizeName AS Size, T3.RatioValue, T2.Height AS Height, T2.Length, T2.Units, T1.Price, T1.Shipping'.
+                 ' FROM '.PPPPP_PRICE_TABLE.' T1'.
+                 ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
+                 ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T3 ON T2.Ratio=T3.Id'.
+                 ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T4 ON T1.Provider = T4.Provider'.
+                 ' WHERE T3.RatioValue='.$IMG_ratio.
+                 ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
+                 ' AND T4.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
+                 ' AND T1.Support="'.$support_Id."\"".
+                 ' ORDER BY Size, Height;';    
+       }
+     $result_sizes = pwg_query($query_sizes);
+
+     while($row_sizes = pwg_db_fetch_assoc($result_sizes ))
+     {
+       $template->append('ppppp_array_sizes',$row_sizes );
+     }
+ }
+ else{
+    $support_found=false;
+    $support_Id=0;
+ }
+
+ 
+ if(isset($_GET['PromoCode']))
+ {
+     $ppppp_promocode=$_GET['PromoCode'];
+ }
+ else{
+     $ppppp_promocode='Insert promo code';
+ }
+
+ $country_code=$first_row_country_index;
+ 
+    if(isset($_POST['currency']) and isset($array_currency[ $_POST['currency'] ]))
+    {
+      $curr=substr($_POST['currency'],0,3);
+      $country_code=substr($_POST['currency'],4,3);
+      $conf['PayPalShoppingCart']['currency'] = $curr;
+      conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
     
   $template->assign(
     array(
+      'ppppp_support_found' => $support_found,
+      'ppppp_promocode' => $ppppp_promocode,
+      'ppppp_support_id' => $support_Id,
+      'ppppp_country_code' => $country_code,
       'ppppp_fixed_shipping' => $conf['PayPalShoppingCart']['fixed_shipping'],
       'ppppp_currency' => $conf['PayPalShoppingCart']['currency'],
  //     'ppppp_e_mail' => get_webmaster_mail_address(),
-     'ppppp_e_mail' => 'online.shop@daedalum.org',
-      'ppppp_price' => 15,
-     )
+      'ppppp_e_mail' => $conf['PayPalShoppingCart']['PayPalAccount'],
+      'ppppp_price' => 0,
+      'ppppp_shipping' => 0,
+      'ppppp_total' => 0,
+        )
     );
 }
 
@@ -340,7 +509,7 @@ add_event_handler('render_element_content', 'ppppp_picture_handler', EVENT_HANDL
 
 
 // Decommenter les lignes ci dessous pour faire apparaitre un lien "View shopping cart" dans le menu de gauche.
-// Désactivé car ne marchait pas !
+// Dï¿½sactivï¿½ car ne marchait pas !
 
 /*function ppppp_append_js($tpl_source, &$smarty){
  load_language('plugin.lang', PPPPP_PATH);

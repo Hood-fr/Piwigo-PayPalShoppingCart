@@ -33,15 +33,33 @@ $tabsheet = new tabsheet();
 $tabsheet->add('currency',
                l10n('Currency'),
                $my_base_url.'&amp;tab=currency');
+$tabsheet->add('settings',
+               l10n('Settings'),
+               $my_base_url.'&amp;tab=settings');
+$tabsheet->add('country',
+               l10n('Countries'),
+               $my_base_url.'&amp;tab=country');
 $tabsheet->add('albums', l10n('Albums'), $my_base_url.'&amp;tab=albums');
 $tabsheet->add('support',
-               l10n('Support'),
+               l10n('Supports'),
                $my_base_url.'&amp;tab=support');
+$tabsheet->add('supportoption',
+               l10n('Support Options'),
+               $my_base_url.'&amp;tab=supportoption');
+$tabsheet->add('ratio',
+               l10n('Ratios'),
+               $my_base_url.'&amp;tab=ratio');
 $tabsheet->add('size',
-               l10n('Size'),
+               l10n('Sizes'),
                $my_base_url.'&amp;tab=size');
+$tabsheet->add('sizeNew',
+               l10n('Sizes NEW'),
+               $my_base_url.'&amp;tab=sizeNew');
+$tabsheet->add('price',
+               l10n('Prices'),
+               $my_base_url.'&amp;tab=price');
 $tabsheet->add('code',
-               l10n('code'),
+               l10n('PromoCodes'),
                $my_base_url.'&amp;tab=code');
 $tabsheet->add('shipping',
                l10n('Shipping cost'),
@@ -51,7 +69,25 @@ $tabsheet->assign();
 
 switch($page['tab'])
 {
-  case 'currency':
+
+    case 'settings':
+    
+    if (isset($_POST['PayPalAccountEmail'])and filter_var($_POST['PayPalAccountEmail'], FILTER_VALIDATE_EMAIL))
+    {
+      $conf['PayPalShoppingCart']['PayPalAccount'] = $_POST['PayPalAccountEmail'];
+      conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
+      
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    elseif (isset($_POST['PayPalAccountEmail'])and !filter_var($_POST['PayPalAccountEmail'], FILTER_VALIDATE_EMAIL))
+    {  
+      $page['infos'][] = l10n('Invalid account. Please make sure you have entered a valid email address.');
+    }
+    
+    $template->assign('ppppp_account', $conf['PayPalShoppingCart']['PayPalAccount']);
+    break;
+    
+    case 'currency':
     
     $array_currency = array(
       'AUD'=>'Australian Dollar',
@@ -149,6 +185,79 @@ SELECT id,name,uppercats,global_rank
      break;
   
  
+  case 'country':
+    
+      $array_currency = array(
+      'AUD'=>'Australian Dollar',
+      'BRL'=>'Brazilian Real',
+      'CAD'=>'Canadian Dollar',
+      'CZK'=>'Czech Koruna',
+      'DKK'=>'Danish Krone',
+      'EUR'=>'Euro',
+      'HKD'=>'Hong Kong Dollar',
+      'HUF'=>'Hungarian Forint',
+      'ILS'=>'Israeli New Sheqel',
+      'JPY'=>'Japanese Yen',
+      'MYR'=>'Malaysian Ringgit',
+      'MXN'=>'Mexican Peso',
+      'NOK'=>'Norwegian Krone',
+      'NZD'=>'New Zealand Dollar',
+      'PHP'=>'Philippine Peso',
+      'PLN'=>'Polish Zloty',
+      'GBP'=>'Pound Sterling',
+      'SGD'=>'Singapore Dollar',
+      'SEK'=>'Swedish Krona',
+      'CHF'=>'Swiss Franc',
+      'TWD'=>'Taiwan New Dollar',
+      'THB'=>'Thai Baht',
+      'USD'=>'U.S. Dollar'
+      );
+
+      $template->assign(
+      array(
+        'ppppp_array_currency' => $array_currency,
+        )
+      );
+
+      if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_COUNTRY_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['CountryName']) and isset($_POST['CountryCode']) and isset($_POST['Currency']) and isset($_POST['Provider']))
+    {
+      single_insert(
+        PPPPP_COUNTRY_TABLE,
+        array(
+          'CountryName' => pwg_db_real_escape_string($_POST['CountryName']),
+          'CountryCode' => pwg_db_real_escape_string($_POST['CountryCode']),
+          'Currency' => pwg_db_real_escape_string($_POST['Currency']),
+          'Provider' => pwg_db_real_escape_string($_POST['Provider']),
+          )
+        );
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT T1.CountryName, T1.CountryCode, T1.Currency, T2.Name as Name FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider=T2.Id ORDER BY T1.Provider, T1.CountryName;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_country',$row);
+    }
+    
+    $query='SELECT * FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_provider',$row);
+    }
+    
+    break;     
+     
   case 'support':
     
     if (isset($_POST['delete']))
@@ -164,7 +273,9 @@ SELECT id,name,uppercats,global_rank
       single_insert(
         PPPPP_SUPPORT_TABLE,
         array(
-          'support' => pwg_db_real_escape_string($_POST['support']),
+          'SupportName' => pwg_db_real_escape_string($_POST['support']),
+          'SupportOption1' => pwg_db_real_escape_string($_POST['option1']),
+          'SupportOption2' => pwg_db_real_escape_string($_POST['option2']),
           'factor' => pwg_db_real_escape_string($_POST['factor']),
           )
         );
@@ -172,7 +283,17 @@ SELECT id,name,uppercats,global_rank
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $query='SELECT * FROM '.PPPPP_SUPPORT_TABLE.';';
+    $query='SELECT * FROM '.PPPPP_OPTION_TABLE.';';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_supportoption',$row);
+    }
+    $query='SELECT DISTINCT T1.Id AS Id, T1.SupportName, T2.OptionName AS SupportOption1, T3.OptionName AS SupportOption2, T1.factor'.
+            ' FROM '.PPPPP_SUPPORT_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption1 = T2.Id '.
+            ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T1.SupportOption2 = T3.Id '.
+            ' ORDER BY T1.SupportName, SupportOption1, SupportOption2 ;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
@@ -181,7 +302,38 @@ SELECT id,name,uppercats,global_rank
     
     break;
 
-  case 'size':
+     case 'supportoption':
+    
+    if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_OPTION_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['OptionName']))
+    {
+      single_insert(
+        PPPPP_OPTION_TABLE,
+        array(
+          'OptionName' => pwg_db_real_escape_string($_POST['OptionName']),
+            )
+        );
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT * FROM '.PPPPP_OPTION_TABLE.';';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_supportoption',$row);
+    }
+    
+    break;
+  
+    case 'size':
     
     if (isset($_POST['delete']))
     {
@@ -202,7 +354,8 @@ SELECT id,name,uppercats,global_rank
           'SQ' => pwg_db_real_escape_string($_POST['SQ']),
           'Pano52' => pwg_db_real_escape_string($_POST['Pano52']),
           'Pano31' => pwg_db_real_escape_string($_POST['Pano31']),
-          'Pano41' => pwg_db_real_escape_string($_POST['Pano41']),           )
+          'Pano41' => pwg_db_real_escape_string($_POST['Pano41']),
+            )
         );
 
       $page['infos'][] = l10n('Your configuration settings are saved');
@@ -213,6 +366,97 @@ SELECT id,name,uppercats,global_rank
     while($row = pwg_db_fetch_assoc($result))
     {
       $template->append('ppppp_array_size',$row);
+    }
+    
+    break;
+  
+    case 'sizeNew':
+        
+        
+    $array_units = array(
+      'cm'=>'cm',
+      'in'=>'inches',
+      'ft'=>'feet'
+      );
+    
+    if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_SIZES_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['SizeName']) and isset($_POST['Ratio']))
+    {
+      single_insert(
+        PPPPP_SIZES_TABLE,
+        array(
+          'SizeName' => pwg_db_real_escape_string($_POST['SizeName']),
+          'Ratio' => pwg_db_real_escape_string($_POST['Ratio']),
+          'Height' => pwg_db_real_escape_string($_POST['Height']),
+          'Length' => pwg_db_real_escape_string($_POST['Length']),
+          'Units' => pwg_db_real_escape_string($_POST['Units']),
+            )
+        );
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT DISTINCT T1.Id AS Id, SizeName, T2.RatioName AS Ratio, Length, Height, Units'.
+            ' FROM '.PPPPP_SIZES_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T2'.
+            ' ON T1.Ratio=T2.Id'.
+            ' ORDER BY Ratio, Units, Height;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_sizes',$row);
+    }
+    
+    $query='SELECT * FROM '.PPPPP_RATIO_TABLE.';';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_ratio',$row);
+    }
+
+    $template->assign(
+    array(
+      'ppppp_array_units' => $array_units,
+      )
+    );
+ 
+    break;
+  
+    case 'ratio':
+    
+    if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_RATIO_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['RatioName']) and isset($_POST['RatioValue']))
+    {
+      single_insert(
+        PPPPP_RATIO_TABLE,
+        array(
+          'RatioName' => pwg_db_real_escape_string($_POST['RatioName']),
+          'RatioValue' => pwg_db_real_escape_string($_POST['RatioValue']),
+            )
+        );
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT * FROM '.PPPPP_RATIO_TABLE.';';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_ratio',$row);
     }
     
     break;
@@ -251,6 +495,88 @@ SELECT id,name,uppercats,global_rank
     
     break;
 
+      case 'price':
+    
+    if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_PRICE_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['price']) and isset($_POST['shipping']) and isset($_POST['currency']))
+    {
+      single_insert(
+        PPPPP_PRICE_TABLE,
+        array(
+          'Country' => pwg_db_real_escape_string($_POST['country']),
+          'Size' => pwg_db_real_escape_string($_POST['size']),
+          'Support' => pwg_db_real_escape_string($_POST['support']),
+          'MinRes' => pwg_db_real_escape_string($_POST['minres']),
+          'Price' => pwg_db_real_escape_string($_POST['price']),
+          'Shipping' => pwg_db_real_escape_string($_POST['shipping']),
+            )
+        );
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT DISTINCT T1.Id AS Id, T2.SupportName AS Support, T3.OptionName AS SupportOption1, T4.OptionName AS SupportOption2,'.
+            ' T5.SizeName AS Size, T6.RatioName AS Ratio, T5.Height AS Height, T5.Length AS Length, T5.Units AS Units,'.
+            ' T1.MinRes AS MinRes, T8.Name AS Provider, T1.Price, T1.Shipping, T7.Currency AS Currency'.
+            ' FROM '.PPPPP_PRICE_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T2 ON T1.Support = T2.Id'.
+            ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T2.SupportOption1 = T3.Id'.
+            ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T4 ON T2.SupportOption2 = T4.Id'.
+            ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T5 ON T1.Size = T5.Id'.
+            ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T6 ON T5.Ratio = T6.Id'.
+            ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T7 ON T1.Provider = T7.Provider'.
+            ' LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T8 ON T1.Provider = T8.Id'.
+            ' ORDER BY Provider, Support, Size;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_price',$row);
+    }
+    
+    $query='SELECT DISTINCT T1.Id AS Id, SizeName, T2.RatioName AS Ratio, Length, Height, Units'.
+            ' FROM '.PPPPP_SIZES_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T2'.
+            ' ON T1.Ratio=T2.Id'.
+            ' ORDER BY Ratio, Units, Height;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_sizes',$row);
+    }
+
+    $query='SELECT DISTINCT T1.Id AS Id, T1.SupportName, T2.OptionName AS SupportOption1, T3.OptionName AS SupportOption2, T1.factor'.
+            ' FROM '.PPPPP_SUPPORT_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption1 = T2.Id '.
+            ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T1.SupportOption2 = T3.Id '.
+            ' ORDER BY T1.SupportName, SupportOption1, SupportOption2 ;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_support',$row);
+    }
+    
+    $query='SELECT DISTINCT T2.Name AS ProviderName FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider = T2.Id ORDER BY ProviderName;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_country',$row);
+    }
+    
+    $query='SELECT * FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_provider',$row);
+    }
+        
+    break;
 
   case 'shipping':
     
