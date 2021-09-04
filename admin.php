@@ -39,6 +39,9 @@ $tabsheet->add('settings',
 $tabsheet->add('country',
                l10n('Countries'),
                $my_base_url.'&amp;tab=country');
+$tabsheet->add('provider',
+               l10n('Providers'),
+               $my_base_url.'&amp;tab=provider');
 $tabsheet->add('albums', l10n('Albums'), $my_base_url.'&amp;tab=albums');
 $tabsheet->add('support',
                l10n('Supports'),
@@ -131,7 +134,7 @@ switch($page['tab'])
       );
     
     break;
-
+    
    case 'albums' :
 
      if (isset($_POST['apply_to_albums']) and in_array($_POST['apply_to_albums'], array('all', 'list')))
@@ -257,8 +260,73 @@ SELECT id,name,uppercats,global_rank
     }
     
     break;     
-     
-  case 'support':
+
+    case 'provider':
+    
+      $array_currency = array(
+      'AUD'=>'Australian Dollar',
+      'BRL'=>'Brazilian Real',
+      'CAD'=>'Canadian Dollar',
+      'CZK'=>'Czech Koruna',
+      'DKK'=>'Danish Krone',
+      'EUR'=>'Euro',
+      'HKD'=>'Hong Kong Dollar',
+      'HUF'=>'Hungarian Forint',
+      'ILS'=>'Israeli New Sheqel',
+      'JPY'=>'Japanese Yen',
+      'MYR'=>'Malaysian Ringgit',
+      'MXN'=>'Mexican Peso',
+      'NOK'=>'Norwegian Krone',
+      'NZD'=>'New Zealand Dollar',
+      'PHP'=>'Philippine Peso',
+      'PLN'=>'Polish Zloty',
+      'GBP'=>'Pound Sterling',
+      'SGD'=>'Singapore Dollar',
+      'SEK'=>'Swedish Krona',
+      'CHF'=>'Swiss Franc',
+      'TWD'=>'Taiwan New Dollar',
+      'THB'=>'Thai Baht',
+      'USD'=>'U.S. Dollar'
+      );
+
+      $template->assign(
+      array(
+        'ppppp_array_currency' => $array_currency,
+        )
+      );
+
+      if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_PROVIDER_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['ProviderName']) and isset($_POST['ProviderUrl']) and isset($_POST['Currency']))
+    {
+      single_insert(
+        PPPPP_PROVIDER_TABLE,
+        array(
+          'Name' => pwg_db_real_escape_string($_POST['ProviderName']),
+          'URL' => pwg_db_real_escape_string($_POST['ProviderUrl']),
+          'Currency' => pwg_db_real_escape_string($_POST['Currency']),
+          )
+        );
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+ 
+    $query='SELECT * FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_provider',$row);
+    }
+    
+    break;     
+
+    case 'support':
     
     if (isset($_POST['delete']))
     {
@@ -510,7 +578,7 @@ SELECT id,name,uppercats,global_rank
       single_insert(
         PPPPP_PRICE_TABLE,
         array(
-          'Country' => pwg_db_real_escape_string($_POST['country']),
+          'Provider' => pwg_db_real_escape_string($_POST['provider']),
           'Size' => pwg_db_real_escape_string($_POST['size']),
           'Support' => pwg_db_real_escape_string($_POST['support']),
           'MinRes' => pwg_db_real_escape_string($_POST['minres']),

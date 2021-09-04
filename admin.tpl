@@ -94,10 +94,10 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_country item=ppppp_row_country name=ppppp_row_country_loop}
 <tr class="{if $smarty.foreach.ppppp_row_country_loop.index is odd}row1{else}row2{/if}">
-<td>{$ppppp_row_country.CountryName}</td>
-<td>{$ppppp_row_country.CountryCode}</td>
-<td>{$ppppp_row_country.Currency}</td>
-<td>{$ppppp_row_country.Name}</td>
+<td align="center">{$ppppp_row_country.CountryName}</td>
+<td align="center">{$ppppp_row_country.CountryCode}</td>
+<td align="center">{$ppppp_row_country.Currency}</td>
+<td align="center">{$ppppp_row_country.Name}</td>
 <td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_country.Id}'>
@@ -108,6 +108,53 @@ jQuery(document).ready(function() {
 <form method=post>
 <input type=hidden name=edit value='{$ppppp_row_country.Id}'>
 <input type=button value="{'Edit data'|@translate}" onclick="FillFieldForEdit('country',{$ppppp_row_country.Id})">
+</form>
+</td>
+</tr>
+{/foreach}
+</table>
+</fieldset>
+
+{elseif $tabsheet_selected=='provider'}
+<h3>{'Provider'|@translate}</h3>
+<form method=post>
+<fieldset>
+<legend>{'Append provider'|@translate}</legend>
+<br>
+{'Name'|@translate} <input type=text name=ProviderName>
+{'Country code'|@translate} <input type=text name=ProviderUrl>
+{'Currency'|@translate}
+<select name=Currency>
+{foreach from=$ppppp_array_currency item=currency_label key=currency_code}
+<option value="{$currency_code}">{$currency_label} ({$currency_code})</option>
+{/foreach}
+<br>
+<br>
+<input type=submit value="{'Update data'|@translate}">
+</fieldset>
+</form>
+<fieldset>
+<table class=table2>
+<tr class=throw>
+<th>{'Name'|@translate}</th>
+<th>{'URL'|@translate}</th>
+<th>{'Currency'|@translate}</th>
+</tr>
+{foreach from=$ppppp_array_provider item=ppppp_row_provider name=ppppp_row_provider_loop}
+<tr class="{if $smarty.foreach.ppppp_row_provider_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_provider.Name}</td>
+<td align="center">{$ppppp_row_provider.URL}</td>
+<td align="center">{$ppppp_row_provider.Currency}</td>
+<td align="center">
+<form method=post>
+<input type=hidden name=delete value='{$ppppp_row_provider.Id}'>
+<input type=submit value="{'Delete data'|@translate}">
+</form>
+</td>
+<td>
+<form method=post>
+<input type=hidden name=edit value='{$ppppp_row_provider.Id}'>
+<input type=button value="{'Edit data'|@translate}" onclick="FillFieldForEdit('provider',{$ppppp_row_provider.Id})">
 </form>
 </td>
 </tr>
@@ -171,10 +218,10 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_support item=ppppp_row_support name=ppppp_row_support_loop}
 <tr class="{if $smarty.foreach.ppppp_row_support_loop.index is odd}row1{else}row2{/if}">
-<td>{$ppppp_row_support.SupportName}</td>
-<td>{$ppppp_row_support.SupportOption1}</td>
-<td>{$ppppp_row_support.SupportOption2}</td>
-<td>{$ppppp_row_support.factor}</td>
+<td align="center">{$ppppp_row_support.SupportName}</td>
+<td align="center">{$ppppp_row_support.SupportOption1}</td>
+<td align="center">{$ppppp_row_support.SupportOption2}</td>
+<td align="center">{$ppppp_row_support.factor}</td>
 <td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_support.Id}'>
@@ -227,13 +274,13 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_size item=ppppp_row_size name=ppppp_row_size_loop}
 <tr class="{if $smarty.foreach.ppppp_row_size_loop.index is odd}row1{else}row2{/if}">
-<td>{$ppppp_row_size.size}</td>
-<td>{$ppppp_row_size.price}</td>
-<td>{$ppppp_row_size.GF}</td>
-<td>{$ppppp_row_size.SQ}</td>
-<td>{$ppppp_row_size.Pano52}</td>
-<td>{$ppppp_row_size.Pano31}</td>
-<td>{$ppppp_row_size.Pano41}</td>
+<td align="center">{$ppppp_row_size.size}</td>
+<td align="center">{$ppppp_row_size.price}</td>
+<td align="center">{$ppppp_row_size.GF}</td>
+<td align="center">{$ppppp_row_size.SQ}</td>
+<td align="center">{$ppppp_row_size.Pano52}</td>
+<td align="center">{$ppppp_row_size.Pano31}</td>
+<td align="center">{$ppppp_row_size.Pano41}</td>
     <td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_size.Id}'>
@@ -289,11 +336,11 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_sizes item=ppppp_row_sizes name=ppppp_row_sizes_loop}
 <tr class="{if $smarty.foreach.ppppp_row_sizes_loop.index is odd}row1{else}row2{/if}">
-<td>{$ppppp_row_sizes.SizeName}</td>
-<td>{$ppppp_row_sizes.Ratio}</td>
-<td>{$ppppp_row_sizes.Height}</td>
-<td>{$ppppp_row_sizes.Length}</td>
-<td>{$ppppp_row_sizes.Units}</td>
+<td align="center">{$ppppp_row_sizes.SizeName}</td>
+<td align="center">{$ppppp_row_sizes.Ratio}</td>
+<td align="center">{$ppppp_row_sizes.Height}</td>
+<td align="center">{$ppppp_row_sizes.Length}</td>
+<td align="center">{$ppppp_row_sizes.Units}</td>
     <td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_sizes.Id}'>
@@ -353,28 +400,28 @@ jQuery(document).ready(function() {
 <th>{'Height'|@translate}</th>
 <th>{'Length'|@translate}</th>
 <th>{'Units'|@translate}</th>
-<th>{'Min Resolution'|@translate}</th>
+<th>{'Min. Resolution'|@translate}</th>
 <th>{'Provider'|@translate}</th>
 <th>{'Price'|@translate}</th>
-<th>{'Shipping'|@translate}</th>
+<th>{'Shipping fees'|@translate}</th>
 <th>{'Currency'|@translate}</th>
     <th>{'Action'|@translate}</th>
 </tr>
 {foreach from=$ppppp_array_price item=ppppp_row_price name=ppppp_row_price_loop}
 <tr class="{if $smarty.foreach.ppppp_row_price_loop.index is odd}row1{else}row2{/if}">
-<td>{$ppppp_row_price.Support}</td>
-<td>{$ppppp_row_price.SupportOption1}</td>
-<td>{$ppppp_row_price.SupportOption2}</td>
-<td>{$ppppp_row_price.Size}</td>
-<td>{$ppppp_row_price.Ratio}</td>
-<td>{$ppppp_row_price.Height}</td>
-<td>{$ppppp_row_price.Length}</td>
-<td>{$ppppp_row_price.Units}</td>
-<td>{$ppppp_row_price.MinRes}</td>
-<td>{$ppppp_row_price.Provider}</td>
-<td>{$ppppp_row_price.Price}</td>
-<td>{$ppppp_row_price.Shipping}</td>
-<td>{$ppppp_row_price.Currency}</td>
+<td align="center">{$ppppp_row_price.Support}</td>
+<td align="center">{$ppppp_row_price.SupportOption1}</td>
+<td align="center">{$ppppp_row_price.SupportOption2}</td>
+<td align="center">{$ppppp_row_price.Size}</td>
+<td align="center">{$ppppp_row_price.Ratio}</td>
+<td align="center">{$ppppp_row_price.Height}</td>
+<td align="center">{$ppppp_row_price.Length}</td>
+<td align="center">{$ppppp_row_price.Units}</td>
+<td align="center">{$ppppp_row_price.MinRes}</td>
+<td align="center">{$ppppp_row_price.Provider}</td>
+<td align="center">{$ppppp_row_price.Price}</td>
+<td align="center">{$ppppp_row_price.Shipping}</td>
+<td align="center">{$ppppp_row_price.Currency}</td>
     <td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_price.Id}'>
@@ -415,10 +462,10 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_promocode item=ppppp_row_promocode name=ppppp_row_promcoode_loop}
 <tr class="{if $smarty.foreach.ppppp_row_promocode_loop.index is odd}row1{else}row2{/if}">
-<td>{$ppppp_row_promocode.code}</td>
-<td>{$ppppp_row_promocode.reduc_rel}</td>
-<td>{$ppppp_row_promocode.reduc_abs}</td>
-<td>{$ppppp_row_promocode.reduc_ship}</td>
+<td align="center">{$ppppp_row_promocode.code}</td>
+<td align="center">{$ppppp_row_promocode.reduc_rel}</td>
+<td align="center">{$ppppp_row_promocode.reduc_abs}</td>
+<td align="center">{$ppppp_row_promocode.reduc_ship}</td>
     <td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_promocode.Id}'>
@@ -455,8 +502,8 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_ratio item=ppppp_row_ratio name=ppppp_row_ratio_loop}
 <tr class="{if $smarty.foreach.ppppp_row_ratio_loop.index is odd}row1{else}row2{/if}">
-<td>{$ppppp_row_ratio.RatioName}</td>
-<td>{$ppppp_row_ratio.RatioValue}</td>
+<td align="center">{$ppppp_row_ratio.RatioName}</td>
+<td align="center">{$ppppp_row_ratio.RatioValue}</td>
     <td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_ratio.Id}'>
@@ -491,7 +538,7 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_supportoption item=ppppp_row_supportoption name=ppppp_row_supportoption_loop}
 <tr class="{if $smarty.foreach.ppppp_row_supportoption_loop.index is odd}row1{else}row2{/if}">
-<td>{$ppppp_row_supportoption.OptionName}</td>
+<td align="center">{$ppppp_row_supportoption.OptionName}</td>
     <td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_supportoption.Id}'>
