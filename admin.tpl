@@ -122,7 +122,7 @@ jQuery(document).ready(function() {
 <legend>{'Append provider'|@translate}</legend>
 <br>
 {'Name'|@translate} <input type=text name=ProviderName>
-{'Country code'|@translate} <input type=text name=ProviderUrl>
+{'URL'|@translate} <input type=text name=ProviderUrl>
 {'Currency'|@translate}
 <select name=Currency>
 {foreach from=$ppppp_array_currency item=currency_label key=currency_code}
@@ -308,8 +308,8 @@ jQuery(document).ready(function() {
                 {/foreach}
                 </select>
                 </td>
-                <td>{'Height'|@translate} <input type=text name=Height onchange="UpdateLength()"></td>
             <td>{'Length'|@translate} <input type=text name=Length onchange="UpdateHeight()"></td>
+            <td>{'Height'|@translate} <input type=text name=Height onchange="UpdateLength()"></td>
            <td>{'Units'|@translate}
                 <select name="Units" >
                 {foreach from=$ppppp_array_units item=unit_label key=unit_code}
@@ -329,8 +329,8 @@ jQuery(document).ready(function() {
 <tr class=throw>
 <th>{'Size'|@translate}</th>
 <th>{'Ratio'|@translate}</th>
-<th>{'Height'|@translate}</th>
 <th>{'Length'|@translate}</th>
+<th>{'Height'|@translate}</th>
 <th>{'Units'|@translate}</th>
 <th>{'Action'|@translate}</th>
 </tr>
@@ -338,8 +338,8 @@ jQuery(document).ready(function() {
 <tr class="{if $smarty.foreach.ppppp_row_sizes_loop.index is odd}row1{else}row2{/if}">
 <td align="center">{$ppppp_row_sizes.SizeName}</td>
 <td align="center">{$ppppp_row_sizes.Ratio}</td>
-<td align="center">{$ppppp_row_sizes.Height}</td>
 <td align="center">{$ppppp_row_sizes.Length}</td>
+<td align="center">{$ppppp_row_sizes.Height}</td>
 <td align="center">{$ppppp_row_sizes.Units}</td>
     <td>
 <form method=post>
