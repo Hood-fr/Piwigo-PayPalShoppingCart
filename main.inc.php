@@ -96,7 +96,6 @@ function ppppp_append_form($tpl_source, &$smarty)
   var ppppp_shipping=shipping.value.slice(0,price.value.length-4);
   var selectedSize=size[size.selectedIndex];
   var selectedSupport=support_type[support_type.selectedIndex];
-  var selectedSupport2=support2_type[support2_type.selectedIndex];
   var selectedOption1=option1[option1.selectedIndex];
   //document.ppppp_add_to_cart.item_name.value="Photo \"{/literal}{$current.TITLE}\", File {$INFO_FILE}, Ref {$COMMENT_IMG}, {\'Size\'|@translate} : {literal} "+selectedSupport.text+ " "+selectedSize.text;
   document.ppppp_add_to_cart.item_name.value="{/literal}Ref {$COMMENT_IMG}, {\'Size\'|@translate} : {literal} "+selectedSize.text+ " "+selectedSupport.text+" Photo \"{/literal}{$current.TITLE}\", {$INFO_FILE}{literal} ";
@@ -108,11 +107,6 @@ function ppppp_append_form($tpl_source, &$smarty)
 function pppppPriceCompute(){
     pppppGetPromoCode();
     var price=document.ppppp_price.price;
-//    var size=document.ppppp_size.size;
-//    var support_type=document.ppppp_support.support;
-//    var selectedSize=size[size.selectedIndex];
-//    var selectedSupport=support_type[support_type.selectedIndex];
-//    var selectedSupport2=support2_type[support2_type.selectedIndex];
     var option2=document.ppppp_option2.option2;
     var selectedOption2=option2[option2.selectedIndex];
     var currency = price.value.slice(-4,price.value.length);
@@ -160,7 +154,8 @@ function pppppChangeSupport(){
     self.location.href=new_page;
 }
 
-function pppppUpdateUrl(){
+function pppppUpdateOpt(){
+    fillInPromoText()
     var code=document.ppppp_promocode_form.promocode.value;
     if(code=="Insert promo code"){
         var promocode="";
@@ -170,26 +165,46 @@ function pppppUpdateUrl(){
     }
     var material_type=document.ppppp_material.material;
     var material_Id=material_type[material_type.selectedIndex];
-    var size2_type=document.ppppp_size2.size2;
-    var size2_Id=size2_type[size2_type.selectedIndex];
+    var size_type=document.ppppp_size.size;
+    var size_Id=size_type[size_type.selectedIndex];
     var option1_type=document.ppppp_option1.option1;
     var option1_Id=option1_type[option1_type.selectedIndex];
     var current_page = location.href;
     var new_page = current_page;
-    var m = current_page.indexOf("&PromoCode");    
-    var n = current_page.indexOf("&Material");
-    var p = current_page.indexOf("&Size2");
-    var q = current_page.indexOf("&Option1");
-    var pos = Math.min(m,n,p,q);
-    console.log(pos);
+    var pos = current_page.indexOf("&");
     if(pos>0)
         {
-            new_page = current_page.slice(0,pos) + promocode + "&Material=" + material_Id.value + "&Size2=" + size2_Id.value + "&Option1=" + option1_Id.value;
+            new_page = current_page.slice(0,pos) + promocode + "&Material=" + material_Id.value + "&size=" + size_Id.value + "&Option1=" + option1_Id.value;
         }
     else
         {
-            new_page = current_page + promocode + "&Material=" + material_Id.value + "&Size2=" + size2_Id.value + "&Option1=" + option1_Id.value;
-        }    
+            new_page = current_page + promocode + "&Material=" + material_Id.value + "&size=" + size_Id.value + "&Option1=" + option1_Id.value;
+        }
+self.location.href=new_page;
+}
+
+
+function pppppUpdateMat(){
+    var code=document.ppppp_promocode_form.promocode.value;
+    if(code=="Insert promo code"){
+        var promocode="";
+    }
+    else{
+        var promocode="&PromoCode="+code;
+    }
+    var material_type=document.ppppp_material.material;
+    var material_Id=material_type[material_type.selectedIndex];
+    var current_page = location.href;
+    var new_page = current_page;
+    var pos = current_page.indexOf("&");
+    if(pos>0)
+        {
+            new_page = current_page.slice(0,pos) + promocode + "&Material=" + material_Id.value;
+        }
+    else
+        {
+            new_page = current_page + promocode + "&Material=" + material_Id.value;
+        }
 self.location.href=new_page;
 }
 
@@ -237,45 +252,16 @@ function fillInPromoText(){
     </form>
     </td>
  </tr>
- {if $ppppp_support_found==false}
- <tr>
-    <td class="label" colspan=2>Sorry, no relevant support can be found for that picture.</p>
- </tr>
- {else}
-<!-- <tr>
-    <td class="label">{\'Select support\'|@translate}</td>
-    <td>
-    <form name="ppppp_support" action="{$ppppp_support_action}" method="get">
-        <select name="support" onChange="pppppChangeSupport()"> 
-         {foreach from=$ppppp_array_support item=ppppp_row_support}
-         <option value="{$ppppp_row_support.Id}"{if $ppppp_row_support.Id==$ppppp_support_id} selected{/if}>{$ppppp_row_support.SupportName|@translate}{if $ppppp_row_support.SupportOption1!="None"} {$ppppp_row_support.SupportOption1|@translate}{/if}{if $ppppp_row_support.SupportOption2!="None"} {$ppppp_row_support.SupportOption2|@translate}{/if}</option>
-	 {/foreach}
-        </select>
-    </form>
-    </td>
- </tr>
- <tr>
-    <td class="label">{\'Select size\'|@translate}</td>
-    <td>
-    <form name="ppppp_size" method="post" onSubmit="javascript:pppppChangeSize()">
-        <select name="size" onChange="pppppPriceCompute()"> 
-	  {foreach from=$ppppp_array_sizes item=ppppp_row_sizes}	
-          <option value="{$ppppp_row_sizes.Price}&{$ppppp_row_sizes.Shipping}">{$ppppp_row_sizes.Size}</option>
-	  {/foreach}
-        </select>
-    </form>
-    </td>
- </tr>-->
  {if $ppppp_material_found==false}
-   <tr>
-    <td class="label" colspan=2>Sorry, Material not found</p>
-   </tr>
+ <tr>
+    <td class="label" colspan=2>{\'No support found\'|@translate}</p>
+ </tr>
  {else}
   <tr>
     <td class="label">{\'Select material\'|@translate}</td>
     <td>
     <form name="ppppp_material" action="{$ppppp_material_action}" method="get">
-        <select name="material" onChange="pppppUpdateUrl()"> 
+        <select name="material" onChange="pppppUpdateMat()"> 
          {foreach from=$ppppp_array_material item=ppppp_row_material}
          <option value="{$ppppp_row_material.Id}"{if $ppppp_row_material.Id==$ppppp_material_id} selected{/if}>{$ppppp_row_material.Material|@translate}</option>
 	 {/foreach}
@@ -284,12 +270,12 @@ function fillInPromoText(){
     </td>
  </tr>
  <tr>
-    <td class="label">{\'Select size2\'|@translate}</td>
+    <td class="label">{\'Select size\'|@translate}</td>
     <td>
-    <form name="ppppp_size2" action="{$ppppp_sizes2_action}" method="get">
-        <select name="size2" onChange="pppppUpdateUrl()"> 
-	  {foreach from=$ppppp_array_sizes2 item=ppppp_row_sizes2}	
-          <option value="{$ppppp_row_sizes2.Id}"{if $ppppp_row_sizes2.Id==$ppppp_sizes2_id} selected{/if}>{$ppppp_row_sizes2.Size}</option>
+    <form name="ppppp_size" action="{$ppppp_sizes_action}" method="get">
+        <select name="size" onChange="pppppUpdateMat()"> 
+	  {foreach from=$ppppp_array_sizes item=ppppp_row_sizes}	
+          <option value="{$ppppp_row_sizes.Id}"{if $ppppp_row_sizes.Id==$ppppp_sizes_id} selected{/if}>{$ppppp_row_sizes.Size}</option>
 	  {/foreach}
         </select>
     </form>
@@ -299,7 +285,7 @@ function fillInPromoText(){
     <td class="label">{\'Select first option\'|@translate}</td>
     <td>
     <form name="ppppp_option1" method="post" onSubmit="javascript:pppppChangeOption1()">
-        <select name="option1" onChange="pppppUpdateUrl()"> 
+        <select name="option1" onChange="pppppUpdateOpt()"> 
 	  {foreach from=$ppppp_array_option1 item=ppppp_row_option1}	
           <option value="{$ppppp_row_option1.Id}"{if $ppppp_row_option1.Id==$ppppp_option1_id} selected{/if}>{$ppppp_row_option1.SupportOption1}</option>
 	  {/foreach}
@@ -319,7 +305,6 @@ function fillInPromoText(){
     </form>
     </td>
  </tr>
- {/if} 
  <tr>
     <td class="label">{\'Price\'|@translate}</td>
     <td>
@@ -337,10 +322,10 @@ function fillInPromoText(){
     </td>
  </tr>
  <tr>
-    <td class="label">{\'Promo Code\'|@translate}</td>
+    <td class="label">{\'Promo code\'|@translate}</td>
     <td>
-    <form name="ppppp_promocode_form" onsubmit="pppppPriceCompute()">
-        <input type="text" size=20 name="promocode" value="{$ppppp_promocode|@translate}" oninput="pppppPriceCompute()" onchange="fillInPromoText()"><br/>
+    <form name="ppppp_promocode_form">
+        <input type="text" size=20 name="promocode" value="{$ppppp_promocode|@translate}" oninput="pppppPriceCompute()" onblur="pppppUpdateOpt()"><br/>
     </form>
     </td>
  </tr>
@@ -381,12 +366,12 @@ function fillInPromoText(){
 </tr>
 {/if}
 <tr>
-   <td colspan=2>
-        Une question ? Contactez le support : <a href="mailto:online.shop@daedalum.org" target="_blank">online.shop@daedalum.org</a></br>
+   <td colspan=2 align=center>
+        {\'Ask support\'|@translate} <a href="mailto:online.shop@daedalum.org" target="_blank">online.shop@daedalum.org</a></br>
    </td>
 </tr>
 <tr>
-   <td colspan=2>
+   <td colspan=2 align=center>
         <form>
         <a href="https://www.paypal.com/us/webapps/mpp/paypal-safety-and-security" target="_blank"><img src="{PPPPP_PATH}include/payment-logos.png" height=48 onLoad="pppppPriceCompute()"></a></br>
         <input type="hidden" onLoad="pppppPriceCompute()">
@@ -394,7 +379,7 @@ function fillInPromoText(){
     </td>
 </tr>
 <tr>
-   <td colspan=2>
+   <td colspan=2  align=center>
         <a href="https://photos.daedalum.org/index.php?/page/daedalum_online_shop_terms_conditions" target="_blank">{\'Please click here for terms & conditions\'|@translate}</a>
    </td>
 </tr>
@@ -455,27 +440,13 @@ function ppppp_picture_handler($content,$current_picture)
 
   $template->set_prefilter('picture', 'ppppp_append_form');
   load_language('plugin.lang', PPPPP_PATH);
-
-
     
-//  $queryFilterSize='WHERE 1';
-        
-//  $query='SELECT * FROM '.PPPPP_SIZE_TABLE.' '.$queryFilterSize.' '.@$conf['PayPalShoppingCart_sizes_order_by'].';';
-        
-//  $result = pwg_query($query);
-    
-//  while($row = pwg_db_fetch_assoc($result))
+//  $query_promocode='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.' '.@$conf['PayPalShoppingCart_promocode_order_by'].';';
+//  $result_promocode = pwg_query($query_promocode);
+//  while($row_promocode = pwg_db_fetch_assoc($result_promocode))
 //  {
-//    $template->append('ppppp_array_size',$row);
+//    $template->append('ppppp_array_promocode',$row_promocode);
 //  }
-
-    
-  $query_promocode='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.' '.@$conf['PayPalShoppingCart_promocode_order_by'].';';
-  $result_promocode = pwg_query($query_promocode);
-  while($row_promocode = pwg_db_fetch_assoc($result_promocode))
-  {
-    $template->append('ppppp_array_promocode',$row_promocode);
-  }
   
   
   $array_currency=array();
@@ -492,43 +463,19 @@ function ppppp_picture_handler($content,$current_picture)
     }
     $country_count=$country_count+1;  
   }
-  
-    
-  $query_support='SELECT DISTINCT T2.Id AS Id, T2.SupportName, T3.OptionName AS SupportOption1, T4.OptionName AS SupportOption2'.
-        ' FROM '.PPPPP_PRICE_TABLE.' T1'.
-        ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T2 ON T1.Support = T2.Id'.
-        ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T2.SupportOption1 = T3.Id'.
-        ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T4 ON T2.SupportOption2 = T4.Id'.
-        ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
-        ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T6 ON T1.Size=T6.Id'.
-        ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T7 ON T6.Ratio=T7.Id'.
-        ' WHERE T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
-        ' AND T7.RatioValue='.$IMG_ratio.
-        ' AND T6.Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T6.Units="cm", 2.54, IF(T6.Units="ft", 1/12, 1))'.
-        ' ORDER BY T2.SupportName, SupportOption1, SupportOption2 ;';
-  $result_support = pwg_query($query_support);
-  $support_count=0;
-  while($row_support = pwg_db_fetch_assoc($result_support))
-  {
-    $template->append('ppppp_array_support',$row_support);
-    if($support_count==0){
-        $first_row_support_index=$row_support['Id'];
-    }
-    $support_count=$support_count+1;
-  }
     
   $query_material='SELECT DISTINCT T3.Id as Id, T3.Material'.
         ' FROM '.PPPPP_PRICE_TABLE.' T1'.
         ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T2 ON T1.Support = T2.Id'.
-        ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T3 ON T2.SupportName = T3.Material'.
+        ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T3 ON T2.SupportMaterial = T3.Id'.
         ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
         ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T6 ON T1.Size=T6.Id'.
         ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T7 ON T6.Ratio=T7.Id'.
         ' WHERE T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
         ' AND T7.RatioValue='.$IMG_ratio.
         ' AND T6.Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T6.Units="cm", 2.54, IF(T6.Units="ft", 1/12, 1))'.
-        ' ORDER BY T2.SupportName ;';
-  //echo '<pre>'; print_r($query_material); echo '</pre>';
+        ' ORDER BY T3.Material ;';
+ // echo '<pre>'; print_r($query_material); echo '</pre>';
   $result_material = pwg_query($query_material);
   $material_count=0;
   while($row_material = pwg_db_fetch_assoc($result_material))
@@ -539,38 +486,6 @@ function ppppp_picture_handler($content,$current_picture)
     }
     $material_count=$material_count+1;
   }
-
-  if($support_count>0){
-    $support_found=true;
-    if(isset($_GET['Support']))
-       {
-         $support_Id=$_GET['Support'];
-       } 
-    else
-       {
-         $support_Id=$first_row_support_index;
-       }
-     $query_sizes='SELECT DISTINCT T2.SizeName AS Size, T3.RatioValue, T2.Height AS Height, T2.Length, T2.Units, T1.Price, T1.Shipping'.
-             ' FROM '.PPPPP_PRICE_TABLE.' T1'.
-             ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
-             ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T3 ON T2.Ratio=T3.Id'.
-             ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T4 ON T1.Provider = T4.Provider'.
-             ' WHERE T3.RatioValue='.$IMG_ratio.
-             ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
-             ' AND T4.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
-             ' AND T1.Support="'.$support_Id."\"".
-             ' ORDER BY Size, Height;';    
-     $result_sizes = pwg_query($query_sizes);
-
-     while($row_sizes = pwg_db_fetch_assoc($result_sizes ))
-     {
-       $template->append('ppppp_array_sizes',$row_sizes );
-    }
- }
- else{
-    $support_found=false;
-    $support_Id=0;
- }
   
  if($material_count>0){
     $material_found=true;
@@ -582,11 +497,11 @@ function ppppp_picture_handler($content,$current_picture)
        {
          $material_Id=$first_row_material_index;
        }
-     $query_sizes2='SELECT DISTINCT T2.Id as Id, T2.SizeName AS Size, T3.RatioValue, T2.Height AS Height, T2.Length AS Length, T2.Units'.
+     $query_sizes='SELECT DISTINCT T2.Id AS Id, T2.SizeName AS Size, T3.RatioValue, T2.Height AS Height, T2.Length AS Length, T2.Units'.
              ' FROM '.PPPPP_PRICE_TABLE.' T1'.
              ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
              ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id'.
-             ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T7 ON T6.SupportName = T7.Material'.
+             ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T7 ON T6.SupportMaterial = T7.Id'.
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T3 ON T2.Ratio=T3.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T4 ON T1.Provider = T4.Provider'.
              ' WHERE T3.RatioValue='.$IMG_ratio.
@@ -594,40 +509,40 @@ function ppppp_picture_handler($content,$current_picture)
              ' AND T4.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
              ' ORDER BY Size, Height;';
-  //    echo '<pre>'; print_r($query_sizes2); echo '</pre>';
-      $result_sizes2 = pwg_query($query_sizes2);
-      $sizes2_count=0;
-     while($row_sizes2 = pwg_db_fetch_assoc($result_sizes2 ))
+  //    echo '<pre>'; print_r($query_sizes); echo '</pre>';
+      $result_sizes = pwg_query($query_sizes);
+      $sizes_count=0;
+     while($row_sizes = pwg_db_fetch_assoc($result_sizes ))
      {
-       $template->append('ppppp_array_sizes2',$row_sizes2 );
-       if($sizes2_count==0){
-          $first_row_sizes2_index=$row_sizes2['Id'];
+       $template->append('ppppp_array_sizes',$row_sizes );
+       if($sizes_count==0){
+          $first_row_sizes_index=$row_sizes['Id'];
        }
-       $sizes2_count=$sizes2_count+1;       
+       $sizes_count=$sizes_count+1;       
     }
 }
  else{
     $material_found=false;
     $material_Id=0;
-    $sizes2_count=0;
+    $sizes_count=0;
 }
+   echo '<pre>'; print_r($material_found); echo '</pre>';
  
- 
- if($sizes2_count>0){
-    $sizes2_found=true;
-    if(isset($_GET['Size2']))
+ if($sizes_count>0){
+    $sizes_found=true;
+    if(isset($_GET['Size']))
        {
-         $sizes2_Id=$_GET['Size2'];
+         $sizes_Id=$_GET['Size'];
        } 
     else
        {
-         $sizes2_Id=$first_row_sizes2_index;
+         $sizes_Id=$first_row_sizes_index;
        }
      $query_option1='SELECT DISTINCT T3.Id AS Id, T3.OptionName AS SupportOption1, T4.RatioValue, T2.Height AS Height, T2.Length AS Length, T2.Units, T1.Price, T1.Shipping'.
              ' FROM '.PPPPP_PRICE_TABLE.' T1'.
              ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
              ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id'.
-             ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T7 ON T6.SupportName = T7.Material'.
+             ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T7 ON T6.SupportMaterial = T7.Id'.
              ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T6.SupportOption1 = T3.Id'.
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio=T4.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
@@ -635,7 +550,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
              ' AND T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
-             ' AND T2.Id="'.$sizes2_Id."\"".
+             ' AND T2.Id="'.$sizes_Id."\"".
              ' ORDER BY T3.OptionName;';
  //     echo '<pre>'; print_r($query_option1); echo '</pre>';
       $result_option1 = pwg_query($query_option1);
@@ -651,8 +566,8 @@ function ppppp_picture_handler($content,$current_picture)
      }
  }
  else{
-    $sizes2_found=false;
-    $sizes2_Id=0;
+    $sizes_found=false;
+    $sizes_Id=0;
     $option1_count=0;   
  }
 
@@ -670,7 +585,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' FROM '.PPPPP_PRICE_TABLE.' T1'.
              ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
              ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id'.
-             ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T7 ON T6.SupportName = T7.Material'.
+             ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T7 ON T6.SupportMaterial = T7.Id'.
              ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T6.SupportOption1 = T3.Id'.
              ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T8 ON T6.SupportOption2 = T8.Id'.
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio=T4.Id'.
@@ -679,7 +594,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
              ' AND T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
-             ' AND T2.Id="'.$sizes2_Id."\"".
+             ' AND T2.Id="'.$sizes_Id."\"".
              ' AND T3.Id="'.$option1_Id."\"".
              ' ORDER BY T8.OptionName';
  //    echo '<pre>'; print_r($query_option2); echo '</pre>';
@@ -698,9 +613,31 @@ function ppppp_picture_handler($content,$current_picture)
  if(isset($_GET['PromoCode']))
  {
      $ppppp_promocode=$_GET['PromoCode'];
+     
+    $query_promocode='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.' WHERE code= "'.$_GET['PromoCode'].'";';
+     echo '<pre>'; print_r($query_promocode); echo '</pre>';
+    $result_promocode = pwg_query($query_promocode);
+    while($row_promocode = pwg_db_fetch_assoc($result_promocode))
+    {
+      $template->append('ppppp_array_promocode',$row_promocode);
+    }
  }
  else{
      $ppppp_promocode='Insert promo code';
+      $array_no_promo = array(
+      'Id'=>'1',
+      'code'=>'Insert promo code',
+      'reduc_abs'=>'0',
+      'reduc_rel'=>'0',
+      'reduc_ship'=>'0',
+      );
+
+      $template->assign(
+      array(
+        'ppppp_array_promocode' => [$array_no_promo],
+        )
+      );
+
  }
 
  $country_code=$first_row_country_index;
@@ -717,14 +654,14 @@ function ppppp_picture_handler($content,$current_picture)
     
   $template->assign(
     array(
-      'ppppp_support_found' => $support_found,
+//      'ppppp_support_found' => $support_found,
       'ppppp_material_found' => $material_found,
-      'ppppp_sizes2_found' => $sizes2_found,
+      'ppppp_sizes_found' => $sizes_found,
       'ppppp_option1_found' => $option1_found,
       'ppppp_promocode' => $ppppp_promocode,
-      'ppppp_support_id' => $support_Id,
+//      'ppppp_support_id' => $support_Id,
       'ppppp_material_id' => $material_Id,
-      'ppppp_sizes2_id' => $sizes2_Id,
+      'ppppp_sizes_id' => $sizes_Id,
       'ppppp_option1_id' => $option1_Id,
       'ppppp_country_code' => $country_code,
       'ppppp_fixed_shipping' => $conf['PayPalShoppingCart']['fixed_shipping'],

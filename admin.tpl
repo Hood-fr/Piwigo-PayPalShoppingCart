@@ -68,7 +68,7 @@ jQuery(document).ready(function() {
 {'Name'|@translate} <input type=text name=CountryName>
 {'Country code'|@translate} <input type=text name=CountryCode>
 {'Currency'|@translate}
-<select name=Currency>
+<select name=Currency onChange="UpdateProviderList()">
 {foreach from=$ppppp_array_currency item=currency_label key=currency_code}
 <option value="{$currency_code}">{$currency_label} ({$currency_code})</option>
 {/foreach}
@@ -128,6 +128,7 @@ jQuery(document).ready(function() {
 {foreach from=$ppppp_array_currency item=currency_label key=currency_code}
 <option value="{$currency_code}">{$currency_label} ({$currency_code})</option>
 {/foreach}
+</select>
 <br>
 <br>
 <input type=submit value="{'Update data'|@translate}">
@@ -188,20 +189,24 @@ jQuery(document).ready(function() {
 <fieldset>
 <legend>{'Append photo support'|@translate}</legend>
 <br>
-{'Support'|@translate} <input type=text name=support>
+{'Support'|@translate}
+<select name="support" >
+{foreach from=$ppppp_array_materials item=ppppp_row_materials}
+<option value="{$ppppp_row_materials.Id}">{$ppppp_row_materials.Material|@translate}</option>
+{/foreach}
+</select>
 {'Option'|@translate} #1 
 <select name="option1" >
-{foreach from=$ppppp_array_supportoption item=ppppp_row_supportoption}
-<option value="{$ppppp_row_supportoption.Id}">{$ppppp_row_supportoption.OptionName|@translate}</option>
+{foreach from=$ppppp_array_support_options item=ppppp_row_support_options}
+<option value="{$ppppp_row_support_options.Id}">{$ppppp_row_support_options.OptionName|@translate}</option>
 {/foreach}
 </select>
 {'Option'|@translate} #2
 <select name="option2" >
-{foreach from=$ppppp_array_supportoption item=ppppp_row_supportoption}
-<option value="{$ppppp_row_supportoption.Id}">{$ppppp_row_supportoption.OptionName|@translate}</option>
+{foreach from=$ppppp_array_support_options item=ppppp_row_support_options}
+<option value="{$ppppp_row_support_options.Id}">{$ppppp_row_support_options.OptionName|@translate}</option>
 {/foreach}
 </select>
-{'Factor'|@translate} <input type=text name=factor>
 <br>
 <br>
 <input type=submit value="{'Append data'|@translate}">
@@ -213,15 +218,13 @@ jQuery(document).ready(function() {
 <th>{'Support'|@translate}</th>
 <th>{'Option'|@translate} #1</th>
 <th>{'Option'|@translate} #2</th>
-<th>{'Factor'|@translate}</th>
 <th>{'Action'|@translate}</th>
 </tr>
 {foreach from=$ppppp_array_support item=ppppp_row_support name=ppppp_row_support_loop}
 <tr class="{if $smarty.foreach.ppppp_row_support_loop.index is odd}row1{else}row2{/if}">
-<td align="center">{$ppppp_row_support.SupportName}</td>
+<td align="center">{$ppppp_row_support.SupportMaterial}</td>
 <td align="center">{$ppppp_row_support.SupportOption1}</td>
 <td align="center">{$ppppp_row_support.SupportOption2}</td>
-<td align="center">{$ppppp_row_support.factor}</td>
 <td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_support.Id}'>
@@ -235,66 +238,7 @@ jQuery(document).ready(function() {
 
 {elseif $tabsheet_selected=='size'}
 <h3>{'Size'|@translate}</h3>
-<form method=post>
-<fieldset>
-<legend>{'Append photo size'|@translate}</legend>
-<br>
-    <table>
-        <tr>
-            <td>{'Size'|@translate} <input type=text name=size></td>
-            <td>{'Price factor'|@translate} <input type=text name=price></td>
-            <td>{'GF'|@translate} <br>non<input type=radio name=GF value=0 checked="checked"><br>oui
-    <input type=radio name=GF value=1></td>
-            <td>{'SQ'|@translate} <br>non <input type=radio name=SQ value=0 checked="checked"><br>oui
-    <input type=radio name=SQ value=1></td>
-           <td>{'Pano52'|@translate} <br>non<input type=radio name=Pano52 value=0 checked="checked"><br>oui
-    <input type=radio name=Pano52 value=1></td>
-            <td>{'Pano31'|@translate} <br>non <input type=radio name=Pano31 value=0 checked="checked"><br>oui
-    <input type=radio name=Pano31 value=1></td>
-            <td>{'Pano41'|@translate} <br>non <input type=radio name=Pano41 value=0 checked="checked"><br>oui
-    <input type=radio name=Pano41 value=1></td>
-        </tr>
-    </table>
-<br>
-<br>
-<input type=submit value="{'Append data'|@translate}">
-</fieldset>
-</form>
-<fieldset>
-<table class=table2>
-<tr class=throw>
-<th>{'Size'|@translate}</th>
-<th>{'Price factor'|@translate}</th>
-<th>{'GF'|@translate}</th>
-<th>{'SQ'|@translate}</th>
-<th>{'Pano52'|@translate}</th>
-<th>{'Pano31'|@translate}</th>
-<th>{'Pano41'|@translate}</th>
-    <th>{'Action'|@translate}</th>
-</tr>
-{foreach from=$ppppp_array_size item=ppppp_row_size name=ppppp_row_size_loop}
-<tr class="{if $smarty.foreach.ppppp_row_size_loop.index is odd}row1{else}row2{/if}">
-<td align="center">{$ppppp_row_size.size}</td>
-<td align="center">{$ppppp_row_size.price}</td>
-<td align="center">{$ppppp_row_size.GF}</td>
-<td align="center">{$ppppp_row_size.SQ}</td>
-<td align="center">{$ppppp_row_size.Pano52}</td>
-<td align="center">{$ppppp_row_size.Pano31}</td>
-<td align="center">{$ppppp_row_size.Pano41}</td>
-    <td>
-<form method=post>
-<input type=hidden name=delete value='{$ppppp_row_size.Id}'>
-<input type=submit value="{'Delete data'|@translate}">
-</form>
-</td>
-</tr>
-{/foreach}
-</table>
-</fieldset>
-
-{elseif $tabsheet_selected=='sizeNew'}
-<h3>{'Sizes'|@translate}</h3>
-<form method=post name=NewSizeEdit>
+<form method=post name=SizeEdit>
 <fieldset>
 <legend>{'Append photo size'|@translate}</legend>
 <br>
@@ -363,7 +307,7 @@ jQuery(document).ready(function() {
             <td align="center">{'Support'|@translate}<br>
                 <select name="support" >
                 {foreach from=$ppppp_array_support item=ppppp_row_support}
-                <option value="{$ppppp_row_support.Id}">{$ppppp_row_support.SupportName|@translate}{if $ppppp_row_support.SupportOption1!='None'}  {$ppppp_row_support.SupportOption1|@translate}{/if}{if $ppppp_row_support.SupportOption2!='None'} {$ppppp_row_support.SupportOption2|@translate}{/if}</option>
+                <option value="{$ppppp_row_support.Id}">{$ppppp_row_support.SupportMaterial|@translate}{if $ppppp_row_support.SupportOption1!='None'}  {$ppppp_row_support.SupportOption1|@translate}{/if}{if $ppppp_row_support.SupportOption2!='None'} {$ppppp_row_support.SupportOption2|@translate}{/if}</option>
                 {/foreach}
                 </select></td>
             <td align="center">{'Size'|@translate}<br>
@@ -376,12 +320,11 @@ jQuery(document).ready(function() {
             <td align="center">{'Provider'|@translate}<br>
                  <select name="provider" >
                 {foreach from=$ppppp_array_provider item=ppppp_row_provider}
-                <option value="{$ppppp_row_provider.Id}">{$ppppp_row_provider.Name}</option>
+                <option value="{$ppppp_row_provider.Id}">{$ppppp_row_provider.Name} ({$ppppp_row_provider.Currency})</option>
                 {/foreach}
                 </select></td>
-           <td align="center">{'Price'|@translate}<br> <input type=text name=price size="6"></td>
+            <td align="center">{'Price'|@translate}<br> <input type=text name=price size="6"></td>
             <td align="center">{'Shipping fees'|@translate}<br> <input type=text name=shipping size="6"></td>
-            <td align="center">{'Currency'|@translate}<br> <input type=text name=currency size="3"></td>
         </tr>
     </table>
 <br>
@@ -409,7 +352,7 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_price item=ppppp_row_price name=ppppp_row_price_loop}
 <tr class="{if $smarty.foreach.ppppp_row_price_loop.index is odd}row1{else}row2{/if}">
-<td align="center">{$ppppp_row_price.Support}</td>
+<td align="center">{$ppppp_row_price.SupportMaterial}</td>
 <td align="center">{$ppppp_row_price.SupportOption1}</td>
 <td align="center">{$ppppp_row_price.SupportOption2}</td>
 <td align="center">{$ppppp_row_price.Size}</td>
@@ -434,7 +377,7 @@ jQuery(document).ready(function() {
 </fieldset>
 
 {elseif $tabsheet_selected=='code'}
-<h3>{'PromoCode'|@translate}</h3>
+<h3>{'Promo code'|@translate}</h3>
 <form method=post>
 <fieldset>
 <legend>{'Append promo code'|@translate}</legend>
@@ -515,7 +458,7 @@ jQuery(document).ready(function() {
 </table>
 </fieldset>
 
-{elseif $tabsheet_selected=='supportoption'}
+{elseif $tabsheet_selected=='support_option'}
 <h3>{'Support options'|@translate}</h3>
 <form method=post>
 <fieldset>
@@ -536,12 +479,47 @@ jQuery(document).ready(function() {
 <tr class=throw>
 <th>{'Name'|@translate}</th>
 </tr>
-{foreach from=$ppppp_array_supportoption item=ppppp_row_supportoption name=ppppp_row_supportoption_loop}
-<tr class="{if $smarty.foreach.ppppp_row_supportoption_loop.index is odd}row1{else}row2{/if}">
-<td align="center">{$ppppp_row_supportoption.OptionName}</td>
+{foreach from=$ppppp_array_support_options item=ppppp_row_support_options name=ppppp_row_support_options_loop}
+<tr class="{if $smarty.foreach.ppppp_row_support_options_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_support_options.OptionName}</td>
     <td>
 <form method=post>
-<input type=hidden name=delete value='{$ppppp_row_supportoption.Id}'>
+<input type=hidden name=delete value='{$ppppp_row_support_options.Id}'>
+<input type=submit value="{'Delete data'|@translate}">
+</form>
+</td>
+</tr>
+{/foreach}
+</table>
+</fieldset>
+
+{elseif $tabsheet_selected=='material'}
+<h3>{'Materials'|@translate}</h3>
+<form method=post>
+<fieldset>
+<legend>{'Append material'|@translate}</legend>
+<br>
+    <table>
+        <tr>
+            <td>{'Name'|@translate} <input type=text name=Material></td>
+        </tr>
+    </table>
+<br>
+<br>
+<input type=submit value="{'Append data'|@translate}">
+</fieldset>
+</form>
+<fieldset>
+<table class=table2>
+<tr class=throw>
+<th>{'Name'|@translate}</th>
+</tr>
+{foreach from=$ppppp_array_materials item=ppppp_row_materials name=ppppp_row_materials_loop}
+<tr class="{if $smarty.foreach.ppppp_row_materials_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_materials.Material}</td>
+    <td>
+<form method=post>
+<input type=hidden name=delete value='{$ppppp_row_materials.Id}'>
 <input type=submit value="{'Delete data'|@translate}">
 </form>
 </td>

@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_support (
     pwg_query($query);
 
         $query = "
-CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_supportoptions (
+CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_support_options (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
   OptionName varchar(40) NOT NULL,
   PRIMARY KEY (Id)
@@ -69,22 +69,15 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_supportoptions (
 ;";
     pwg_query($query);
     
-    $query = "
-CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_size (
-  id tinyint(4) NOT NULL AUTO_INCREMENT,
-  size varchar(40) NOT NULL,
-  price float NOT NULL,
-  GF tinyint(4) NOT NULL,
-  SQ tinyint(4) NOT NULL,
-  Pano52 tinyint(4) NOT NULL,
-  Pano31 tinyint(4) NOT NULL,
-  Pano41 tinyint(4) NOT NULL,
-  PRIMARY KEY (id),
-  UNIQUE KEY size (size)
+        $query = "
+CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_material (
+  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  OptionName varchar(40) NOT NULL,
+  PRIMARY KEY (Id)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 ;";
     pwg_query($query);
-
+    
         $query = "
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_sizes (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
@@ -114,43 +107,91 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_promocode (
 
     $query = '
 SELECT COUNT(*)
-  FROM '.$prefixeTable.'ppppp_support
+  FROM '.$prefixeTable.'ppppp_countries
 ;';
     list($counter_support) = pwg_db_fetch_row(pwg_query($query));
 
     if (0 == $counter_support)
     {
       single_insert(
-        $prefixeTable."ppppp_support",
+        $prefixeTable."ppppp_countries",
         array(
-          'support' => 'Poster',
-          'factor' => 2,
+          'CountryName' => 'France',
+          'CountryCode' => 'FRA',
+          'Currency' => 'EUR',
+          'Provider' => 1,
           )
         );
     }
 
     $query = '
 SELECT COUNT(*)
-  FROM '.$prefixeTable.'ppppp_size
+  FROM '.$prefixeTable.'ppppp_providers
 ;';
-    list($counter) = pwg_db_fetch_row(pwg_query($query));
+    list($counter_support) = pwg_db_fetch_row(pwg_query($query));
 
-    if (0 == $counter)
+    if (0 == $counter_support)
     {
       single_insert(
-        $prefixeTable."ppppp_size",
+        $prefixeTable."ppppp_providers",
         array(
-          'size' => 'Classic',
-          'price' => 40,
-          'GF' => 0,
-          'SQ' => 0,
-          'Pano52' => 0,
-          'Pano31' => 0,
-          'Pano41' => 0,
+          'Name' => 'ProviderName',
+          'URL' => 'https://www.provider.com',
+          'Currency' => 'EUR',
+          )
+        );
+    }    
+    
+    $query = '
+SELECT COUNT(*)
+  FROM '.$prefixeTable.'ppppp_material
+;';
+    list($counter_support) = pwg_db_fetch_row(pwg_query($query));
+
+    if (0 == $counter_support)
+    {
+      single_insert(
+        $prefixeTable."ppppp_material",
+        array(
+          'Material' => 'Poster',
           )
         );
     }
 
+    $query = '
+SELECT COUNT(*)
+  FROM '.$prefixeTable.'ppppp_material
+;';
+    list($counter_support) = pwg_db_fetch_row(pwg_query($query));
+
+    if (0 == $counter_support)
+    {
+      single_insert(
+        $prefixeTable."ppppp_material",
+        array(
+          'Material' => 'Poster',
+          )
+        );
+    }
+
+    
+    $query = '
+SELECT COUNT(*)
+  FROM '.$prefixeTable.'ppppp_ratio
+;';
+    list($counter_support) = pwg_db_fetch_row(pwg_query($query));
+
+    if (0 == $counter_support)
+    {
+      single_insert(
+        $prefixeTable."ppppp_ratio",
+        array(
+          'RatioValue' => '1.5',
+          'RatioName' => '3:2',
+          )
+        );
+    }
+    
     $query = '
 SELECT COUNT(*)
   FROM '.$prefixeTable.'ppppp_promocode
@@ -244,7 +285,7 @@ SELECT
   {
     global $prefixeTable;
  
-    $query = "DROP TABLE ".$prefixeTable."ppppp_size;";
+    $query = "DROP TABLE ".$prefixeTable."ppppp_sizes;";
     pwg_query($query);
 
     $query = "DROP TABLE ".$prefixeTable."ppppp_support;";

@@ -36,33 +36,33 @@ $tabsheet->add('currency',
 $tabsheet->add('settings',
                l10n('Settings'),
                $my_base_url.'&amp;tab=settings');
-$tabsheet->add('country',
-               l10n('Countries'),
-               $my_base_url.'&amp;tab=country');
+$tabsheet->add('albums', l10n('Albums'), $my_base_url.'&amp;tab=albums');
 $tabsheet->add('provider',
                l10n('Providers'),
                $my_base_url.'&amp;tab=provider');
-$tabsheet->add('albums', l10n('Albums'), $my_base_url.'&amp;tab=albums');
+$tabsheet->add('country',
+               l10n('Countries'),
+               $my_base_url.'&amp;tab=country');
+$tabsheet->add('material',
+               l10n('Materials'),
+               $my_base_url.'&amp;tab=material');
+$tabsheet->add('support_option',
+               l10n('Support Options'),
+               $my_base_url.'&amp;tab=support_option');
 $tabsheet->add('support',
                l10n('Supports'),
                $my_base_url.'&amp;tab=support');
-$tabsheet->add('supportoption',
-               l10n('Support Options'),
-               $my_base_url.'&amp;tab=supportoption');
 $tabsheet->add('ratio',
                l10n('Ratios'),
                $my_base_url.'&amp;tab=ratio');
 $tabsheet->add('size',
                l10n('Sizes'),
                $my_base_url.'&amp;tab=size');
-$tabsheet->add('sizeNew',
-               l10n('Sizes NEW'),
-               $my_base_url.'&amp;tab=sizeNew');
 $tabsheet->add('price',
                l10n('Prices'),
                $my_base_url.'&amp;tab=price');
 $tabsheet->add('code',
-               l10n('PromoCodes'),
+               l10n('Promo codes'),
                $my_base_url.'&amp;tab=code');
 $tabsheet->add('shipping',
                l10n('Shipping cost'),
@@ -252,13 +252,23 @@ SELECT id,name,uppercats,global_rank
       $template->append('ppppp_array_country',$row);
     }
     
-    $query='SELECT * FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
-    $result = pwg_query($query);
-    while($row = pwg_db_fetch_assoc($result))
-    {
-      $template->append('ppppp_array_provider',$row);
+
+    if(isset($_POST['Currency'])){
+        $query='SELECT T1.Name FROM '.PPPPP_PROVIDER_TABLE.' T1 WHERE T1.Currency="'.$_POST['Currency'].'\" ORDER BY T1.Name;';
+        $result = pwg_query($query);
+        while($row = pwg_db_fetch_assoc($result))
+        {
+          $template->append('ppppp_array_provider',$row);
+        }
     }
-    
+    else{
+        $query='SELECT * FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
+        $result = pwg_query($query);
+        while($row = pwg_db_fetch_assoc($result))
+        {
+          $template->append('ppppp_array_provider',$row);
+        }        
+    }
     break;     
 
     case 'provider':
@@ -336,15 +346,14 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['support']) and isset($_POST['factor']))
+    else if (isset($_POST['support']))
     {
       single_insert(
         PPPPP_SUPPORT_TABLE,
         array(
-          'SupportName' => pwg_db_real_escape_string($_POST['support']),
+          'SupportMaterial' => pwg_db_real_escape_string($_POST['support']),
           'SupportOption1' => pwg_db_real_escape_string($_POST['option1']),
           'SupportOption2' => pwg_db_real_escape_string($_POST['option2']),
-          'factor' => pwg_db_real_escape_string($_POST['factor']),
           )
         );
 
@@ -355,13 +364,23 @@ SELECT id,name,uppercats,global_rank
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
-      $template->append('ppppp_array_supportoption',$row);
+      $template->append('ppppp_array_support_options',$row);
     }
-    $query='SELECT DISTINCT T1.Id AS Id, T1.SupportName, T2.OptionName AS SupportOption1, T3.OptionName AS SupportOption2, T1.factor'.
+
+    $query='SELECT * FROM '.PPPPP_MATERIAL_TABLE.';';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_materials',$row);
+    }
+
+    
+    $query='SELECT DISTINCT T1.Id AS Id, T4.Material AS SupportMaterial, T2.OptionName AS SupportOption1, T3.OptionName AS SupportOption2'.
             ' FROM '.PPPPP_SUPPORT_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T4 ON T1.SupportMaterial = T4.Id '.
             ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption1 = T2.Id '.
             ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T1.SupportOption2 = T3.Id '.
-            ' ORDER BY T1.SupportName, SupportOption1, SupportOption2 ;';
+            ' ORDER BY T1.SupportMaterial, SupportOption1, SupportOption2 ;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
@@ -370,7 +389,7 @@ SELECT id,name,uppercats,global_rank
     
     break;
 
-     case 'supportoption':
+     case 'support_option':
     
     if (isset($_POST['delete']))
     {
@@ -396,51 +415,44 @@ SELECT id,name,uppercats,global_rank
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
-      $template->append('ppppp_array_supportoption',$row);
+      $template->append('ppppp_array_support_options',$row);
     }
     
     break;
   
-    case 'size':
+     case 'material':
     
     if (isset($_POST['delete']))
     {
       check_input_parameter('delete', $_POST, false, PATTERN_ID);
       
-      pwg_query('DELETE FROM '.PPPPP_SIZE_TABLE.' WHERE id = '.$_POST['delete'].';');
+      pwg_query('DELETE FROM '.PPPPP_MATERIAL_TABLE.' WHERE id = '.$_POST['delete'].';');
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['size']) and isset($_POST['price']))
+    else if (isset($_POST['Material']))
     {
       single_insert(
-        PPPPP_SIZE_TABLE,
+        PPPPP_MATERIAL_TABLE,
         array(
-          'size' => pwg_db_real_escape_string($_POST['size']),
-          'price' => pwg_db_real_escape_string($_POST['price']),
-          'GF' => pwg_db_real_escape_string($_POST['GF']),
-          'SQ' => pwg_db_real_escape_string($_POST['SQ']),
-          'Pano52' => pwg_db_real_escape_string($_POST['Pano52']),
-          'Pano31' => pwg_db_real_escape_string($_POST['Pano31']),
-          'Pano41' => pwg_db_real_escape_string($_POST['Pano41']),
+          'Material' => pwg_db_real_escape_string($_POST['Material']),
             )
         );
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $query='SELECT * FROM '.PPPPP_SIZE_TABLE.';';
+    $query='SELECT * FROM '.PPPPP_MATERIAL_TABLE.';';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
-      $template->append('ppppp_array_size',$row);
+      $template->append('ppppp_array_materials',$row);
     }
     
     break;
   
-    case 'sizeNew':
-        
-        
+    case 'size':
+                
     $array_units = array(
       'cm'=>'cm',
       'in'=>'inches',
@@ -573,7 +585,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['price']) and isset($_POST['shipping']) and isset($_POST['currency']))
+    else if (isset($_POST['price']) and isset($_POST['shipping']) and isset($_POST['minres']))
     {
       single_insert(
         PPPPP_PRICE_TABLE,
@@ -590,11 +602,12 @@ SELECT id,name,uppercats,global_rank
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $query='SELECT DISTINCT T1.Id AS Id, T2.SupportName AS Support, T3.OptionName AS SupportOption1, T4.OptionName AS SupportOption2,'.
+    $query='SELECT DISTINCT T1.Id AS Id, T2.SupportMaterial AS Support, T3.OptionName AS SupportOption1, T4.OptionName AS SupportOption2,'.
             ' T5.SizeName AS Size, T6.RatioName AS Ratio, T5.Height AS Height, T5.Length AS Length, T5.Units AS Units,'.
-            ' T1.MinRes AS MinRes, T8.Name AS Provider, T1.Price, T1.Shipping, T7.Currency AS Currency'.
+            ' T1.MinRes AS MinRes, T8.Name AS Provider, T1.Price, T1.Shipping, T7.Currency AS Currency, T9.Material as SupportMaterial'.
             ' FROM '.PPPPP_PRICE_TABLE.' T1'.
             ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T2 ON T1.Support = T2.Id'.
+            ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T9 ON T2.SupportMaterial = T9.Id'.
             ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T2.SupportOption1 = T3.Id'.
             ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T4 ON T2.SupportOption2 = T4.Id'.
             ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T5 ON T1.Size = T5.Id'.
@@ -619,11 +632,12 @@ SELECT id,name,uppercats,global_rank
       $template->append('ppppp_array_sizes',$row);
     }
 
-    $query='SELECT DISTINCT T1.Id AS Id, T1.SupportName, T2.OptionName AS SupportOption1, T3.OptionName AS SupportOption2, T1.factor'.
+    $query='SELECT DISTINCT T1.Id AS Id, T4.Material AS SupportMaterial, T2.OptionName AS SupportOption1, T3.OptionName AS SupportOption2'.
             ' FROM '.PPPPP_SUPPORT_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T4 ON T1.SupportMaterial = T4.Id '.
             ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption1 = T2.Id '.
             ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T1.SupportOption2 = T3.Id '.
-            ' ORDER BY T1.SupportName, SupportOption1, SupportOption2 ;';
+            ' ORDER BY T1.SupportMaterial, SupportOption1, SupportOption2 ;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {

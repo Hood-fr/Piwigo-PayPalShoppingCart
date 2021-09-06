@@ -65,4 +65,6 @@ $lang['Price factor'] = 'Price Factor';
 $lang['Pano52'] = 'Panorama 5:2';
 $lang['Pano31'] = 'Panorama 3:1';
 $lang['Pano41'] = 'Panorama 4:1';
+$lang['No Support Found'] = 'Sorry, no available support for this picture';
+
 ?>
