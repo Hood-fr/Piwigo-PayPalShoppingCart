@@ -55,8 +55,7 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_support (
   SupportMaterial tinyint(4) NOT NULL,
   SupportOption1 tinyint(4) NOT NULL DEFAULT '1',
   SupportOption2 tinyint(4) NOT NULL DEFAULT '1',
-  PRIMARY KEY (Id),
-  UNIQUE KEY support (support)
+  PRIMARY KEY (Id)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 ;";
     pwg_query($query);

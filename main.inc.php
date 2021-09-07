@@ -89,16 +89,19 @@ function ppppp_append_form($tpl_source, &$smarty)
  function pppppValid(){
   var amount=pppppPriceCompute();
   var size=document.ppppp_size.size;
-  var support_type=document.ppppp_support.support;
+  var material_type=document.ppppp_material.material;
+  var option1=document.ppppp_option1.option1;
+  var option2=document.ppppp_option2.option2;
   var price=document.ppppp_price.price;
   var shipping=document.ppppp_shipping.shipping;
   var ppppp_price=price.value.slice(0,price.value.length-4);
   var ppppp_shipping=shipping.value.slice(0,price.value.length-4);
   var selectedSize=size[size.selectedIndex];
-  var selectedSupport=support_type[support_type.selectedIndex];
+  var selectedMaterial=material_type[material_type.selectedIndex];
   var selectedOption1=option1[option1.selectedIndex];
-  //document.ppppp_add_to_cart.item_name.value="Photo \"{/literal}{$current.TITLE}\", File {$INFO_FILE}, Ref {$COMMENT_IMG}, {\'Size\'|@translate} : {literal} "+selectedSupport.text+ " "+selectedSize.text;
-  document.ppppp_add_to_cart.item_name.value="{/literal}Ref {$COMMENT_IMG}, {\'Size\'|@translate} : {literal} "+selectedSize.text+ " "+selectedSupport.text+" Photo \"{/literal}{$current.TITLE}\", {$INFO_FILE}{literal} ";
+  var selectedOption2=option1[option2.selectedIndex];
+  //document.ppppp_add_to_cart.item_name.value="Photo \"{/literal}{$current.TITLE}\", File {$INFO_FILE}, Ref {$COMMENT_IMG}, {\'Size\'|@translate} : {literal} "+selectedMaterial.text+ " "+selectedSize.text;
+  document.ppppp_add_to_cart.item_name.value="{/literal}Ref:{$COMMENT_IMG}, {literal} "+selectedSize.text+ " "+selectedMaterial.text+ " "+selectedOption1.text+ " "+selectedOption2.text+" Photo \"{/literal}{$current.TITLE}\", {$INFO_FILE}{literal} ";
   document.ppppp_add_to_cart.amount.value=ppppp_price;
   document.ppppp_add_to_cart.handling_cart.value=ppppp_shipping;
   }
