@@ -121,39 +121,6 @@ function pppppPriceCompute(){
     document.ppppp_total_price.total.value=final_total + currency;      
 }
 
-function pppppChangeSupport(){
-    var code=document.ppppp_promocode_form.promocode.value;
-    if(code=="Insert promo code"){
-        var promocode="";
-    }
-    else{
-        var promocode="&PromoCode="+code;
-    }
-    var support_type=document.ppppp_support.support;
-    var support_Id=support_type[support_type.selectedIndex];
-    var current_page = location.href;
-    var new_page = current_page;
-    var m = current_page.indexOf("&PromoCode");    
-    var n = current_page.indexOf("&Support");
-    if(n>0 && m>0)
-        {
-        new_page = current_page.slice(0,m) + promocode + "&Support=" + support_Id.value;
-        }
-    else if(n>0 && m<0)
-        {
-        new_page = current_page.slice(0,n) + promocode + "&Support=" + support_Id.value;
-        }
-    else if(n<0 && m>0)
-        {
-        new_page = current_page.slice(0,m) + promocode + "&Support=" + support_Id.value;
-        }
-    else if(n<0 && m<0)
-        {
-        new_page = current_page + promocode + "&Support=" + support_Id.value;
-        }
-    self.location.href=new_page;
-}
-
 function pppppUpdateOpt(){
     fillInPromoText()
     var code=document.ppppp_promocode_form.promocode.value;
@@ -174,15 +141,40 @@ function pppppUpdateOpt(){
     var pos = current_page.indexOf("&");
     if(pos>0)
         {
-            new_page = current_page.slice(0,pos) + promocode + "&Material=" + material_Id.value + "&size=" + size_Id.value + "&Option1=" + option1_Id.value;
+            new_page = current_page.slice(0,pos) + promocode + "&Material=" + material_Id.value + "&Size=" + size_Id.value + "&Option1=" + option1_Id.value;
         }
     else
         {
-            new_page = current_page + promocode + "&Material=" + material_Id.value + "&size=" + size_Id.value + "&Option1=" + option1_Id.value;
+            new_page = current_page + promocode + "&Material=" + material_Id.value + "&Size=" + size_Id.value + "&Option1=" + option1_Id.value;
         }
 self.location.href=new_page;
 }
 
+function pppppUpdateSize(){
+    var code=document.ppppp_promocode_form.promocode.value;
+    if(code=="Insert promo code"){
+        var promocode="";
+    }
+    else{
+        var promocode="&PromoCode="+code;
+    }
+    var material_type=document.ppppp_material.material;
+    var material_Id=material_type[material_type.selectedIndex];
+    var size_type=document.ppppp_size.size;
+    var size_Id=size_type[size_type.selectedIndex];
+    var current_page = location.href;
+    var new_page = current_page;
+    var pos = current_page.indexOf("&");
+    if(pos>0)
+        {
+            new_page = current_page.slice(0,pos) + promocode + "&Material=" + material_Id.value + "&Size=" + size_Id.value;
+        }
+    else
+        {
+            new_page = current_page + promocode + "&Material=" + material_Id.value + "&Size=" + size_Id.value;
+        }
+self.location.href=new_page;
+}
 
 function pppppUpdateMat(){
     var code=document.ppppp_promocode_form.promocode.value;
@@ -273,7 +265,7 @@ function fillInPromoText(){
     <td class="label">{\'Select size\'|@translate}</td>
     <td>
     <form name="ppppp_size" action="{$ppppp_sizes_action}" method="get">
-        <select name="size" onChange="pppppUpdateMat()"> 
+        <select name="size" onChange="pppppUpdateSize()"> 
 	  {foreach from=$ppppp_array_sizes item=ppppp_row_sizes}	
           <option value="{$ppppp_row_sizes.Id}"{if $ppppp_row_sizes.Id==$ppppp_sizes_id} selected{/if}>{$ppppp_row_sizes.Size}</option>
 	  {/foreach}
@@ -284,7 +276,7 @@ function fillInPromoText(){
   <tr>
     <td class="label">{\'Select first option\'|@translate}</td>
     <td>
-    <form name="ppppp_option1" method="post" onSubmit="javascript:pppppChangeOption1()">
+    <form name="ppppp_option1" action="{$ppppp_option1_action}" method="get">
         <select name="option1" onChange="pppppUpdateOpt()"> 
 	  {foreach from=$ppppp_array_option1 item=ppppp_row_option1}	
           <option value="{$ppppp_row_option1.Id}"{if $ppppp_row_option1.Id==$ppppp_option1_id} selected{/if}>{$ppppp_row_option1.SupportOption1}</option>
