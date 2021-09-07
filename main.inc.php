@@ -518,7 +518,7 @@ function ppppp_picture_handler($content,$current_picture)
     $material_Id=0;
     $sizes_count=0;
 }
-   echo '<pre>'; print_r($material_found); echo '</pre>';
+//   echo '<pre>'; print_r($material_found); echo '</pre>';
  
  if($sizes_count>0){
     $sizes_found=true;
@@ -607,7 +607,7 @@ function ppppp_picture_handler($content,$current_picture)
      $ppppp_promocode=$_GET['PromoCode'];
      
     $query_promocode='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.' WHERE code= "'.$_GET['PromoCode'].'";';
-     echo '<pre>'; print_r($query_promocode); echo '</pre>';
+//     echo '<pre>'; print_r($query_promocode); echo '</pre>';
     $result_promocode = pwg_query($query_promocode);
     while($row_promocode = pwg_db_fetch_assoc($result_promocode))
     {

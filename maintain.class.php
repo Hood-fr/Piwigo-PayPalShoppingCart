@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_countries (
     $query = "
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_prices (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
-  Country varchar(3) NOT NULL,
+  Provider tinyint(4) NOT NULL,
   Size tinyint(4) NOT NULL,
   Support tinyint(4) NOT NULL,
   MinRes float NOT NULL DEFAULT '180',
@@ -52,8 +52,9 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_ratio (
     $query = "
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_support (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
-  support varchar(40) NOT NULL,
-  factor float NOT NULL,
+  SupportMaterial tinyint(4) NOT NULL,
+  SupportOption1 tinyint(4) NOT NULL DEFAULT '1',
+  SupportOption2 tinyint(4) NOT NULL DEFAULT '1',
   PRIMARY KEY (Id),
   UNIQUE KEY support (support)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
@@ -72,7 +73,7 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_support_options (
         $query = "
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_material (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
-  OptionName varchar(40) NOT NULL,
+  Material varchar(40) NOT NULL,
   PRIMARY KEY (Id)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 ;";
@@ -160,20 +161,37 @@ SELECT COUNT(*)
 
     $query = '
 SELECT COUNT(*)
-  FROM '.$prefixeTable.'ppppp_material
+  FROM '.$prefixeTable.'ppppp_support_options
 ;';
     list($counter_support) = pwg_db_fetch_row(pwg_query($query));
 
     if (0 == $counter_support)
     {
       single_insert(
-        $prefixeTable."ppppp_material",
+        $prefixeTable."ppppp_support_options",
         array(
-          'Material' => 'Poster',
+          'OptionName' => 'None',
           )
         );
     }
 
+        $query = '
+SELECT COUNT(*)
+  FROM '.$prefixeTable.'ppppp_support
+;';
+    list($counter_support) = pwg_db_fetch_row(pwg_query($query));
+
+    if (0 == $counter_support)
+    {
+      single_insert(
+        $prefixeTable."ppppp_support",
+        array(
+          'SupportMaterial' => '1',
+          'SupportOption1' => '1',
+          'SupportOption2' => '1',
+          )
+        );
+    }
     
     $query = '
 SELECT COUNT(*)
@@ -292,6 +310,21 @@ SELECT
     pwg_query($query);
 
     $query = "DROP TABLE ".$prefixeTable."ppppp_promocode;";
+    pwg_query($query);
+
+    $query = "DROP TABLE ".$prefixeTable."ppppp_support_options;";
+    pwg_query($query);
+
+    $query = "DROP TABLE ".$prefixeTable."ppppp_countries;";
+    pwg_query($query);
+
+    $query = "DROP TABLE ".$prefixeTable."ppppp_material;";
+    pwg_query($query);
+
+    $query = "DROP TABLE ".$prefixeTable."ppppp_price;";
+    pwg_query($query);
+
+    $query = "DROP TABLE ".$prefixeTable."ppppp_ratio;";
     pwg_query($query);
       
     $result = pwg_query('SHOW TABLES LIKE "'.$prefixeTable.'ppppp_config";');
