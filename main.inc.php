@@ -99,11 +99,11 @@ function ppppp_append_form($tpl_source, &$smarty)
   var selectedSize=size[size.selectedIndex];
   var selectedMaterial=material_type[material_type.selectedIndex];
   var selectedOption1=option1[option1.selectedIndex];
-  var selectedOption2=option1[option2.selectedIndex];
+  var selectedOption2=option2[option2.selectedIndex];
   //document.ppppp_add_to_cart.item_name.value="Photo \"{/literal}{$current.TITLE}\", File {$INFO_FILE}, Ref {$COMMENT_IMG}, {\'Size\'|@translate} : {literal} "+selectedMaterial.text+ " "+selectedSize.text;
   document.ppppp_add_to_cart.item_name.value="{/literal}Ref:{$COMMENT_IMG}, {literal} "+selectedSize.text+ " "+selectedMaterial.text+ " "+selectedOption1.text+ " "+selectedOption2.text+" Photo \"{/literal}{$current.TITLE}\", {$INFO_FILE}{literal} ";
   document.ppppp_add_to_cart.amount.value=ppppp_price;
-  document.ppppp_add_to_cart.handling_cart.value=ppppp_shipping;
+  document.ppppp_add_to_cart.shipping.value=ppppp_shipping;
   }
   
   
@@ -226,6 +226,12 @@ function fillInPromoText(){
     }
 }
 
+function pppppCleanPromo(){
+    if (code==="Insert promo code"){
+        document.ppppp_promocode_form.promocode.value="";
+    }
+}
+
  </script>
  {/literal}
  
@@ -320,7 +326,7 @@ function fillInPromoText(){
     <td class="label">{\'Promo code\'|@translate}</td>
     <td>
     <form name="ppppp_promocode_form">
-        <input type="text" size=20 name="promocode" value="{$ppppp_promocode|@translate}" oninput="pppppPriceCompute()" onblur="pppppUpdateOpt()"><br/>
+        <input type="text" size=20 name="promocode" value="{$ppppp_promocode|@translate}" oninput="pppppPriceCompute()" onblur="pppppUpdateOpt()" onfocus="pppppCleanPromo()"><br/>
     </form>
     </td>
  </tr>
@@ -344,7 +350,8 @@ function fillInPromoText(){
      <input type="hidden" name="item_name">
      <input type="hidden" name="amount" value="{$ppppp_price}">
      <input type="hidden" name="no_shipping" value="2"><!-- shipping address mandatory -->
-     <input type="hidden" name="handling_cart"><!--  value="{$ppppp_fixed_shipping}">--> 
+     <input type="hidden" name="handling_cart" value="0">
+     <input type="hidden" name="shipping" value="{$ppppp_shipping}">
      <input type="hidden" name="currency_code" value="{$ppppp_currency}">
      <input type="submit" value="{\'Add to cart\'|@translate}">
      </form>
@@ -358,6 +365,9 @@ function fillInPromoText(){
      <input type=submit value="{\'View Shopping Cart\'|@translate}">
     </form>
    </td>
+   
+   <!-- API PayPal : https://developer.paypal.com/docs/paypal-payments-standard/integration-guide/Appx-websitestandard-htmlvariables/ -->
+   
 </tr>
 {/if}
 <tr>
@@ -421,12 +431,12 @@ function ppppp_picture_handler($content,$current_picture)
       
   $IMG_name=$current_picture['comment'];
   
-  $min_res_tolerance=1.05;
-  $IMG_ratio=round(floatval($current_picture['width'])/floatval($current_picture['height']),1);
+  $min_res_tolerance=1.025;
+
   $src_size=$current_picture['src_image']->get_size();
-  $IMG_Height=floatval($src_size[1]);
-  $IMG_Length=floatval($src_size[0]);
-  
+  $IMG_Height=min(floatval($src_size[1]),floatval($src_size[0]));
+  $IMG_Width=max(floatval($src_size[1]),floatval($src_size[0]));
+  $IMG_ratio=round($IMG_Width/$IMG_Height,1);  
     
   $template->assign(
   array(
@@ -468,8 +478,8 @@ function ppppp_picture_handler($content,$current_picture)
         ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T7 ON T6.Ratio=T7.Id'.
         ' WHERE T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
         ' AND T7.RatioValue='.$IMG_ratio.
-        ' AND T6.Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T6.Units="cm", 2.54, IF(T6.Units="ft", 1/12, 1))'.
-        ' ORDER BY T3.Material ;';
+        ' AND T6.Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T6.MinRes*IF(T6.Units="cm", 2.54, IF(T6.Units="ft", 1/12, 1))'.
+        ' ORDER BY T1.Price,T3.Id ;';
  // echo '<pre>'; print_r($query_material); echo '</pre>';
   $result_material = pwg_query($query_material);
   $material_count=0;
@@ -500,10 +510,10 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T3 ON T2.Ratio=T3.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T4 ON T1.Provider = T4.Provider'.
              ' WHERE T3.RatioValue='.$IMG_ratio.
-             ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
+             ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
              ' AND T4.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
-             ' ORDER BY Size, Height;';
+             ' ORDER BY T1.Price, Height;';
   //    echo '<pre>'; print_r($query_sizes); echo '</pre>';
       $result_sizes = pwg_query($query_sizes);
       $sizes_count=0;
@@ -542,11 +552,11 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio=T4.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
              ' WHERE T4.RatioValue='.$IMG_ratio.
-             ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
+             ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
              ' AND T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
              ' AND T2.Id="'.$sizes_Id."\"".
-             ' ORDER BY T3.OptionName;';
+             ' ORDER BY T1.Price, T3.Id;';
  //     echo '<pre>'; print_r($query_option1); echo '</pre>';
       $result_option1 = pwg_query($query_option1);
       $option1_count=0;
@@ -586,12 +596,12 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio=T4.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
              ' WHERE T4.RatioValue='.$IMG_ratio.
-             ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T1.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
+             ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
              ' AND T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
              ' AND T2.Id="'.$sizes_Id."\"".
              ' AND T3.Id="'.$option1_Id."\"".
-             ' ORDER BY T8.OptionName';
+             ' ORDER BY T1.Price, T8.Id';
  //    echo '<pre>'; print_r($query_option2); echo '</pre>';
       $result_option2 = pwg_query($query_option2);
 

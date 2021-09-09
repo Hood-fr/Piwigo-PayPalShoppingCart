@@ -27,11 +27,10 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_countries (
 
     $query = "
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_prices (
-  Id tinyint(4) NOT NULL AUTO_INCREMENT,
+  Id int(6) NOT NULL AUTO_INCREMENT,
   Provider tinyint(4) NOT NULL,
   Size tinyint(4) NOT NULL,
   Support tinyint(4) NOT NULL,
-  MinRes float NOT NULL DEFAULT '180',
   Price float NOT NULL,
   Shipping float NOT NULL,
   PRIMARY KEY (Id)
@@ -86,6 +85,7 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_sizes (
   Height float NULL,
   Length float NULL,
   Units ENUM('cm','in','ft', ''),
+  MinRes float NOT NULL DEFAULT '150',
   PRIMARY KEY (Id)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
 ;";

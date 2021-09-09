@@ -261,6 +261,7 @@ jQuery(document).ready(function() {
                 {/foreach}
                 </select>
             </td>
+            <td align="center">{'Min. Resolution'|@translate}<br> <input type=text name=MinRes size="5"></td>
         </tr>
     </table>
 <br>
@@ -276,6 +277,7 @@ jQuery(document).ready(function() {
 <th>{'Length'|@translate}</th>
 <th>{'Height'|@translate}</th>
 <th>{'Units'|@translate}</th>
+<th>{'Min. Resolution'|@translate}</th>
 <th>{'Action'|@translate}</th>
 </tr>
 {foreach from=$ppppp_array_sizes item=ppppp_row_sizes name=ppppp_row_sizes_loop}
@@ -285,7 +287,8 @@ jQuery(document).ready(function() {
 <td align="center">{$ppppp_row_sizes.Length}</td>
 <td align="center">{$ppppp_row_sizes.Height}</td>
 <td align="center">{$ppppp_row_sizes.Units}</td>
-    <td>
+<td align="center">{$ppppp_row_sizes.MinRes}</td>
+<td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_sizes.Id}'>
 <input type=submit value="{'Delete data'|@translate}">
@@ -316,7 +319,6 @@ jQuery(document).ready(function() {
                 <option value="{$ppppp_row_sizes.Id}">{$ppppp_row_sizes.SizeName|@translate} ({$ppppp_row_sizes.Ratio|@translate})</option>
                 {/foreach}
                 </select></td>
-            <td align="center">{'Min. Resolution'|@translate}<br> <input type=text name=minres size="5"></td>
             <td align="center">{'Provider'|@translate}<br>
                  <select name="provider" >
                 {foreach from=$ppppp_array_provider item=ppppp_row_provider}
@@ -343,7 +345,6 @@ jQuery(document).ready(function() {
 <th>{'Height'|@translate}</th>
 <th>{'Length'|@translate}</th>
 <th>{'Units'|@translate}</th>
-<th>{'Min. Resolution'|@translate}</th>
 <th>{'Provider'|@translate}</th>
 <th>{'Price'|@translate}</th>
 <th>{'Shipping fees'|@translate}</th>
@@ -360,7 +361,6 @@ jQuery(document).ready(function() {
 <td align="center">{$ppppp_row_price.Height}</td>
 <td align="center">{$ppppp_row_price.Length}</td>
 <td align="center">{$ppppp_row_price.Units}</td>
-<td align="center">{$ppppp_row_price.MinRes}</td>
 <td align="center">{$ppppp_row_price.Provider}</td>
 <td align="center">{$ppppp_row_price.Price}</td>
 <td align="center">{$ppppp_row_price.Shipping}</td>

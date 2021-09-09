@@ -467,7 +467,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['SizeName']) and isset($_POST['Ratio']))
+    else if (isset($_POST['SizeName']) and isset($_POST['Ratio']) and isset($_POST['Height']) and isset($_POST['Length']) and isset($_POST['MinRes']))
     {
       single_insert(
         PPPPP_SIZES_TABLE,
@@ -477,13 +477,14 @@ SELECT id,name,uppercats,global_rank
           'Height' => pwg_db_real_escape_string($_POST['Height']),
           'Length' => pwg_db_real_escape_string($_POST['Length']),
           'Units' => pwg_db_real_escape_string($_POST['Units']),
+          'MinRes' => pwg_db_real_escape_string($_POST['minres']),
             )
         );
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $query='SELECT DISTINCT T1.Id AS Id, SizeName, T2.RatioName AS Ratio, Length, Height, Units'.
+    $query='SELECT DISTINCT T1.Id AS Id, SizeName, T2.RatioName AS Ratio, Length, Height, Units, MinRes'.
             ' FROM '.PPPPP_SIZES_TABLE.' T1'.
             ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T2'.
             ' ON T1.Ratio=T2.Id'.
@@ -585,7 +586,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['price']) and isset($_POST['shipping']) and isset($_POST['minres']))
+    else if (isset($_POST['price']) and isset($_POST['shipping']) and isset($_POST['support']) and isset($_POST['provider']) and isset($_POST['size']))
     {
       single_insert(
         PPPPP_PRICE_TABLE,
@@ -593,7 +594,6 @@ SELECT id,name,uppercats,global_rank
           'Provider' => pwg_db_real_escape_string($_POST['provider']),
           'Size' => pwg_db_real_escape_string($_POST['size']),
           'Support' => pwg_db_real_escape_string($_POST['support']),
-          'MinRes' => pwg_db_real_escape_string($_POST['minres']),
           'Price' => pwg_db_real_escape_string($_POST['price']),
           'Shipping' => pwg_db_real_escape_string($_POST['shipping']),
             )
@@ -604,7 +604,7 @@ SELECT id,name,uppercats,global_rank
     
     $query='SELECT DISTINCT T1.Id AS Id, T2.SupportMaterial AS Support, T3.OptionName AS SupportOption1, T4.OptionName AS SupportOption2,'.
             ' T5.SizeName AS Size, T6.RatioName AS Ratio, T5.Height AS Height, T5.Length AS Length, T5.Units AS Units,'.
-            ' T1.MinRes AS MinRes, T8.Name AS Provider, T1.Price, T1.Shipping, T7.Currency AS Currency, T9.Material as SupportMaterial'.
+            ' T8.Name AS Provider, T1.Price, T1.Shipping, T7.Currency AS Currency, T9.Material as SupportMaterial'.
             ' FROM '.PPPPP_PRICE_TABLE.' T1'.
             ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T2 ON T1.Support = T2.Id'.
             ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T9 ON T2.SupportMaterial = T9.Id'.
