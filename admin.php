@@ -669,11 +669,13 @@ SELECT id,name,uppercats,global_rank
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $template->assign('ppppp_fb_brand', $conf['PayPalShoppingCart']['Brand']);
-    $template->assign('ppppp_fb_googleId', $conf['PayPalShoppingCart']['GoogleId']);
-    $template->assign('ppppp_fb_fbId', $conf['PayPalShoppingCart']['FBId']);
-    $template->assign('ppppp_fb_ref_country', $conf['PayPalShoppingCart']['Ref_country']);
-
+    if (isset($conf['PayPalShoppingCart']['Brand']) and isset($conf['PayPalShoppingCart']['GoogleId']) and isset($conf['PayPalShoppingCart']['FBId'])  and isset($conf['PayPalShoppingCart']['Ref_country']))
+    {
+        $template->assign('ppppp_fb_brand', $conf['PayPalShoppingCart']['Brand']);
+        $template->assign('ppppp_fb_googleId', $conf['PayPalShoppingCart']['GoogleId']);
+        $template->assign('ppppp_fb_fbId', $conf['PayPalShoppingCart']['FBId']);
+        $template->assign('ppppp_fb_ref_country', $conf['PayPalShoppingCart']['Ref_country']);
+    }
     
     $query='SELECT T1.Id AS Id, T1.CountryName, T1.CountryCode, T1.Currency, T2.Name AS SupplierName FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider=T2.Id ORDER BY T1.CountryName;';
     $result = pwg_query($query);
@@ -755,7 +757,7 @@ SELECT id,name,uppercats,global_rank
     // END AS GUEST
     //$user = $save_user;
 
-
+    $template->assign('ppppp_catalog_country', $_POST['catalog_country']);
     $template->assign( array(
       'FILENAME' => $filename,
       'FILENAMEBASIS' => $filenameBasis,

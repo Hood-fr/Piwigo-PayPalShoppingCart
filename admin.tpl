@@ -549,7 +549,7 @@ jQuery(document).ready(function() {
             {'Reference country'|@translate}
             <select name=Ref_country>
             {foreach from=$ppppp_array_country item=ppppp_row_country}
-            <option value="{$ppppp_row_country.CountryCode}"{if $ppppp_fb_ref_country==$ppppp_row_country.Id} selected{/if}>{$ppppp_row_country.CountryName}</option>
+            <option value="{$ppppp_row_country.CountryCode}"{if $ppppp_fb_ref_country==$ppppp_row_country.CountryCode} selected{/if}>{$ppppp_row_country.CountryName}</option>
             {/foreach}
             </select>
             </td>
@@ -569,9 +569,9 @@ jQuery(document).ready(function() {
 <fieldset>
 <legend>{'Select country for catalog'|@translate}</legend>
 
-<select name=catalog_country onChange="updateFilename()">
+<select name=catalog_country>
 {foreach from=$ppppp_array_country item=ppppp_row_country}
-<option value="{$ppppp_row_country.CountryCode}">{$ppppp_row_country.CountryName} ({$ppppp_row_country.SupplierName})</option>
+<option value="{$ppppp_row_country.CountryCode}"{if $ppppp_catalog_country==$ppppp_row_country.CountryCode} selected{/if}>{$ppppp_row_country.CountryName} ({$ppppp_row_country.SupplierName})</option>
 {/foreach}
 </select>
 <br>
