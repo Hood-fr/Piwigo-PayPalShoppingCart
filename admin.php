@@ -757,7 +757,10 @@ SELECT id,name,uppercats,global_rank
     // END AS GUEST
     //$user = $save_user;
 
-    $template->assign('ppppp_catalog_country', $_POST['catalog_country']);
+    if (isset($_POST['catalog_country']))
+    {
+        $template->assign('ppppp_catalog_country', $_POST['catalog_country']);
+    }
     $template->assign( array(
       'FILENAME' => $filename,
       'FILENAMEBASIS' => $filenameBasis,
