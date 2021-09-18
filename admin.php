@@ -24,6 +24,10 @@ include_once('FB_catalog.php');
 load_language('plugin.lang', PPPPP_PATH);
 $my_base_url = get_admin_plugin_menu_link(__FILE__);
 
+
+//Fonction pour génération catalogue Facebook
+$min_res_tolerance=1.025;
+
 // onglets
 if (!isset($_GET['tab']))
     $page['tab'] = 'currency';
