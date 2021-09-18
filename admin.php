@@ -20,6 +20,7 @@
 if (!defined('PHPWG_ROOT_PATH')) die('Hacking attempt!');
 global $template;
 include_once(PHPWG_ROOT_PATH .'admin/include/tabsheet.class.php');
+include_once('FB_catalog.php');
 load_language('plugin.lang', PPPPP_PATH);
 $my_base_url = get_admin_plugin_menu_link(__FILE__);
 
@@ -63,10 +64,10 @@ $tabsheet->add('price',
                $my_base_url.'&amp;tab=price');
 $tabsheet->add('code',
                l10n('Promo codes'),
-               $my_base_url.'&amp;tab=code');
-$tabsheet->add('shipping',
-               l10n('Shipping cost'),
-               $my_base_url.'&amp;tab=shipping');			   
+               $my_base_url.'&amp;tab=code');			   
+$tabsheet->add('FB_catalog',
+               l10n('Facebook catalog'),
+               $my_base_url.'&amp;tab=FB_catalog');	
 $tabsheet->select($page['tab']);
 $tabsheet->assign();
 
@@ -245,7 +246,7 @@ SELECT id,name,uppercats,global_rank
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $query='SELECT T1.CountryName, T1.CountryCode, T1.Currency, T2.Name as Name FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider=T2.Id ORDER BY T1.Provider, T1.CountryName;';
+    $query='SELECT T1.Id, T1.CountryName, T1.CountryCode, T1.Currency, T2.Name as Name FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider=T2.Id ORDER BY T1.Provider, T1.CountryName;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
@@ -253,22 +254,13 @@ SELECT id,name,uppercats,global_rank
     }
     
 
-    if(isset($_POST['Currency'])){
-        $query='SELECT T1.Name FROM '.PPPPP_PROVIDER_TABLE.' T1 WHERE T1.Currency="'.$_POST['Currency'].'\" ORDER BY T1.Name;';
-        $result = pwg_query($query);
-        while($row = pwg_db_fetch_assoc($result))
-        {
-          $template->append('ppppp_array_provider',$row);
-        }
-    }
-    else{
-        $query='SELECT * FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
-        $result = pwg_query($query);
-        while($row = pwg_db_fetch_assoc($result))
-        {
-          $template->append('ppppp_array_provider',$row);
-        }        
-    }
+    $query='SELECT * FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_provider',$row);
+    }        
+
     break;     
 
     case 'provider':
@@ -660,17 +652,113 @@ SELECT id,name,uppercats,global_rank
         
     break;
 
-  case 'shipping':
+  case 'FB_catalog':
     
-    if (isset($_POST['fixed_shipping'])and is_numeric($_POST['fixed_shipping']))
+    if (isset($_POST['Brand']) and isset($_POST['GoogleId']) and is_numeric($_POST['GoogleId']) and isset($_POST['FBId']) and is_numeric($_POST['FBId']))
     {
-      $conf['PayPalShoppingCart']['fixed_shipping'] = $_POST['fixed_shipping'];
+      $conf['PayPalShoppingCart']['Brand'] = $_POST['Brand'];
+      $conf['PayPalShoppingCart']['GoogleId'] = $_POST['GoogleId'];
+      $conf['PayPalShoppingCart']['FBId'] = $_POST['FBId'];
+      $conf['PayPalShoppingCart']['Ref_country'] = $_POST['Ref_country'];
       conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
       
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $template->assign('ppppp_fixed_shipping', $conf['PayPalShoppingCart']['fixed_shipping']);
+    $template->assign('ppppp_fb_brand', $conf['PayPalShoppingCart']['Brand']);
+    $template->assign('ppppp_fb_googleId', $conf['PayPalShoppingCart']['GoogleId']);
+    $template->assign('ppppp_fb_fbId', $conf['PayPalShoppingCart']['FBId']);
+    $template->assign('ppppp_fb_ref_country', $conf['PayPalShoppingCart']['Ref_country']);
+
+    
+    $query='SELECT T1.Id AS Id, T1.CountryName, T1.CountryCode, T1.Currency, T2.Name AS SupplierName FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider=T2.Id ORDER BY T1.CountryName;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_country',$row);
+    }
+    
+    if ( isset($_POST['submit']) )
+    {
+     //echo('<pre>'.var_export($_POST,true).'</pre>' );
+
+    if ( $_POST['filename'] != '' )
+      $filenameBasis = $_POST['filename'];
+      $filename = $_POST['filename'].'_'.$_POST['catalog_country'].'.xml';
+
+    set_make_full_url();
+
+    start_xml($filename);
+
+    $query ='SELECT T1.Price AS price, T1.Shipping AS shipping, T5.Currency AS currency, T10.name AS title, T10.comment AS item, T10.file AS file, MIN(T2.Length) AS minSize,'.
+            ' MAX(T2.Length) AS maxSize, T2.Units AS units, T10.path, T7.Material AS item_option, T10.Id AS imageId, T5.CountryCode AS countryISOcode '.
+           'FROM '.PPPPP_PRICE_TABLE.' T1 '.
+           'CROSS JOIN '.IMAGES_TABLE.' T10 '.
+           'LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size = T2.Id '.
+           'LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id '.
+           'LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T7 ON T6.SupportMaterial = T7.Id '.
+           'LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T6.SupportOption1 = T3.Id '.
+           'LEFT JOIN '.PPPPP_OPTION_TABLE.' T8 ON T6.SupportOption2 = T8.Id '.
+           'LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio = T4.Id '.
+           'LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider '.
+           'LEFT JOIN '.IMAGE_CATEGORY_TABLE.' T11 ON T10.Id = T11.image_Id '.
+           'LEFT JOIN '.CATEGORIES_TABLE.' T12 ON T11.category_id = T12.Id '.
+           'WHERE T4.RatioValue= IF(T10.width>T10.height, ROUND(T10.width/T10.height, 1), ROUND(T10.height/T10.width, 1)) '.
+           'AND T2.Height<T10.height*'.$min_res_tolerance.'/T2.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1)) '.
+           'AND T5.CountryCode = "'.$_POST['catalog_country'].'" '.
+           'AND T12.status = "public" '.
+           'AND T12.visible = "true" '.
+           'AND T12.paypal_active = TRUE '.
+           'AND ISNULL(T10.comment) = 0 '.
+           'GROUP BY Item, T7.Material '.
+           'ORDER BY Item, T1.Price, T7.Id, T3.Id, T8.Id';
+  //echo '<pre>'; print_r($query); echo '</pre>';
+      $result = pwg_query($query);
+      
+      if (isset($_POST['catalog_country']))
+      {
+          $ref_cat=($_POST['catalog_country']==$conf['PayPalShoppingCart']['Ref_country']);
+      }
+      else
+      {
+          $ref_cat=true;
+      }    
+      
+      while ($row = pwg_db_fetch_assoc($result))
+      {
+         $subquery = 'SELECT * FROM '.IMAGES_TABLE.' T1 WHERE T1.Id = '.$row['imageId'].' LIMIT 1'; 
+         $imgInfos = pwg_db_fetch_assoc(pwg_query($subquery));
+         $link = make_picture_url( array(
+        'image_id' => $row['imageId'],
+        'image_file' => $row['file'],
+        ) );
+         $image_link = DerivativeImage::url(IMG_XSMALL, $imgInfos);
+         add_item($row, $ref_cat, $conf, $link, $image_link);
+      }
+
+    unset_make_full_url();
+    end_xml();
+
+    $page['infos'][] = 'Catalog generated. '.$item_count.' items listed in catalog';
+
+      }
+      else
+      {
+        $filenameBasis = 'FB_catalog';
+        $filename = 'FB_catalog.xml';
+      }
+
+    // END AS GUEST
+    //$user = $save_user;
+
+
+    $template->assign( array(
+      'FILENAME' => $filename,
+      'FILENAMEBASIS' => $filenameBasis,
+      'U_FILENAME' => get_root_url().$filename,
+        )
+      );
+ 
     break;
 }
 

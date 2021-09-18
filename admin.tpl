@@ -68,7 +68,7 @@ jQuery(document).ready(function() {
 {'Name'|@translate} <input type=text name=CountryName>
 {'Country code'|@translate} <input type=text name=CountryCode>
 {'Currency'|@translate}
-<select name=Currency onChange="UpdateProviderList()">
+<select name=Currency>
 {foreach from=$ppppp_array_currency item=currency_label key=currency_code}
 <option value="{$currency_code}">{$currency_label} ({$currency_code})</option>
 {/foreach}
@@ -528,16 +528,61 @@ jQuery(document).ready(function() {
 </table>
 </fieldset>
 
-{else}
-<h3>{'Shipping cost'|@translate}</h3>
+{elseif $tabsheet_selected=='FB_catalog'}
+<h3>{'Facebook Catalog'|@translate}</h3>
 <form method=post>
 <fieldset>
-<legend>{'Fixed shipping cost'|@translate}</legend>
+<legend>{'Configuration'|@translate}</legend>
 <br>
-<input type=text name=fixed_shipping value={$ppppp_fixed_shipping}>
+    <table>
+        <tr>
+            <td>{'Brand'|@translate} <input type=text name=Brand value ="{$ppppp_fb_brand}"></td>
+        </tr>
+        <tr>
+            <td>{'Google Product Category'|@translate} <input type=text name=GoogleId value="{$ppppp_fb_googleId}"></td>
+        </tr>
+        <tr>
+            <td>{'Facebook Product Category'|@translate} <input type=text name=FBId value="{$ppppp_fb_fbId}"></td>
+        </tr>
+        <tr>
+            <td>
+            {'Reference country'|@translate}
+            <select name=Ref_country>
+            {foreach from=$ppppp_array_country item=ppppp_row_country}
+            <option value="{$ppppp_row_country.CountryCode}"{if $ppppp_fb_ref_country==$ppppp_row_country.Id} selected{/if}>{$ppppp_row_country.CountryName}</option>
+            {/foreach}
+            </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type=submit value="{'Save settings'|@translate}">
+            </td>
+        </tr>
+    </table>
 <br>
 <br>
-<input type=submit value="{'Update data'|@translate}">
 </fieldset>
 </form>
+
+<form method=post>
+<fieldset>
+<legend>{'Select country for catalog'|@translate}</legend>
+
+<select name=catalog_country onChange="updateFilename()">
+{foreach from=$ppppp_array_country item=ppppp_row_country}
+<option value="{$ppppp_row_country.CountryCode}">{$ppppp_row_country.CountryName} ({$ppppp_row_country.SupplierName})</option>
+{/foreach}
+</select>
+<br>
+<br>
+<p>
+  <label for="filename">{'Filename'|@translate} <input type="input" name="filename" value="{$FILENAMEBASIS}" /></label> <a href="{$U_FILENAME}">{$U_FILENAME}</a>
+</p>
+
+
+<input type=submit class="submit" value="{'Generate catalog'|@translate}" name="submit">
+</fieldset>
+</form>
+
 {/if}
