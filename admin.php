@@ -697,7 +697,8 @@ SELECT id,name,uppercats,global_rank
     start_xml($filename);
 
     $query ='SELECT T1.Price AS price, T1.Shipping AS shipping, T5.Currency AS currency, T10.name AS title, T10.comment AS item, T10.file AS file, MIN(T2.Length) AS minSize,'.
-            ' MAX(T2.Length) AS maxSize, T2.Units AS units, T10.path, T7.Material AS item_option, T10.Id AS imageId, T5.CountryCode AS countryISOcode '.
+            ' MAX(T2.Length) AS maxSize, T2.Units AS units, T10.path, T7.Material AS item_option, T10.Id AS imageId, T5.CountryCode AS countryISOcode, T12.Id AS categoryId, '.
+            ' T12.name AS categoryName, T12.permalink as categoryPL '.
            'FROM '.PPPPP_PRICE_TABLE.' T1 '.
            'CROSS JOIN '.IMAGES_TABLE.' T10 '.
            'LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size = T2.Id '.
@@ -737,8 +738,14 @@ SELECT id,name,uppercats,global_rank
          $link = make_picture_url( array(
         'image_id' => $row['imageId'],
         'image_file' => $row['file'],
+        'category' => array
+                            (
+                              'id' => $row['categoryId'],
+                              'name' => $row['categoryName'],
+                              'permalink' => $row['categoryPL']
+                            ),
         ) );
-         $image_link = DerivativeImage::url(IMG_XSMALL, $imgInfos);
+         $image_link = DerivativeImage::url(IMG_SMALL, $imgInfos);
          add_item($row, $ref_cat, $conf, $link, $image_link);
       }
 
