@@ -54,7 +54,7 @@ function add_item($row, $ref_cat, $conf, $link, $image_link)
   if ( isset($row['item_option']) and strlen($row['item_option'])>0 )
   {
     $xml.='<g:id>'.$row['item']."_".$row['item_option'].'</g:id>'."\r"."\n";
-    $xml.='<g:item_group_id>'.$row['item'].'</g:item_group_id>'."\r"."\n";
+    $xml.='<g:item_group_id>'.left($row['item'],8).'</g:item_group_id>'."\r"."\n";
     $xml.='<g:material>'.$row['item_option'].'</g:material>'."\r"."\n";
   }
   else
@@ -64,7 +64,7 @@ function add_item($row, $ref_cat, $conf, $link, $image_link)
 
   if ( isset($row['title']) and strlen($row['title'])>0 )
   {
-      $xml.='<g:title>'.$row['title'].'</g:title>'."\r"."\n";
+      $xml.='<g:title>'.htmlspecialchars($row['title']).'</g:title>'."\r"."\n";
   }
   
   if ( $row['minSize'] == $row['maxSize'] )
@@ -76,7 +76,7 @@ function add_item($row, $ref_cat, $conf, $link, $image_link)
       $xml.='<g:description>'.'Dimensions : '.$row['minSize'].' to '.$row['maxSize'].' '.$row['units'].'</g:description>'."\r"."\n";
   }
   
-    $xml.='<g:availability>'.'in_stock'.'</g:availability>'."\r"."\n";
+    $xml.='<g:availability>'.'preorder'.'</g:availability>'."\r"."\n";
     $xml.='<g:condition>'.'new'.'</g:condition>'."\r"."\n";
     $xml.='<g:brand>'.$conf['PayPalShoppingCart']['Brand'].'</g:brand>'."\r"."\n";
     $xml.='<g:price>'.$row['price'].' '.$row['currency'].'</g:price>'."\r"."\n";
@@ -87,7 +87,7 @@ function add_item($row, $ref_cat, $conf, $link, $image_link)
     $xml.='<g:image_link>'.$image_link.'</g:image_link>'."\r"."\n";      
     $xml.='<g:google_product_category>'.$conf['PayPalShoppingCart']['GoogleId'].'</g:google_product_category>'."\r"."\n";
     $xml.='<g:fb_product_category>'.$conf['PayPalShoppingCart']['FBId'].'</g:fb_product_category>'."\r"."\n";
-    $xml.='<g:shipping>'.$row['shipping'].'</g:shipping>'."\r"."\n";    
+    $xml.='<g:shipping>'.$row['shipping'].' '.$row['currency'].'</g:shipping>'."\r"."\n";    
    }
   else
   {
