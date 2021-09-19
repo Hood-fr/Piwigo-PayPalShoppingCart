@@ -18,7 +18,7 @@ class PayPalShoppingCart_maintain extends PluginMaintain
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_countries (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
   CountryName varchar(20) NOT NULL,
-  CountryCode varchar(3) NOT NULL,
+  CountryCode varchar(2) NOT NULL,
   Currency varchar(3) NOT NULL,
   PRIMARY KEY (Id)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
@@ -82,9 +82,11 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_sizes (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
   Ratio tinyint(4) NOT NULL,
   SizeName varchar(30) NOT NULL,
-  Height float NULL,
-  Length float NULL,
-  Units ENUM('cm','in','ft', ''),
+  AltSizeName varchar(30) NOT NULL,
+  Height_cm float NULL,
+  Width_cm float NULL,
+  Height_in float NULL,
+  Width_in float NULL,
   MinRes float NOT NULL DEFAULT '150',
   PRIMARY KEY (Id)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
@@ -117,7 +119,7 @@ SELECT COUNT(*)
         $prefixeTable."ppppp_countries",
         array(
           'CountryName' => 'France',
-          'CountryCode' => 'FRA',
+          'CountryCode' => 'FR',
           'Currency' => 'EUR',
           'Provider' => 1,
           )
@@ -236,10 +238,14 @@ SELECT COUNT(*)
     }
 
     $ppppp_config = array(
-      'fixed_shipping' => 0,
       'currency' => 'EUR',
+      'country' => 'FR',
       'apply_to_albums' => 'all',
       'PayPalAccount' => get_webmaster_mail_address(),
+      'Brand' => 'Your online brand name',
+      'GoogleId' => '500044',
+      'FBId' => '999',
+      'Ref_country' => 'FR',
       );
     
     // move the content of table ppppp_config into $conf['PayPalShoppingCart'], serialized

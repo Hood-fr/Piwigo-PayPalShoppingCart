@@ -87,6 +87,7 @@ jQuery(document).ready(function() {
 <fieldset>
 <table class=table2>
 <tr class=throw>
+<th>{'Id'|@translate}</th>
 <th>{'Name'|@translate}</th>
 <th>{'Country code'|@translate}</th>
 <th>{'Currency'|@translate}</th>
@@ -94,6 +95,7 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_country item=ppppp_row_country name=ppppp_row_country_loop}
 <tr class="{if $smarty.foreach.ppppp_row_country_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_country.Id}</td>
 <td align="center">{$ppppp_row_country.CountryName}</td>
 <td align="center">{$ppppp_row_country.CountryCode}</td>
 <td align="center">{$ppppp_row_country.Currency}</td>
@@ -137,12 +139,14 @@ jQuery(document).ready(function() {
 <fieldset>
 <table class=table2>
 <tr class=throw>
+<th>{'Id'|@translate}</th>
 <th>{'Name'|@translate}</th>
 <th>{'URL'|@translate}</th>
 <th>{'Currency'|@translate}</th>
 </tr>
 {foreach from=$ppppp_array_provider item=ppppp_row_provider name=ppppp_row_provider_loop}
 <tr class="{if $smarty.foreach.ppppp_row_provider_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_provider.Id}</td>
 <td align="center">{$ppppp_row_provider.Name}</td>
 <td align="center">{$ppppp_row_provider.URL}</td>
 <td align="center">{$ppppp_row_provider.Currency}</td>
@@ -215,6 +219,7 @@ jQuery(document).ready(function() {
 <fieldset>
 <table class=table2>
 <tr class=throw>
+<th>{'Id'|@translate}</th>
 <th>{'Support'|@translate}</th>
 <th>{'Option'|@translate} #1</th>
 <th>{'Option'|@translate} #2</th>
@@ -222,6 +227,7 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_support item=ppppp_row_support name=ppppp_row_support_loop}
 <tr class="{if $smarty.foreach.ppppp_row_support_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_support.Id}</td>
 <td align="center">{$ppppp_row_support.SupportMaterial}</td>
 <td align="center">{$ppppp_row_support.SupportOption1}</td>
 <td align="center">{$ppppp_row_support.SupportOption2}</td>
@@ -244,24 +250,26 @@ jQuery(document).ready(function() {
 <br>
     <table>
         <tr>
-            <td>{'Size'|@translate} <input type=text name=SizeName></td>
-            <td>{'Ratio'|@translate} 
+            <td align="center" colspan="3">{'Ratio'|@translate} 
                 <select name="Ratio" >
                 {foreach from=$ppppp_array_ratio item=ppppp_row_ratio}
                 <option value="{$ppppp_row_ratio.Id}">{$ppppp_row_ratio.RatioName|@translate}</option>
                 {/foreach}
                 </select>
-                </td>
-            <td>{'Length'|@translate} <input type=text name=Length onchange="UpdateHeight()"></td>
-            <td>{'Height'|@translate} <input type=text name=Height onchange="UpdateLength()"></td>
-           <td>{'Units'|@translate}
-                <select name="Units" >
-                {foreach from=$ppppp_array_units item=unit_label key=unit_code}
-                <option value="{$unit_code}">{$unit_label}</option>
-                {/foreach}
-                </select>
             </td>
-            <td align="center">{'Min. Resolution'|@translate}<br> <input type=text name=MinRes size="5"></td>
+        </tr>
+        <tr>
+            <td>{'Size'|@translate} (cm)<input type=text name=SizeName></td>
+            <td>{'Width'|@translate} (cm)<input type=text name=Width_cm ></td>
+            <td>{'Height'|@translate} (cm)<input type=text name=Height_cm ></td>
+        </tr>
+        <tr>
+            <td>{'Size'|@translate} (in)<input type=text name=AltSizeName></td>
+            <td>{'Width'|@translate} (in)<input type=text name=Width_in ></td>
+            <td>{'Height'|@translate} (in)<input type=text name=Height_in ></td>
+        </tr>
+        <tr>
+            <td align="center" colspan="3">{'Min. Resolution'|@translate}<br> <input type=text name=MinRes size="5"></td>
         </tr>
     </table>
 <br>
@@ -272,21 +280,27 @@ jQuery(document).ready(function() {
 <fieldset>
 <table class=table2>
 <tr class=throw>
+<th>{'Id'|@translate}</th>
 <th>{'Size'|@translate}</th>
+<th>{'AltSize'|@translate}</th>
 <th>{'Ratio'|@translate}</th>
-<th>{'Length'|@translate}</th>
-<th>{'Height'|@translate}</th>
-<th>{'Units'|@translate}</th>
+<th>{'Width'|@translate} (cm)</th>
+<th>{'Height'|@translate} (cm)</th>
+<th>{'Width'|@translate} (in)</th>
+<th>{'Height'|@translate} (in)</th>
 <th>{'Min. Resolution'|@translate}</th>
 <th>{'Action'|@translate}</th>
 </tr>
 {foreach from=$ppppp_array_sizes item=ppppp_row_sizes name=ppppp_row_sizes_loop}
 <tr class="{if $smarty.foreach.ppppp_row_sizes_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_sizes.Id}</td>
 <td align="center">{$ppppp_row_sizes.SizeName}</td>
+<td align="center">{$ppppp_row_sizes.AltSizeName}</td>
 <td align="center">{$ppppp_row_sizes.Ratio}</td>
-<td align="center">{$ppppp_row_sizes.Length}</td>
-<td align="center">{$ppppp_row_sizes.Height}</td>
-<td align="center">{$ppppp_row_sizes.Units}</td>
+<td align="center">{$ppppp_row_sizes.Width_cm}</td>
+<td align="center">{$ppppp_row_sizes.Height_cm}</td>
+<td align="center">{$ppppp_row_sizes.Width_in}</td>
+<td align="center">{$ppppp_row_sizes.Height_in}</td>
 <td align="center">{$ppppp_row_sizes.MinRes}</td>
 <td>
 <form method=post>
@@ -337,13 +351,14 @@ jQuery(document).ready(function() {
 <fieldset>
 <table class=table2>
 <tr class=throw>
+<th>{'Id'|@translate}</th>
 <th>{'Support'|@translate}</th>
 <th>{'Option #1'|@translate}</th>
 <th>{'Option #1'|@translate}</th>
 <th>{'Size'|@translate}</th>
 <th>{'Ratio'|@translate}</th>
 <th>{'Height'|@translate}</th>
-<th>{'Length'|@translate}</th>
+<th>{'Width'|@translate}</th>
 <th>{'Units'|@translate}</th>
 <th>{'Provider'|@translate}</th>
 <th>{'Price'|@translate}</th>
@@ -353,13 +368,14 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_price item=ppppp_row_price name=ppppp_row_price_loop}
 <tr class="{if $smarty.foreach.ppppp_row_price_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_price.Id}</td>
 <td align="center">{$ppppp_row_price.SupportMaterial}</td>
 <td align="center">{$ppppp_row_price.SupportOption1}</td>
 <td align="center">{$ppppp_row_price.SupportOption2}</td>
 <td align="center">{$ppppp_row_price.Size}</td>
 <td align="center">{$ppppp_row_price.Ratio}</td>
 <td align="center">{$ppppp_row_price.Height}</td>
-<td align="center">{$ppppp_row_price.Length}</td>
+<td align="center">{$ppppp_row_price.Width}</td>
 <td align="center">{$ppppp_row_price.Units}</td>
 <td align="center">{$ppppp_row_price.Provider}</td>
 <td align="center">{$ppppp_row_price.Price}</td>
@@ -398,6 +414,7 @@ jQuery(document).ready(function() {
 <fieldset>
 <table class=table2>
 <tr class=throw>
+<th>{'Id'|@translate}</th>
 <th>{'Code'|@translate}</th>
 <th>{'Promo relative'|@translate}</th>
 <th>{'Promo absolute'|@translate}</th>
@@ -405,6 +422,7 @@ jQuery(document).ready(function() {
 </tr>
 {foreach from=$ppppp_array_promocode item=ppppp_row_promocode name=ppppp_row_promcoode_loop}
 <tr class="{if $smarty.foreach.ppppp_row_promocode_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_promocode.Id}</td>
 <td align="center">{$ppppp_row_promocode.code}</td>
 <td align="center">{$ppppp_row_promocode.reduc_rel}</td>
 <td align="center">{$ppppp_row_promocode.reduc_abs}</td>
@@ -440,11 +458,13 @@ jQuery(document).ready(function() {
 <fieldset>
 <table class=table2>
 <tr class=throw>
+<th>{'Id'|@translate}</th>
 <th>{'Name'|@translate}</th>
 <th>{'Value'|@translate}</th>
 </tr>
 {foreach from=$ppppp_array_ratio item=ppppp_row_ratio name=ppppp_row_ratio_loop}
 <tr class="{if $smarty.foreach.ppppp_row_ratio_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_ratio.Id}</td>
 <td align="center">{$ppppp_row_ratio.RatioName}</td>
 <td align="center">{$ppppp_row_ratio.RatioValue}</td>
     <td>
@@ -477,12 +497,14 @@ jQuery(document).ready(function() {
 <fieldset>
 <table class=table2>
 <tr class=throw>
+<th>{'Id'|@translate}</th>
 <th>{'Name'|@translate}</th>
 </tr>
 {foreach from=$ppppp_array_support_options item=ppppp_row_support_options name=ppppp_row_support_options_loop}
 <tr class="{if $smarty.foreach.ppppp_row_support_options_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_support_options.Id}</td>
 <td align="center">{$ppppp_row_support_options.OptionName}</td>
-    <td>
+<td>
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_support_options.Id}'>
 <input type=submit value="{'Delete data'|@translate}">
@@ -512,10 +534,12 @@ jQuery(document).ready(function() {
 <fieldset>
 <table class=table2>
 <tr class=throw>
+<th>{'Id'|@translate}</th>
 <th>{'Name'|@translate}</th>
 </tr>
 {foreach from=$ppppp_array_materials item=ppppp_row_materials name=ppppp_row_materials_loop}
 <tr class="{if $smarty.foreach.ppppp_row_materials_loop.index is odd}row1{else}row2{/if}">
+<td align="center">{$ppppp_row_materials.Id}</td>
 <td align="center">{$ppppp_row_materials.Material}</td>
     <td>
 <form method=post>

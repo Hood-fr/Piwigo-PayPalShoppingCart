@@ -13,7 +13,7 @@ function sitemaps_get_config_file_name()
   return $dir.basename(dirname(__FILE__)).'.dat';
 }
 
-function start_xml($filename)
+function start_xml($filename, $XMLlang)
 {
   global $file;
   $url=get_root_url().$filename;
@@ -24,9 +24,9 @@ function start_xml($filename)
   out_xml(  '<?xml version="1.0" encoding="UTF-8"?>'."\r"."\n".
             '<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">'."\r"."\n".
             '<channel>'."\r"."\n".
-            '<title>Catalogue Daedalum pour FB - France</title>'."\r"."\n".
+            '<title>'.$XMLlang['title'].'</title>'."\r"."\n".
             '<link>'.$url.'</link>'."\r"."\n".
-            '<description>Catalogue Daedalum pour FB - France</description>'."\r"."\n"            
+            '<description>'.$XMLlang['description'].'</description>'."\r"."\n"            
           );
 }
 
@@ -46,7 +46,7 @@ function end_xml()
 
 $item_count=0;
 
-function add_item($row, $ref_cat, $conf, $link, $image_link)
+function add_item($row, $ref_cat, $conf, $links, $XMLlang)
 {
     
   $xml='<item>'."\r"."\n";
@@ -67,38 +67,70 @@ function add_item($row, $ref_cat, $conf, $link, $image_link)
       $xml.='<g:title>'.htmlspecialchars($row['title']).'</g:title>'."\r"."\n";
   }
   
-  if ( $row['minSize'] == $row['maxSize'] )
+  switch($row['item_option']){
+      case('Poster'):
+          $print_desc=$XMLlang['support_poster'];
+      break;
+      case('Canvas'):
+          $print_desc=$XMLlang['support_canvas'];
+      break;
+      case('Dibond®'):
+          $print_desc=$XMLlang['support_dibond'];
+      break;
+  }
+  
+  switch($XMLlang['units']){
+      case('cm'):
+          $MinSize=$row['minSize_cm'].'x'.round($row['minSize_cm']/$row['Ratio'],0).'cm';
+          $MaxSize=$row['maxSize_cm'].'x'.round($row['maxSize_cm']/$row['Ratio'],0).'cm';
+      break;
+      case('in'):
+          $MinSize=$row['minSize_in'].'x'.round($row['minSize_in']/$row['Ratio'],0).'in';
+          $MaxSize=$row['maxSize_in'].'x'.round($row['maxSize_in']/$row['Ratio'],0).'in';
+      break;
+  }
+  
+  if ( $MinSize == $MaxSize )
   {
-      $xml.='<g:description>'.'Dimension : '.$row['minSize'].' '.$row['units'].'</g:description>'."\r"."\n";
+      $xml.='<g:description>'.$print_desc.$XMLlang['size0'].$MinSize.'</g:description>'."\r"."\n";
   }
   else
   {
-      $xml.='<g:description>'.'Dimensions : '.$row['minSize'].' to '.$row['maxSize'].' '.$row['units'].'</g:description>'."\r"."\n";
+      $xml.='<g:description>'.$print_desc.$XMLlang['size1'].$MinSize.$XMLlang['size2'].$MaxSize.$XMLlang['size3'].'</g:description>'."\r"."\n";
   }
   
     $xml.='<g:availability>'.'in_stock'.'</g:availability>'."\r"."\n";
     $xml.='<g:condition>'.'new'.'</g:condition>'."\r"."\n";
     $xml.='<g:brand>'.$conf['PayPalShoppingCart']['Brand'].'</g:brand>'."\r"."\n";
     $xml.='<g:price>'.$row['price'].' '.$row['currency'].'</g:price>'."\r"."\n";
-    $xml.='<g:link>'.$link.'</g:link>'."\r"."\n";
+    $xml.='<g:link>'.$links['item_url'].'</g:link>'."\r"."\n";
     $xml.='<g:custom_label_0>'.$row['categoryName'].'</g:custom_label_0>'."\r"."\n";
     $xml.='<g:custom_label_1>'.$row['categoryPL'].'</g:custom_label_1>'."\r"."\n";
     
   if ( $ref_cat)
   {
-    $xml.='<g:image_link>'.$image_link.'</g:image_link>'."\r"."\n";      
+    $xml.='<g:image_link>'.$links['image_link1'].'</g:image_link>'."\r"."\n";      
+    $xml.='<g:additionnal_image_link>'.$links['image_link2'].'</g:additionnal_image_link>'."\r"."\n";      
     $xml.='<g:google_product_category>'.$conf['PayPalShoppingCart']['GoogleId'].'</g:google_product_category>'."\r"."\n";
     $xml.='<g:fb_product_category>'.$conf['PayPalShoppingCart']['FBId'].'</g:fb_product_category>'."\r"."\n";
-    $xml.='<g:shipping>'.$row['countryISOcode'].'::GROUND:'.$row['shipping'].' '.$row['currency'].'</g:shipping>'."\r"."\n";    
    }
   else
   {
     if ( isset($row['countryISOcode']) and strlen($row['countryISOcode'])==2 )
     {
        $xml.='<g:override>'.$row['countryISOcode'].'</g:override>'."\r"."\n";
-       $xml.='<g:shipping>'.$row['countryISOcode'].'::GROUND:'.$row['shipping'].' '.$row['currency'].'</g:shipping>'."\r"."\n";      
     }
   }
+
+  $xml.='<g:shipping>'."\r"."\n";
+    $xml.='<g:country>'.$row['countryISOcode'].'</g:country>'."\r"."\n";
+    $xml.='<g:service>'.'Tracked delivery'.'</g:service>'."\r"."\n";
+    $xml.='<g:price>'.$row['shipping'].' '.$row['currency'].'</g:price>'."\r"."\n";
+    $xml.='<g:min_handling_time>1</g:min_handling_time>'."\r"."\n";
+    $xml.='<g:max_handling_time>3</g:max_handling_time>'."\r"."\n";
+    $xml.='<g:min_transit_time>7</g:min_transit_time>'."\r"."\n";
+    $xml.='<g:max_transit_time>14</g:max_transit_time>'."\r"."\n";
+  $xml.='</g:shipping>'."\r"."\n";  
 
   $xml.='</item>'."\r"."\n";
     

@@ -38,7 +38,6 @@ $lang['Data deleted'] = 'Suppression des donn&eacute;es effectu&eacute;e';
 $lang['Data updated'] = 'Mise &agrave; jour des donn&eacute;es effectu&eacute;e';
 $lang['Delete data'] = 'Supprimer cette information';
 $lang['Fixed shipping cost'] = 'Frais d\'envoi fixes';
-$lang['Length'] = 'Largeur';
 $lang['Material'] = 'Type de support';
 $lang['Materials'] = 'Types de support';
 $lang['Min. Resolution'] = 'R&eacute;solution mini.';

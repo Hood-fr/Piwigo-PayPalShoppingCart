@@ -245,7 +245,7 @@ function pppppCleanPromo(){
           <option value="{$ppppp_row_country.Currency}&{$ppppp_row_country.CountryCode}"{if $ppppp_row_country.CountryCode==$ppppp_country_code} selected{/if}>{$ppppp_row_country.CountryName} ({$ppppp_row_country.Currency})</option>  
 	  {/foreach}
       </select>
-      {if isset($ppppp_currency)}
+      {if isset($ppppp_country_code)}
       <input type="submit" value="{\'Change country\'|@translate}">
       {else}
       <input type="submit" value="{\'Select country\'|@translate}">
@@ -276,7 +276,7 @@ function pppppCleanPromo(){
     <form name="ppppp_size" action="{$ppppp_sizes_action}" method="get">
         <select name="size" onChange="pppppUpdateSize()"> 
 	  {foreach from=$ppppp_array_sizes item=ppppp_row_sizes}	
-          <option value="{$ppppp_row_sizes.Id}"{if $ppppp_row_sizes.Id==$ppppp_sizes_id} selected{/if}>{$ppppp_row_sizes.Size}</option>
+          <option value="{$ppppp_row_sizes.Id}"{if $ppppp_row_sizes.Id==$ppppp_sizes_id} selected{/if}>{$ppppp_row_sizes.Size} ({$ppppp_row_sizes.AltSize})</option>
 	  {/foreach}
         </select>
     </form>
@@ -478,7 +478,7 @@ function ppppp_picture_handler($content,$current_picture)
         ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T7 ON T6.Ratio=T7.Id'.
         ' WHERE T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
         ' AND T7.RatioValue='.$IMG_ratio.
-        ' AND T6.Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T6.MinRes*IF(T6.Units="cm", 2.54, IF(T6.Units="ft", 1/12, 1))'.
+        ' AND T6.Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T6.MinRes'.
         ' ORDER BY T1.Price,T3.Id ;';
  // echo '<pre>'; print_r($query_material); echo '</pre>';
   $result_material = pwg_query($query_material);
@@ -502,7 +502,7 @@ function ppppp_picture_handler($content,$current_picture)
        {
          $material_Id=$first_row_material_index;
        }
-     $query_sizes='SELECT DISTINCT T2.Id AS Id, T2.SizeName AS Size, T3.RatioValue, T2.Height AS Height, T2.Length AS Length, T2.Units'.
+     $query_sizes='SELECT DISTINCT T2.Id AS Id, T2.SizeName AS Size, T2.AltSizeName AS AltSize, T3.RatioValue, T2.Height_cm AS Height, T2.Width_cm AS Width'.
              ' FROM '.PPPPP_PRICE_TABLE.' T1'.
              ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
              ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id'.
@@ -510,7 +510,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T3 ON T2.Ratio=T3.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T4 ON T1.Provider = T4.Provider'.
              ' WHERE T3.RatioValue='.$IMG_ratio.
-             ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
+             ' AND Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
              ' AND T4.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
              ' ORDER BY T1.Price, Height;';
@@ -543,7 +543,7 @@ function ppppp_picture_handler($content,$current_picture)
        {
          $sizes_Id=$first_row_sizes_index;
        }
-     $query_option1='SELECT DISTINCT T3.Id AS Id, T3.OptionName AS SupportOption1, T4.RatioValue, T2.Height AS Height, T2.Length AS Length, T2.Units, T1.Price, T1.Shipping'.
+     $query_option1='SELECT DISTINCT T3.Id AS Id, T3.OptionName AS SupportOption1, T4.RatioValue, T2.Height_cm AS Height, T2.Width_cm AS Width, T1.Price, T1.Shipping'.
              ' FROM '.PPPPP_PRICE_TABLE.' T1'.
              ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
              ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id'.
@@ -552,7 +552,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio=T4.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
              ' WHERE T4.RatioValue='.$IMG_ratio.
-             ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
+             ' AND Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
              ' AND T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
              ' AND T2.Id="'.$sizes_Id."\"".
@@ -586,7 +586,7 @@ function ppppp_picture_handler($content,$current_picture)
        {
          $option1_Id=$first_row_option1_index;
         }
-      $query_option2='SELECT DISTINCT T8.OptionName AS SupportOption2, T4.RatioValue, T2.Height AS Height, T2.Length AS Length, T2.Units, T1.Price, T1.Shipping'.
+      $query_option2='SELECT DISTINCT T8.OptionName AS SupportOption2, T4.RatioValue, T2.Height_cm AS Height, T2.Width_cm AS Width, T1.Price, T1.Shipping'.
              ' FROM '.PPPPP_PRICE_TABLE.' T1'.
              ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
              ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id'.
@@ -596,7 +596,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio=T4.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
              ' WHERE T4.RatioValue='.$IMG_ratio.
-             ' AND Height<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1))'.
+             ' AND Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
              ' AND T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
              ' AND T2.Id="'.$sizes_Id."\"".
@@ -650,8 +650,9 @@ function ppppp_picture_handler($content,$current_picture)
     if(isset($_POST['currency']) and isset($array_currency[ $_POST['currency'] ]))
     {
       $curr=substr($_POST['currency'],0,3);
-      $country_code=substr($_POST['currency'],4,3);
+      $country_code=substr($_POST['currency'],4,2);
       $conf['PayPalShoppingCart']['currency'] = $curr;
+      $conf['PayPalShoppingCart']['country'] = $country_code;
       conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
 
       $page['infos'][] = l10n('Your configuration settings are saved');
@@ -668,8 +669,8 @@ function ppppp_picture_handler($content,$current_picture)
       'ppppp_material_id' => $material_Id,
       'ppppp_sizes_id' => $sizes_Id,
       'ppppp_option1_id' => $option1_Id,
-      'ppppp_country_code' => $country_code,
-      'ppppp_fixed_shipping' => $conf['PayPalShoppingCart']['fixed_shipping'],
+      'ppppp_country_code' => $conf['PayPalShoppingCart']['country'],
+ //     'ppppp_fixed_shipping' => $conf['PayPalShoppingCart']['fixed_shipping'],
       'ppppp_currency' => $conf['PayPalShoppingCart']['currency'],
  //     'ppppp_e_mail' => get_webmaster_mail_address(),
       'ppppp_e_mail' => $conf['PayPalShoppingCart']['PayPalAccount'],

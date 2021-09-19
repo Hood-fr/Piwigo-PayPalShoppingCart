@@ -448,12 +448,6 @@ SELECT id,name,uppercats,global_rank
     break;
   
     case 'size':
-                
-    $array_units = array(
-      'cm'=>'cm',
-      'in'=>'inches',
-      'ft'=>'feet'
-      );
     
     if (isset($_POST['delete']))
     {
@@ -463,28 +457,30 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['SizeName']) and isset($_POST['Ratio']) and isset($_POST['Height']) and isset($_POST['Length']) and isset($_POST['MinRes']))
-    {
+    else if (isset($_POST['SizeName']) and isset($_POST['AltSizeName']) and isset($_POST['Ratio']) and isset($_POST['Height_cm']) and isset($_POST['Width_cm']) and isset($_POST['Height_in']) and isset($_POST['Width_in']) and isset($_POST['MinRes']))
+    {      
       single_insert(
         PPPPP_SIZES_TABLE,
         array(
           'SizeName' => pwg_db_real_escape_string($_POST['SizeName']),
+          'AltSizeName' => pwg_db_real_escape_string($_POST['AltSizeName']),
           'Ratio' => pwg_db_real_escape_string($_POST['Ratio']),
-          'Height' => pwg_db_real_escape_string($_POST['Height']),
-          'Length' => pwg_db_real_escape_string($_POST['Length']),
-          'Units' => pwg_db_real_escape_string($_POST['Units']),
-          'MinRes' => pwg_db_real_escape_string($_POST['minres']),
+          'Height_cm' => pwg_db_real_escape_string($_POST['Height_cm']),
+          'Width_cm' => pwg_db_real_escape_string($_POST['Width_cm']),
+          'Height_in' => pwg_db_real_escape_string($_POST['Height_in']),
+          'Width_in' => pwg_db_real_escape_string($_POST['Width_in']),
+          'MinRes' => pwg_db_real_escape_string($_POST['MinRes']),
             )
         );
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $query='SELECT DISTINCT T1.Id AS Id, SizeName, T2.RatioName AS Ratio, Length, Height, Units, MinRes'.
+    $query='SELECT DISTINCT T1.Id AS Id, SizeName, AltSizeName, T2.RatioName AS Ratio, Width_cm, Height_cm,  Width_in, Height_in, MinRes'.
             ' FROM '.PPPPP_SIZES_TABLE.' T1'.
             ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T2'.
             ' ON T1.Ratio=T2.Id'.
-            ' ORDER BY Ratio, Units, Height;';
+            ' ORDER BY Ratio, Height_cm;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
@@ -497,12 +493,6 @@ SELECT id,name,uppercats,global_rank
     {
       $template->append('ppppp_array_ratio',$row);
     }
-
-    $template->assign(
-    array(
-      'ppppp_array_units' => $array_units,
-      )
-    );
  
     break;
   
@@ -599,7 +589,7 @@ SELECT id,name,uppercats,global_rank
     }
     
     $query='SELECT DISTINCT T1.Id AS Id, T2.SupportMaterial AS Support, T3.OptionName AS SupportOption1, T4.OptionName AS SupportOption2,'.
-            ' T5.SizeName AS Size, T6.RatioName AS Ratio, T5.Height AS Height, T5.Length AS Length, T5.Units AS Units,'.
+            ' T5.SizeName AS Size, T5.AltSizeName AS AltSize, T6.RatioName AS Ratio, T5.Height_cm AS Height, T5.Width_cm AS Width, '.
             ' T8.Name AS Provider, T1.Price, T1.Shipping, T7.Currency AS Currency, T9.Material as SupportMaterial'.
             ' FROM '.PPPPP_PRICE_TABLE.' T1'.
             ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T2 ON T1.Support = T2.Id'.
@@ -617,11 +607,11 @@ SELECT id,name,uppercats,global_rank
       $template->append('ppppp_array_price',$row);
     }
     
-    $query='SELECT DISTINCT T1.Id AS Id, SizeName, T2.RatioName AS Ratio, Length, Height, Units'.
+    $query='SELECT DISTINCT T1.Id AS Id, SizeName, AltSizeName, T2.RatioName AS Ratio, Width_cm, Height_cm'.
             ' FROM '.PPPPP_SIZES_TABLE.' T1'.
             ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T2'.
             ' ON T1.Ratio=T2.Id'.
-            ' ORDER BY Ratio, Units, Height;';
+            ' ORDER BY Ratio, Height_cm;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
@@ -691,17 +681,105 @@ SELECT id,name,uppercats,global_rank
     if ( $_POST['filename'] != '' )
       $filenameBasis = $_POST['filename'];
       $filename = $_POST['filename'].'_'.$_POST['catalog_country'].'.xml';
-
+      
     set_make_full_url();
 
-    start_xml($filename);
-
-    $query ='SELECT T1.Price AS price, T1.Shipping AS shipping, T5.Currency AS currency, T10.name AS title, T10.comment AS item, T10.file AS file, MIN(T2.Length) AS minSize,'.
-            ' MAX(T2.Length) AS maxSize, T2.Units AS units, T10.path, T7.Material AS item_option, T10.Id AS imageId, T5.CountryCode AS countryISOcode, T12.Id AS categoryId, '.
+      if (isset($_POST['catalog_country']))
+      {
+          $ref_cat=($_POST['catalog_country']==$conf['PayPalShoppingCart']['Ref_country']);
+          $countryCode = $_POST['catalog_country'];
+      }
+      else
+      {
+          $ref_cat=true;
+          $countryCode = $conf['PayPalShoppingCart']['Ref_country'];
+      }
+      
+      switch($countryCode){
+          case 'FR':
+              $XMLlang = array(
+                    'title' => 'Catalogue en-ligne de la boutique Daedalum Photos - France',
+                    'description' => 'Catalogue en-ligne de la boutique Daedalum Photos - France',
+                    'support_poster' => 'Tirage poster sur papier photo mat ou brillant. ',
+                    'support_canvas' => 'Tirage sur toile tendue sur cadre bois. ',
+                    'support_dibond' => 'Tirage sur support aluminium Dibond®, avec option d\'impression directe, d\'impression sur papier photo ou rendu alu brossé. ',
+                    'size0' => 'Dimensions : ',
+                    'size1' => 'Dimensions disponibles de ',
+                    'size2' => ' à ',
+                    'size3' => ' de largeur.',
+                    'units' => 'cm',
+                  );
+              break;
+          case 'US':
+              $XMLlang = array(
+                    'title' => 'Online catalog for Daedalum Photos online shop - United States',
+                    'description' => 'Online catalog for Daedalum Photos online shop - United States',
+                    'support_poster' => 'Poster print on Fuji photo paper with a matte, glossy or silky lamination. ',
+                    'support_canvas' => 'Canvas print stretched on a wooden frame. ',
+                    'support_dibond' => 'Print on Dibond® aluminum plate, with optional direct print, print on Fuji photo paper or brushed aluminium finish. ',
+                    'support' => 'Print on ',
+                    'size0' => 'Size: ',
+                    'size1' => 'Available sizes from ',
+                    'size2' => ' to ',
+                    'size3' => ' wide.',
+                    'units' => 'in',
+                  );
+              break;
+          case 'UK':
+              $XMLlang = array(
+                    'title' => 'Online catalog for Daedalum Photos online shop - United Kingdom',
+                    'description' => 'Online catalog for Daedalum Photos online shop - United Kingdom',
+                    'support_poster' => 'Poster print on Fuji photo paper with a matte, glossy or silky lamination. ',
+                    'support_canvas' => 'Canvas print stretched on a wooden frame. ',
+                    'support_dibond' => 'Print on Dibond® aluminum plate, with optional direct print, print on Fuji photo paper or brushed aluminium finish. ',
+                    'support' => 'Print on ',
+                    'size0' => 'Size: ',
+                    'size1' => 'Available sizes from ',
+                    'size2' => ' to ',
+                    'size3' => ' wide.',
+                    'units' => 'cm',
+                  );
+              break;
+          case 'CA':
+              $XMLlang = array(
+                    'title' => 'Online catalog for Daedalum Photos online shop - Canada',
+                    'description' => 'Online catalog for Daedalum Photos online shop - Canada',
+                    'support_poster' => 'Poster print on Fuji photo paper with a matte, glossy or silky lamination. ',
+                    'support_canvas' => 'Canvas print stretched on a wooden frame. ',
+                    'support_dibond' => 'Print on Dibond® aluminum plate, with optional direct print, print on Fuji photo paper or brushed aluminium finish. ',
+                    'support' => 'Print on ',
+                    'size0' => 'Size: ',
+                    'size1' => 'Available sizes from ',
+                    'size2' => ' to ',
+                    'size3' => ' wide.',
+                    'units' => 'cm',
+                  );
+              break;
+          default:
+              $XMLlang = array(
+                    'title' => 'Online catalog for Daedalum Photos online shop',
+                    'description' => 'Online catalog for Daedalum Photos online shop',
+                    'support_poster' => 'Poster print on Fuji photo paper. ',
+                    'support_canvas' => 'Canvas print stretched on a wooden frame. ',
+                    'support_dibond' => 'Print on Dibond&® aluminum plate. ',
+                    'support' => 'Print on ',
+                    'size0' => 'Size: ',
+                    'size1' => 'Available sizes from ',
+                    'size2' => ' to ',
+                    'size3' => ' wide.',
+                    'units' => 'cm',
+                  );
+              break;
+          }
+      
+ 
+    $query ='SELECT T1.Price AS price, T1.Shipping AS shipping, T5.Currency AS currency, T10.name AS title, T10.comment AS item, T10.file AS file, MIN(T2.Width_cm) AS minSize_cm, MAX(T2.Width_cm) AS maxSize_cm,'.
+            ' MIN(T2.Width_in) AS minSize_in, MAX(T2.Width_in) AS maxSize_in, T10.path, T7.Material AS item_option, T10.Id AS imageId, T5.CountryCode AS countryISOcode, T12.Id AS categoryId, T9.RatioValue as Ratio, '.
             ' T12.name AS categoryName, T12.permalink as categoryPL '.
            'FROM '.PPPPP_PRICE_TABLE.' T1 '.
            'CROSS JOIN '.IMAGES_TABLE.' T10 '.
            'LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size = T2.Id '.
+           'LEFT JOIN '.PPPPP_RATIO_TABLE.' T9 ON T2.Ratio = T9.Id '.
            'LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id '.
            'LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T7 ON T6.SupportMaterial = T7.Id '.
            'LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T6.SupportOption1 = T3.Id '.
@@ -711,8 +789,8 @@ SELECT id,name,uppercats,global_rank
            'LEFT JOIN '.IMAGE_CATEGORY_TABLE.' T11 ON T10.Id = T11.image_Id '.
            'LEFT JOIN '.CATEGORIES_TABLE.' T12 ON T11.category_id = T12.Id '.
            'WHERE T4.RatioValue= IF(T10.width>T10.height, ROUND(T10.width/T10.height, 1), ROUND(T10.height/T10.width, 1)) '.
-           'AND T2.Height<T10.height*'.$min_res_tolerance.'/T2.MinRes*IF(T2.Units="cm", 2.54, IF(T2.Units="ft", 1/12, 1)) '.
-           'AND T5.CountryCode = "'.$_POST['catalog_country'].'" '.
+           'AND T2.Height_in<T10.height*'.$min_res_tolerance.'/T2.MinRes '.
+           'AND T5.CountryCode = "'.$countryCode.'" '.
            'AND T12.status = "public" '.
            'AND T12.visible = "true" '.
            'AND T12.paypal_active = TRUE '.
@@ -722,31 +800,30 @@ SELECT id,name,uppercats,global_rank
   //echo '<pre>'; print_r($query); echo '</pre>';
       $result = pwg_query($query);
       
-      if (isset($_POST['catalog_country']))
-      {
-          $ref_cat=($_POST['catalog_country']==$conf['PayPalShoppingCart']['Ref_country']);
-      }
-      else
-      {
-          $ref_cat=true;
-      }    
       
-      while ($row = pwg_db_fetch_assoc($result))
+    //ECRITURE DU FICHIER XML (fonctions définies dans FB_catalog.php)  
+    start_xml($filename, $XMLlang);
+
+    
+    while ($row = pwg_db_fetch_assoc($result))
       {
          $subquery = 'SELECT * FROM '.IMAGES_TABLE.' T1 WHERE T1.Id = '.$row['imageId'].' LIMIT 1'; 
          $imgInfos = pwg_db_fetch_assoc(pwg_query($subquery));
-         $link = make_picture_url( array(
-        'image_id' => $row['imageId'],
-        'image_file' => $row['file'],
-        'category' => array
-                            (
-                              'id' => $row['categoryId'],
-                              'name' => $row['categoryName'],
-                              'permalink' => $row['categoryPL']
-                            ),
-        ) );
-         $image_link = DerivativeImage::url(IMG_SMALL, $imgInfos);
-         add_item($row, $ref_cat, $conf, $link, $image_link);
+         $links=array(
+         'item_url' =>   make_picture_url( array(
+                    'image_id' => $row['imageId'],
+                    'image_file' => $row['file'],
+                    'category' => array
+                        (
+                          'id' => $row['categoryId'],
+                          'name' => $row['categoryName'],
+                          'permalink' => $row['categoryPL']
+                        ),
+                    ) ),
+          'image_link1' => DerivativeImage::url(IMG_SMALL, $imgInfos),
+          'image_link2' => DerivativeImage::url(IMG_MEDIUM, $imgInfos),
+           );
+         add_item($row, $ref_cat, $conf, $links, $XMLlang);
       }
 
     unset_make_full_url();
@@ -766,7 +843,7 @@ SELECT id,name,uppercats,global_rank
 
     if (isset($_POST['catalog_country']))
     {
-        $template->assign('ppppp_catalog_country', $_POST['catalog_country']);
+        $template->assign('ppppp_catalog_country', $countryCode);
     }
     $template->assign( array(
       'FILENAME' => $filename,
