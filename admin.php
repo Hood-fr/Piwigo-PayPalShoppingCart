@@ -564,6 +564,9 @@ SELECT id,name,uppercats,global_rank
 
       case 'price':
     
+         
+    $where_clause =' WHERE 1';      
+          
     if (isset($_POST['delete']))
     {
       check_input_parameter('delete', $_POST, false, PATTERN_ID);
@@ -587,6 +590,47 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
+    else if (isset($_POST['filter']))
+    {
+      $template->assign('ppppp_material_filt',$_POST['filtMaterial']);
+      $template->assign('ppppp_option1_filt',$_POST['filtOption1']);
+      $template->assign('ppppp_option2_filt',$_POST['filtOption2']);
+      $template->assign('ppppp_ratio_filt',$_POST['filtRatio']);
+      $template->assign('ppppp_size_filt',$_POST['filtSize']);
+      $template->assign('ppppp_altsize_filt',$_POST['filtAltSize']);
+      $template->assign('ppppp_height_filt',$_POST['filtHeight']);
+      $template->assign('ppppp_width_filt',$_POST['filtWidth']);
+      $template->assign('ppppp_provider_filt',$_POST['filtProvider']);
+      
+     $clause_count=false; 
+     $where_clause =' WHERE ';      
+     if($_POST['filtMaterial']!='*'){ $where_clause.='T9.Id = '.$_POST['filtMaterial']; $clause_count=true;}
+     if($_POST['filtOption1']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T3.Id = '.$_POST['filtOption1']; $clause_count=true;}
+     if($_POST['filtOption2']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T4.Id = '.$_POST['filtOption2']; $clause_count=true;}     
+     if($_POST['filtSize']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.SizeName = "'.$_POST['filtSize'].'"'; $clause_count=true;}     
+     if($_POST['filtAltSize']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.AltSizeName = "'.$_POST['filtAltSize'].'"'; $clause_count=true;}     
+     if($_POST['filtRatio']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T6.Id = '.$_POST['filtRatio']; $clause_count=true;}     
+     if($_POST['filtHeight']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.Height_cm = '.$_POST['filtHeight']; $clause_count=true;}     
+     if($_POST['filtWidth']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.Width_cm = '.$_POST['filtWidth']; $clause_count=true;}     
+     if($_POST['filtProvider']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T8.Id = '.$_POST['filtProvider']; $clause_count=true;}     
+     if(!$clause_count){$where_clause.='1';}
+      
+    }
+    else if (isset($_POST['reset']))
+    {
+      $template->assign('ppppp_material_filt','*');
+      $template->assign('ppppp_option1_filt','*');
+      $template->assign('ppppp_option2_filt','*');
+      $template->assign('ppppp_ratio_filt','*');
+      $template->assign('ppppp_size_filt','*');
+      $template->assign('ppppp_altsize_filt','*');
+      $template->assign('ppppp_height_filt','*');
+      $template->assign('ppppp_width_filt','*');
+      $template->assign('ppppp_provider_filt','*');    
+
+      $where_clause =' WHERE 1';        
+    }    
+//    echo('<pre>'.$where_clause.'</pre>' );
     
     $query='SELECT DISTINCT T1.Id AS Id, T2.SupportMaterial AS Support, T3.OptionName AS SupportOption1, T4.OptionName AS SupportOption2,'.
             ' T5.SizeName AS Size, T5.AltSizeName AS AltSize, T6.RatioName AS Ratio, T5.Height_cm AS Height, T5.Width_cm AS Width, '.
@@ -600,7 +644,9 @@ SELECT id,name,uppercats,global_rank
             ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T6 ON T5.Ratio = T6.Id'.
             ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T7 ON T1.Provider = T7.Provider'.
             ' LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T8 ON T1.Provider = T8.Id'.
+            $where_clause.
             ' ORDER BY Provider, Support, Size;';
+//    echo('<pre>'.$query.'</pre>' );
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
@@ -643,7 +689,76 @@ SELECT id,name,uppercats,global_rank
     {
       $template->append('ppppp_array_provider',$row);
     }
-        
+
+// QUERIES pour alimenter les selecteurs de filtres
+
+    $query='SELECT DISTINCT Id, Material FROM '.PPPPP_MATERIAL_TABLE.' ORDER BY Material;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_material_filt',$row);
+    }
+
+    $query='SELECT DISTINCT T2.Id, T2.OptionName FROM '.PPPPP_SUPPORT_TABLE.' T1 LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption1 = T2.Id ORDER BY T2.Id;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_option1_filt',$row);
+    }
+
+    $query='SELECT DISTINCT T2.Id, T2.OptionName FROM '.PPPPP_SUPPORT_TABLE.' T1 LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption2 = T2.Id ORDER BY T2.Id;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_option2_filt',$row);
+    }
+
+    
+    $query='SELECT DISTINCT Id, RatioName FROM '.PPPPP_RATIO_TABLE.' ORDER BY RatioValue;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_ratio_filt',$row);
+    }
+
+    
+    $query='SELECT DISTINCT SizeName FROM '.PPPPP_SIZES_TABLE.' ORDER BY Width_cm, Height_cm;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_size_filt',$row);
+    }
+    
+    $query='SELECT DISTINCT AltSizeName FROM '.PPPPP_SIZES_TABLE.' ORDER BY Width_cm, Height_cm;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_altsize_filt',$row);
+    }
+ 
+    $query='SELECT DISTINCT Height_cm FROM '.PPPPP_SIZES_TABLE.' ORDER BY Height_cm;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_height_filt',$row);
+    }
+ 
+    $query='SELECT DISTINCT Width_cm FROM '.PPPPP_SIZES_TABLE.' ORDER BY Width_cm;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_width_filt',$row);
+    }    
+    
+    $query='SELECT DISTINCT Id, Name FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_provider_filt',$row);
+    }
+    
+    
+    
     break;
 
   case 'FB_catalog':

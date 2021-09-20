@@ -281,13 +281,13 @@ jQuery(document).ready(function() {
 <table class=table2>
 <tr class=throw>
 <th>{'Id'|@translate}</th>
-<th>{'Size'|@translate}</th>
-<th>{'AltSize'|@translate}</th>
+<th>{'Size'|@translate}<br>(cm)</th>
+<th>{'Size'|@translate}<br>(in)</th>
 <th>{'Ratio'|@translate}</th>
-<th>{'Width'|@translate} (cm)</th>
-<th>{'Height'|@translate} (cm)</th>
-<th>{'Width'|@translate} (in)</th>
-<th>{'Height'|@translate} (in)</th>
+<th>{'Width'|@translate}<br>(cm)</th>
+<th>{'Height'|@translate}<br>(cm)</th>
+<th>{'Width'|@translate}<br>(in)</th>
+<th>{'Height'|@translate}<br>(in)</th>
 <th>{'Min. Resolution'|@translate}</th>
 <th>{'Action'|@translate}</th>
 </tr>
@@ -352,20 +352,94 @@ jQuery(document).ready(function() {
 <table class=table2>
 <tr class=throw>
 <th>{'Id'|@translate}</th>
-<th>{'Support'|@translate}</th>
+<th>{'Material'|@translate}</th>
 <th>{'Option #1'|@translate}</th>
-<th>{'Option #1'|@translate}</th>
-<th>{'Size'|@translate}</th>
+<th>{'Option #2'|@translate}</th>
+<th>{'Size'|@translate}<br>(cm)</th>
+<th>{'Size'|@translate}<br>(in)</th>
 <th>{'Ratio'|@translate}</th>
-<th>{'Height'|@translate}</th>
-<th>{'Width'|@translate}</th>
-<th>{'Units'|@translate}</th>
+<th>{'Height'|@translate}<br>(cm)</th>
+<th>{'Width'|@translate}<br>(cm)</th>
 <th>{'Provider'|@translate}</th>
 <th>{'Price'|@translate}</th>
 <th>{'Shipping fees'|@translate}</th>
 <th>{'Currency'|@translate}</th>
-    <th>{'Action'|@translate}</th>
+<th colspan="2">{'Action'|@translate}</th>
 </tr>
+<tr>
+    <form method=post>
+    <fieldset>
+    <td><input type=hidden name=filter value='{$ppppp_row_filter_act}'></td>
+    <td align="center"><select name="filtMaterial">
+        <option value="*"{if $ppppp_material_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        {foreach from=$ppppp_array_material_filt item=ppppp_row_material_filt}
+        <option value="{$ppppp_row_material_filt.Id}"{if $ppppp_row_material_filt.Id==$ppppp_material_filt} selected{/if}>{$ppppp_row_material_filt.Material|@translate}</option>
+        {/foreach}
+    </select></td>
+    <td align="center"><select name="filtOption1">
+        <option value="*"{if $ppppp_option1_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        {foreach from=$ppppp_array_option1_filt item=ppppp_row_option1_filt}
+        <option value="{$ppppp_row_option1_filt.Id}"{if $ppppp_row_option1_filt.Id==$ppppp_option1_filt} selected{/if}>{$ppppp_row_option1_filt.OptionName|@translate}</option>
+        {/foreach}
+    </select></td>
+    <td align="center"><select name="filtOption2">
+        <option value="*"{if $ppppp_option2_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        {foreach from=$ppppp_array_option2_filt item=ppppp_row_option2_filt}
+        <option value="{$ppppp_row_option2_filt.Id}"{if $ppppp_row_option2_filt.Id==$ppppp_option2_filt} selected{/if}>{$ppppp_row_option2_filt.OptionName|@translate}</option>
+        {/foreach}
+    </select></td>
+    <td align="center"><select name="filtSize">
+        <option value="*"{if $ppppp_size_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        {foreach from=$ppppp_array_size_filt item=ppppp_row_size_filt}
+        <option value="{$ppppp_row_size_filt.SizeName}"{if $ppppp_row_size_filt.SizeName==$ppppp_size_filt} selected{/if}>{$ppppp_row_size_filt.SizeName}</option>
+        {/foreach}
+    </select></td>
+    <td align="center"><select name="filtAltSize">
+        <option value="*"{if $ppppp_altsize_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        {foreach from=$ppppp_array_altsize_filt item=ppppp_row_altsize_filt}
+        <option value="{$ppppp_row_altsize_filt.AltSizeName}"{if $ppppp_row_altsize_filt.AltSizeName==$ppppp_altsize_filt} selected{/if}>{$ppppp_row_altsize_filt.AltSizeName}</option>
+        {/foreach}
+    </select></td>
+    <td align="center"><select name="filtRatio">
+        <option value="*"{if $ppppp_ratio_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        {foreach from=$ppppp_array_ratio_filt item=ppppp_row_ratio_filt}
+        <option value="{$ppppp_row_ratio_filt.Id}"{if $ppppp_row_ratio_filt.Id==$ppppp_ratio_filt} selected{/if}>{$ppppp_row_ratio_filt.RatioName|@translate}</option>
+        {/foreach}
+    </select></td>
+    <td align="center"><select name="filtHeight">
+        <option value="*"{if $ppppp_row_height_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        {foreach from=$ppppp_array_height_filt item=ppppp_row_height_filt}
+        <option value="{$ppppp_row_height_filt.Height_cm}"{if $ppppp_row_height_filt.Height_cm==$ppppp_height_filt} selected{/if}>{$ppppp_row_height_filt.Height_cm|@translate}</option>
+        {/foreach}
+    </select></td>
+    <td align="center"><select name="filtWidth">
+        <option value="*"{if $ppppp_row_width_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        {foreach from=$ppppp_array_width_filt item=ppppp_row_width_filt}
+        <option value="{$ppppp_row_width_filt.Width_cm}"{if $ppppp_row_width_filt.Width_cm==$ppppp_width_filt} selected{/if}>{$ppppp_row_width_filt.Width_cm|@translate}</option>
+        {/foreach}
+    </select></td>
+    <td align="center"><select name="filtProvider">
+        <option value="*"{if $ppppp_row_provider_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        {foreach from=$ppppp_array_provider_filt item=ppppp_row_provider_filt}
+        <option value="{$ppppp_row_provider_filt.Id}"{if $ppppp_row_provider_filt.Id==$ppppp_provider_filt} selected{/if}>{$ppppp_row_provider_filt.Name}</option>
+        {/foreach}
+    </select></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td align="center">
+        <input type=submit value="{'Apply filter'|@translate}"></form>
+
+    </td>
+    </form>
+    <td align="center">
+        <form method=post>
+            <input type=hidden name=reset><input type=submit value="{'Reset filter'|@translate}">
+        </form>
+    </td>    
+
+</tr>
+
 {foreach from=$ppppp_array_price item=ppppp_row_price name=ppppp_row_price_loop}
 <tr class="{if $smarty.foreach.ppppp_row_price_loop.index is odd}row1{else}row2{/if}">
 <td align="center">{$ppppp_row_price.Id}</td>
@@ -373,18 +447,24 @@ jQuery(document).ready(function() {
 <td align="center">{$ppppp_row_price.SupportOption1}</td>
 <td align="center">{$ppppp_row_price.SupportOption2}</td>
 <td align="center">{$ppppp_row_price.Size}</td>
+<td align="center">{$ppppp_row_price.AltSize}</td>
 <td align="center">{$ppppp_row_price.Ratio}</td>
 <td align="center">{$ppppp_row_price.Height}</td>
 <td align="center">{$ppppp_row_price.Width}</td>
-<td align="center">{$ppppp_row_price.Units}</td>
 <td align="center">{$ppppp_row_price.Provider}</td>
 <td align="center">{$ppppp_row_price.Price}</td>
 <td align="center">{$ppppp_row_price.Shipping}</td>
 <td align="center">{$ppppp_row_price.Currency}</td>
-    <td>
+<td align="center">
 <form method=post>
 <input type=hidden name=delete value='{$ppppp_row_price.Id}'>
 <input type=submit value="{'Delete data'|@translate}">
+</form>
+</td>
+<td align="center">
+<form method=post>
+<input type=hidden name=edit value='{$ppppp_row_price.Id}'>
+<input type=submit value="{'Edit data'|@translate}">
 </form>
 </td>
 </tr>
