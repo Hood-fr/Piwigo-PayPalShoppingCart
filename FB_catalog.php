@@ -68,12 +68,14 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
     $lastPos = 0;
     $MaxPos = strlen($row['title']);
 
-    while (($lastPos = strpos($row['title'], ' ', $lastPos))!== false) {
-        if($lastPos<65)
-        {
-            $MaxPos=$lastPos;
-        }
-        $lastPos = $lastPos + 1; 
+    if ($MaxPos>65)
+    {
+        while (($lastPos = strpos($row['title'], ' ', $lastPos))!== false or ($lastPos = strpos($row['title'], ' - ', $lastPos))!== false) {
+            if($lastPos<65)
+            {
+                $MaxPos=$lastPos;
+            }
+            $lastPos = $lastPos + 1; 
     }
     
     $croppedTitle =substr($row['title'],0,$MaxPos);
