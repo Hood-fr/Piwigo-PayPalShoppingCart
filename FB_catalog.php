@@ -76,8 +76,8 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
                 $MaxPos=$lastPos;
             }
             $lastPos = $lastPos + 1; 
+        }
     }
-    
     $croppedTitle =substr($row['title'],0,$MaxPos);
     
      $xml.='<g:title>'.htmlspecialchars($croppedTitle).'</g:title>'."\r"."\n";
