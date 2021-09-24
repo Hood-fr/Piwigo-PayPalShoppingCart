@@ -70,7 +70,7 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
 
     if ($MaxPos>65)
     {
-        while (($lastPos = strpos($row['title'], ' ', $lastPos))!== false or ($lastPos = strpos($row['title'], ' - ', $lastPos))!== false) {
+        while (($lastPos = strpos($row['title'], ' ', $lastPos))!== false) {
             if($lastPos<65)
             {
                 $MaxPos=$lastPos;
@@ -78,7 +78,13 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
             $lastPos = $lastPos + 1; 
         }
     }
+    
     $croppedTitle =substr($row['title'],0,$MaxPos);
+    if (strcmp(substr($croppedTitle, -2),' -')==0)
+    {
+       $croppedTitle=substr($croppedTitle,0,$MaxPos-2); 
+    }
+
     
      $xml.='<g:title>'.htmlspecialchars($croppedTitle).'</g:title>'."\r"."\n";
   }
