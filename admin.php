@@ -782,7 +782,10 @@ SELECT id,name,uppercats,global_rank
         $template->assign('ppppp_fb_ref_country', $conf['PayPalShoppingCart']['Ref_country']);
     }
     
-    $query='SELECT T1.Id AS Id, T1.CountryName, T1.CountryCode, T1.Currency, T2.Name AS SupplierName FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider=T2.Id ORDER BY T1.CountryName;';
+    $query='SELECT DISTINCT T2.Id AS Id, T2.CountryName, T2.CountryCode, T2.Currency, T3.Name AS SupplierName FROM '.PPPPP_PRICE_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T2 ON T1.Provider=T2.Provider'.
+            ' LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T3 ON T1.Provider=T3.Id'.
+            ' ORDER BY T2.CountryName;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
