@@ -78,7 +78,7 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
     
     $croppedTitle =substr($row['title'],0,$MaxPos);
     
-     $xml.='<g:title>'.$croppedTitle.'</g:title>'."\r"."\n";
+     $xml.='<g:title>'.htmlspecialchars($croppedTitle).'</g:title>'."\r"."\n";
   }
   
   switch($row['item_option']){
