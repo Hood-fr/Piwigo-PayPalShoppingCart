@@ -64,7 +64,21 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
 
   if ( isset($row['title']) and strlen($row['title'])>0 )
   {
-      $xml.='<g:title>'.htmlspecialchars($row['title']).'</g:title>'."\r"."\n";
+    // Limite la longueur du titre à 65 caracteres, en pratique au dernier mot avant le 65 chara  
+    $lastPos = 0;
+    $MaxPos = strlen($row['title']);
+
+    while (($lastPos = strpos($row['title'], ' ', $lastPos))!== false) {
+        if($lastPos<65)
+        {
+            $MaxPos=$lastPos;
+        }
+        $lastPos = $lastPos + 1; 
+    }
+    
+    $croppedTitle =substr($row['title'],0,$MaxPos);
+    
+     $xml.='<g:title>'.$croppedTitle.'</g:title>'."\r"."\n";
   }
   
   switch($row['item_option']){

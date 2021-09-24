@@ -455,7 +455,10 @@ function ppppp_picture_handler($content,$current_picture)
   
   
   $array_currency=array();
-  $query_country='SELECT * FROM '.PPPPP_COUNTRY_TABLE.' '.@$conf['PayPalShoppingCart_country_order_by'].';';
+  $query_country='SELECT DISTINCT T5.*'.
+        ' FROM '.PPPPP_PRICE_TABLE.' T1'.
+        ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
+        @$conf['PayPalShoppingCart_country_order_by'].';';
   $result_country = pwg_query($query_country);
   $country_count=0;
   while($row_country = pwg_db_fetch_assoc($result_country))

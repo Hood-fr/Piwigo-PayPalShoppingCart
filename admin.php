@@ -35,9 +35,9 @@ else
     $page['tab'] = $_GET['tab'];
 
 $tabsheet = new tabsheet();
-$tabsheet->add('currency',
-               l10n('Currency'),
-               $my_base_url.'&amp;tab=currency');
+//$tabsheet->add('currency',
+//               l10n('Currency'),
+//               $my_base_url.'&amp;tab=currency');
 $tabsheet->add('settings',
                l10n('Settings'),
                $my_base_url.'&amp;tab=settings');
@@ -840,7 +840,7 @@ SELECT id,name,uppercats,global_rank
                     'units' => 'in',
                   );
               break;
-          case 'UK':
+          case 'GB':
               $XMLlang = array(
                     'title' => 'Online catalog for Daedalum Photos online shop - United Kingdom',
                     'description' => 'Online catalog for Daedalum Photos online shop - United Kingdom',
@@ -876,7 +876,7 @@ SELECT id,name,uppercats,global_rank
                     'description' => 'Online catalog for Daedalum Photos online shop',
                     'support_poster' => 'Poster print on Fuji photo paper. ',
                     'support_canvas' => 'Canvas print stretched on a wooden frame. ',
-                    'support_dibond' => 'Print on Dibond&® aluminum plate. ',
+                    'support_dibond' => 'Print on Dibond® aluminum plate. ',
                     'support' => 'Print on ',
                     'size0' => 'Size: ',
                     'size1' => 'Available sizes from ',
