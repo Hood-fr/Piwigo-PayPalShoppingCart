@@ -69,32 +69,16 @@ $tabsheet->add('price',
 $tabsheet->add('code',
                l10n('Promo codes'),
                $my_base_url.'&amp;tab=code');			   
-$tabsheet->add('FB_catalog',
-               l10n('Facebook catalog'),
-               $my_base_url.'&amp;tab=FB_catalog');	
+$tabsheet->add('Catalog',
+               l10n('Catalog'),
+               $my_base_url.'&amp;tab=Catalog');	
 $tabsheet->select($page['tab']);
 $tabsheet->assign();
 
 switch($page['tab'])
 {
 
-    case 'settings':
-    
-    if (isset($_POST['PayPalAccountEmail'])and filter_var($_POST['PayPalAccountEmail'], FILTER_VALIDATE_EMAIL))
-    {
-      $conf['PayPalShoppingCart']['PayPalAccount'] = $_POST['PayPalAccountEmail'];
-      conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
-      
-      $page['infos'][] = l10n('Your configuration settings are saved');
-    }
-    elseif (isset($_POST['PayPalAccountEmail'])and !filter_var($_POST['PayPalAccountEmail'], FILTER_VALIDATE_EMAIL))
-    {  
-      $page['infos'][] = l10n('Invalid account. Please make sure you have entered a valid email address.');
-    }
-    
-    $template->assign('ppppp_account', $conf['PayPalShoppingCart']['PayPalAccount']);
-    break;
-    
+// CURRENCY - CURRENCY - CURRENCY - CURRENCY - CURRENCY - CURRENCY - CURRENCY - CURRENCY - CURRENCY - CURRENCY - CURRENCY - CURRENCY - CURRENCY - CURRENCY //
     case 'currency':
     
     $array_currency = array(
@@ -140,7 +124,26 @@ switch($page['tab'])
     
     break;
     
-   case 'albums' :
+// SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS //
+    case 'settings':
+    
+    if (isset($_POST['PayPalAccountEmail'])and filter_var($_POST['PayPalAccountEmail'], FILTER_VALIDATE_EMAIL))
+    {
+      $conf['PayPalShoppingCart']['PayPalAccount'] = $_POST['PayPalAccountEmail'];
+      conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
+      
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    elseif (isset($_POST['PayPalAccountEmail'])and !filter_var($_POST['PayPalAccountEmail'], FILTER_VALIDATE_EMAIL))
+    {  
+      $page['infos'][] = l10n('Invalid account. Please make sure you have entered a valid email address.');
+    }
+    
+    $template->assign('ppppp_account', $conf['PayPalShoppingCart']['PayPalAccount']);
+    break;
+    
+// ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS //
+    case 'albums' :
 
      if (isset($_POST['apply_to_albums']) and in_array($_POST['apply_to_albums'], array('all', 'list')))
      {
@@ -192,81 +195,7 @@ SELECT id,name,uppercats,global_rank
 
      break;
   
- 
-  case 'country':
-    
-      $array_currency = array(
-      'AUD'=>'Australian Dollar',
-      'BRL'=>'Brazilian Real',
-      'CAD'=>'Canadian Dollar',
-      'CZK'=>'Czech Koruna',
-      'DKK'=>'Danish Krone',
-      'EUR'=>'Euro',
-      'HKD'=>'Hong Kong Dollar',
-      'HUF'=>'Hungarian Forint',
-      'ILS'=>'Israeli New Sheqel',
-      'JPY'=>'Japanese Yen',
-      'MYR'=>'Malaysian Ringgit',
-      'MXN'=>'Mexican Peso',
-      'NOK'=>'Norwegian Krone',
-      'NZD'=>'New Zealand Dollar',
-      'PHP'=>'Philippine Peso',
-      'PLN'=>'Polish Zloty',
-      'GBP'=>'Pound Sterling',
-      'SGD'=>'Singapore Dollar',
-      'SEK'=>'Swedish Krona',
-      'CHF'=>'Swiss Franc',
-      'TWD'=>'Taiwan New Dollar',
-      'THB'=>'Thai Baht',
-      'USD'=>'U.S. Dollar'
-      );
-
-      $template->assign(
-      array(
-        'ppppp_array_currency' => $array_currency,
-        )
-      );
-
-      if (isset($_POST['delete']))
-    {
-      check_input_parameter('delete', $_POST, false, PATTERN_ID);
-      
-      pwg_query('DELETE FROM '.PPPPP_COUNTRY_TABLE.' WHERE id = '.$_POST['delete'].';');
-
-      $page['infos'][] = l10n('Your configuration settings are saved');
-    }
-    else if (isset($_POST['CountryName']) and isset($_POST['CountryCode']) and isset($_POST['Currency']) and isset($_POST['Provider']))
-    {
-      single_insert(
-        PPPPP_COUNTRY_TABLE,
-        array(
-          'CountryName' => pwg_db_real_escape_string($_POST['CountryName']),
-          'CountryCode' => pwg_db_real_escape_string($_POST['CountryCode']),
-          'Currency' => pwg_db_real_escape_string($_POST['Currency']),
-          'Provider' => pwg_db_real_escape_string($_POST['Provider']),
-          )
-        );
-
-      $page['infos'][] = l10n('Your configuration settings are saved');
-    }
-    
-    $query='SELECT T1.Id, T1.CountryName, T1.CountryCode, T1.Currency, T2.Name as Name FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider=T2.Id ORDER BY T1.Provider, T1.CountryName;';
-    $result = pwg_query($query);
-    while($row = pwg_db_fetch_assoc($result))
-    {
-      $template->append('ppppp_array_country',$row);
-    }
-    
-
-    $query='SELECT * FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
-    $result = pwg_query($query);
-    while($row = pwg_db_fetch_assoc($result))
-    {
-      $template->append('ppppp_array_provider',$row);
-    }        
-
-    break;     
-
+// PROVIDER - PROVIDER - PROVIDER - PROVIDER - PROVIDER - PROVIDER - PROVIDER - PROVIDER - PROVIDER - PROVIDER - PROVIDER - PROVIDER - PROVIDER - PROVIDER //
     case 'provider':
     
       $array_currency = array(
@@ -301,6 +230,21 @@ SELECT id,name,uppercats,global_rank
         )
       );
 
+    if(isset($_POST['IdToEdit']))
+       {
+            $template->assign('ProviderId',$_POST['IdToEdit']);
+            $template->assign('ProviderName',$_POST['NameToEdit']);
+            $template->assign('ProviderURL',$_POST['URLToEdit']);
+            $template->assign('ProviderCurrency',$_POST['CurrencyToEdit']);
+       }
+    else
+    {
+            $template->assign('ProviderId','0');
+            $template->assign('ProviderName','');
+            $template->assign('ProviderURL','');
+            $template->assign('ProviderCurrency','');        
+    }
+
       if (isset($_POST['delete']))
     {
       check_input_parameter('delete', $_POST, false, PATTERN_ID);
@@ -309,18 +253,34 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['ProviderName']) and isset($_POST['ProviderUrl']) and isset($_POST['Currency']))
+    else if (isset($_POST['ProviderId']) and isset($_POST['ProviderName']) and isset($_POST['ProviderUrl']) and isset($_POST['Currency']))
     {
-      single_insert(
-        PPPPP_PROVIDER_TABLE,
-        array(
-          'Name' => pwg_db_real_escape_string($_POST['ProviderName']),
-          'URL' => pwg_db_real_escape_string($_POST['ProviderUrl']),
-          'Currency' => pwg_db_real_escape_string($_POST['Currency']),
-          )
-        );
-
-      $page['infos'][] = l10n('Your configuration settings are saved');
+        if (intval($_POST['ProviderId'])>0)
+        {
+            single_update(
+              PPPPP_PROVIDER_TABLE,
+              array(
+                'Name' => pwg_db_real_escape_string($_POST['ProviderName']),
+                'URL' => pwg_db_real_escape_string($_POST['ProviderUrl']),
+                'Currency' => pwg_db_real_escape_string($_POST['Currency']),
+                ),
+              array('Id' => $_POST['ProviderId'])
+              );
+        }
+        else
+        {
+            single_insert(
+              PPPPP_PROVIDER_TABLE,
+              array(
+                'Name' => pwg_db_real_escape_string($_POST['ProviderName']),
+                'URL' => pwg_db_real_escape_string($_POST['ProviderUrl']),
+                'Currency' => pwg_db_real_escape_string($_POST['Currency']),
+                )
+              );
+        }
+        
+        $page['infos'][] = l10n('Your configuration settings are saved');
+            
     }
  
     $query='SELECT * FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
@@ -332,8 +292,242 @@ SELECT id,name,uppercats,global_rank
     
     break;     
 
+// COUNTRY - COUNTRY - COUNTRY - COUNTRY - COUNTRY - COUNTRY - COUNTRY - COUNTRY - COUNTRY - COUNTRY - COUNTRY - COUNTRY - COUNTRY - COUNTRY // 
+  case 'country':
+    
+      $array_currency = array(
+      'AUD'=>'Australian Dollar',
+      'BRL'=>'Brazilian Real',
+      'CAD'=>'Canadian Dollar',
+      'CZK'=>'Czech Koruna',
+      'DKK'=>'Danish Krone',
+      'EUR'=>'Euro',
+      'HKD'=>'Hong Kong Dollar',
+      'HUF'=>'Hungarian Forint',
+      'ILS'=>'Israeli New Sheqel',
+      'JPY'=>'Japanese Yen',
+      'MYR'=>'Malaysian Ringgit',
+      'MXN'=>'Mexican Peso',
+      'NOK'=>'Norwegian Krone',
+      'NZD'=>'New Zealand Dollar',
+      'PHP'=>'Philippine Peso',
+      'PLN'=>'Polish Zloty',
+      'GBP'=>'Pound Sterling',
+      'SGD'=>'Singapore Dollar',
+      'SEK'=>'Swedish Krona',
+      'CHF'=>'Swiss Franc',
+      'TWD'=>'Taiwan New Dollar',
+      'THB'=>'Thai Baht',
+      'USD'=>'U.S. Dollar'
+      );
+
+      $template->assign(
+      array(
+        'ppppp_array_currency' => $array_currency,
+        )
+      );
+
+      if(isset($_POST['IdToEdit']))
+        {
+            $template->assign('CountryId',$_POST['IdToEdit']);
+            $template->assign('CountryName',$_POST['CountryNameToEdit']);
+            $template->assign('CountryCode',$_POST['CountryCodeToEdit']);
+            $template->assign('CountryCurrency',$_POST['CurrencyToEdit']);
+            $template->assign('ProviderId',$_POST['ProviderIdToEdit']);
+        }
+      else
+        {
+            $template->assign('CountryId','0');
+            $template->assign('CountryName','');
+            $template->assign('CountryCode','');
+            $template->assign('CountryCurrency','');        
+            $template->assign('ProviderId','0');
+        }
+
+      if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_COUNTRY_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['CountryId']) and isset($_POST['CountryName']) and isset($_POST['CountryCode']) and isset($_POST['Currency']) and isset($_POST['Provider']))
+    {
+        if (intval($_POST['CountryId'])>0)
+        {
+            single_update(
+               PPPPP_COUNTRY_TABLE,
+              array(
+                'CountryName' => pwg_db_real_escape_string($_POST['CountryName']),
+                'CountryCode' => pwg_db_real_escape_string($_POST['CountryCode']),
+                'Currency' => pwg_db_real_escape_string($_POST['Currency']),
+                'Provider' => pwg_db_real_escape_string($_POST['Provider']),
+                ),
+              array('Id' => $_POST['CountryId'])
+              );
+        }
+        else
+        {
+            single_insert(
+              PPPPP_COUNTRY_TABLE,
+              array(
+                'CountryName' => pwg_db_real_escape_string($_POST['CountryName']),
+                'CountryCode' => pwg_db_real_escape_string($_POST['CountryCode']),
+                'Currency' => pwg_db_real_escape_string($_POST['Currency']),
+                'Provider' => pwg_db_real_escape_string($_POST['Provider']),
+                )
+        );
+        }
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT T1.Id, T1.CountryName, T1.CountryCode, T1.Currency, T2.Id as ProviderId , T2.Name as ProviderName FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.
+            PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider=T2.Id ORDER BY T1.Provider, T1.CountryName;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_country',$row);
+    }
+    
+
+    $query='SELECT * FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_provider',$row);
+    }        
+
+    break;     
+
+// MATERIAL - MATERIAL - MATERIAL - MATERIAL - MATERIAL - MATERIAL - MATERIAL - MATERIAL - MATERIAL - MATERIAL - MATERIAL - MATERIAL - MATERIAL - MATERIAL //
+    case 'material':
+    
+    if(isset($_POST['IdToEdit']))
+       {
+            $template->assign('MaterialId',$_POST['IdToEdit']);
+            $template->assign('MaterialName',$_POST['MaterialNameToEdit']);
+       }
+    else
+    {
+            $template->assign('MaterialId','0');
+            $template->assign('MaterialName','');
+    }
+        
+    if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_MATERIAL_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['Material']))
+    {
+         if (intval($_POST['MaterialId'])>0)
+        {
+            single_update(
+               PPPPP_MATERIAL_TABLE,
+               array(
+                 'Material' => pwg_db_real_escape_string($_POST['Material']),
+                   ),
+              array('Id' => $_POST['MaterialId'])
+              );
+        }
+        else
+        {
+            single_insert(
+               PPPPP_MATERIAL_TABLE,
+               array(
+                 'Material' => pwg_db_real_escape_string($_POST['Material']),
+                   )
+               );
+        }
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT * FROM '.PPPPP_MATERIAL_TABLE.';';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_materials',$row);
+    }
+    
+    break;
+  
+// SUPPORTOPTION - SUPPORTOPTION - SUPPORTOPTION - SUPPORTOPTION - SUPPORTOPTION - SUPPORTOPTION - SUPPORTOPTION - SUPPORTOPTION - SUPPORTOPTION //
+    case 'support_option':
+    
+    if(isset($_POST['IdToEdit']))
+       {
+            $template->assign('OptionId',$_POST['IdToEdit']);
+            $template->assign('OptionName',$_POST['OptionNameToEdit']);
+       }
+    else
+    {
+            $template->assign('OptionId','0');
+            $template->assign('OptionName','');
+    }
+        
+    if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_OPTION_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['OptionId']) and isset($_POST['OptionName']))
+    {
+        if (intval($_POST['OptionId'])>0)
+        {
+            single_update(
+              PPPPP_OPTION_TABLE,
+              array(
+                'OptionName' => pwg_db_real_escape_string($_POST['OptionName']),
+                  ),
+              array('Id' => $_POST['OptionId'])
+              );
+        }
+        else
+        {
+            single_insert(
+              PPPPP_OPTION_TABLE,
+              array(
+                'OptionName' => pwg_db_real_escape_string($_POST['OptionName']),
+                  )
+              );
+        }
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT * FROM '.PPPPP_OPTION_TABLE.';';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_support_options',$row);
+    }
+    
+    break;
+  
+// SUPPORT - SUPPORT - SUPPORT - SUPPORT - SUPPORT - SUPPORT - SUPPORT - SUPPORT - SUPPORT - SUPPORT - SUPPORT - SUPPORT - SUPPORT - SUPPORT //
     case 'support':
     
+    if(isset($_POST['IdToEdit']))
+       {
+            $template->assign('SupportId',$_POST['IdToEdit']);
+            $template->assign('MaterialId',$_POST['MaterialIdToEdit']);
+            $template->assign('Option1Id',$_POST['Option1IdToEdit']);
+            $template->assign('Option2Id',$_POST['Option2IdToEdit']);
+       }
+    else
+    {
+            $template->assign('SupportId','0');
+            $template->assign('MaterialId','0');
+            $template->assign('Option1Id','0');
+            $template->assign('Option2Id','0');
+    }
+        
     if (isset($_POST['delete']))
     {
       check_input_parameter('delete', $_POST, false, PATTERN_ID);
@@ -342,17 +536,31 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['support']))
+    else if (isset($_POST['SupportId']) and isset($_POST['Material']) and isset($_POST['Option1']) and isset($_POST['Option2']))
     {
-      single_insert(
-        PPPPP_SUPPORT_TABLE,
-        array(
-          'SupportMaterial' => pwg_db_real_escape_string($_POST['support']),
-          'SupportOption1' => pwg_db_real_escape_string($_POST['option1']),
-          'SupportOption2' => pwg_db_real_escape_string($_POST['option2']),
-          )
-        );
-
+         if (intval($_POST['SupportId'])>0)
+        {
+            single_update(
+               PPPPP_SUPPORT_TABLE,
+               array(
+                 'SupportMaterial' => pwg_db_real_escape_string($_POST['Material']),
+                 'SupportOption1' => pwg_db_real_escape_string($_POST['Option1']),
+                 'SupportOption2' => pwg_db_real_escape_string($_POST['Option2']),
+                 ),
+              array('Id' => $_POST['SupportId'])
+              );
+        }
+        else
+        {
+            single_insert(
+               PPPPP_SUPPORT_TABLE,
+               array(
+                 'SupportMaterial' => pwg_db_real_escape_string($_POST['Material']),
+                 'SupportOption1' => pwg_db_real_escape_string($_POST['Option1']),
+                 'SupportOption2' => pwg_db_real_escape_string($_POST['Option2']),
+                 )
+               );
+        }
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
@@ -371,7 +579,7 @@ SELECT id,name,uppercats,global_rank
     }
 
     
-    $query='SELECT DISTINCT T1.Id AS Id, T4.Material AS SupportMaterial, T2.OptionName AS SupportOption1, T3.OptionName AS SupportOption2'.
+    $query='SELECT DISTINCT T1.Id AS Id, T4.Material AS SupportMaterial, T2.OptionName AS SupportOption1, T3.OptionName AS SupportOption2, T4.Id AS MaterialId, T2.Id AS Option1Id, T3.Id AS Option2Id'.
             ' FROM '.PPPPP_SUPPORT_TABLE.' T1'.
             ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T4 ON T1.SupportMaterial = T4.Id '.
             ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption1 = T2.Id '.
@@ -385,70 +593,93 @@ SELECT id,name,uppercats,global_rank
     
     break;
 
-     case 'support_option':
+// RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO - RATIO //
+    case 'ratio':
     
+    if(isset($_POST['IdToEdit']))
+       {
+            $template->assign('RatioId',$_POST['IdToEdit']);
+            $template->assign('RatioName',$_POST['RatioNameToEdit']);
+            $template->assign('RatioValue',$_POST['RatioValueToEdit']);
+       }
+    else
+    {
+            $template->assign('RatioId','0');
+            $template->assign('RatioName','');
+            $template->assign('RatioValue','');
+    }
+        
     if (isset($_POST['delete']))
     {
       check_input_parameter('delete', $_POST, false, PATTERN_ID);
       
-      pwg_query('DELETE FROM '.PPPPP_OPTION_TABLE.' WHERE id = '.$_POST['delete'].';');
+      pwg_query('DELETE FROM '.PPPPP_RATIO_TABLE.' WHERE id = '.$_POST['delete'].';');
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['OptionName']))
+    else if (isset($_POST['RatioId']) and isset($_POST['RatioName']) and isset($_POST['RatioValue']))
     {
-      single_insert(
-        PPPPP_OPTION_TABLE,
-        array(
-          'OptionName' => pwg_db_real_escape_string($_POST['OptionName']),
-            )
-        );
-
+        if (intval($_POST['RatioId'])>0)
+        {
+            single_update(
+              PPPPP_RATIO_TABLE,
+              array(
+                'RatioName' => pwg_db_real_escape_string($_POST['RatioName']),
+                'RatioValue' => pwg_db_real_escape_string($_POST['RatioValue']),
+                  ),
+              array('Id' => $_POST['RatioId'])
+              );
+        }
+        else
+        {
+            single_insert(
+              PPPPP_RATIO_TABLE,
+              array(
+                'RatioName' => pwg_db_real_escape_string($_POST['RatioName']),
+                'RatioValue' => pwg_db_real_escape_string($_POST['RatioValue']),
+                  )
+              );
+        }
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $query='SELECT * FROM '.PPPPP_OPTION_TABLE.';';
+    $query='SELECT * FROM '.PPPPP_RATIO_TABLE.';';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
-      $template->append('ppppp_array_support_options',$row);
+      $template->append('ppppp_array_ratio',$row);
     }
     
     break;
-  
-     case 'material':
-    
-    if (isset($_POST['delete']))
-    {
-      check_input_parameter('delete', $_POST, false, PATTERN_ID);
-      
-      pwg_query('DELETE FROM '.PPPPP_MATERIAL_TABLE.' WHERE id = '.$_POST['delete'].';');
-
-      $page['infos'][] = l10n('Your configuration settings are saved');
-    }
-    else if (isset($_POST['Material']))
-    {
-      single_insert(
-        PPPPP_MATERIAL_TABLE,
-        array(
-          'Material' => pwg_db_real_escape_string($_POST['Material']),
-            )
-        );
-
-      $page['infos'][] = l10n('Your configuration settings are saved');
-    }
-    
-    $query='SELECT * FROM '.PPPPP_MATERIAL_TABLE.';';
-    $result = pwg_query($query);
-    while($row = pwg_db_fetch_assoc($result))
-    {
-      $template->append('ppppp_array_materials',$row);
-    }
-    
-    break;
-  
+        
+// SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE - SIZE //
     case 'size':
     
+    if(isset($_POST['IdToEdit']))
+       {
+            $template->assign('SizeId',$_POST['IdToEdit']);
+            $template->assign('SizeName',$_POST['SizeNameToEdit']);
+            $template->assign('AltSizeName',$_POST['AltSizeNameToEdit']);
+            $template->assign('RatioId',$_POST['RatioIdToEdit']);
+            $template->assign('Height_cm',$_POST['HeightcmToEdit']);
+            $template->assign('Width_cm',$_POST['WidthcmToEdit']);
+            $template->assign('Height_in',$_POST['HeightinToEdit']);
+            $template->assign('Width_in',$_POST['WidthinToEdit']);
+            $template->assign('MinRes',$_POST['MinResToEdit']);
+       }
+    else
+    {
+            $template->assign('SizeId','0');
+            $template->assign('SizeName','');
+            $template->assign('AltSizeName','');
+            $template->assign('RatioId','0');
+            $template->assign('Height_cm','');
+            $template->assign('Width_cm','');
+            $template->assign('Height_in','');
+            $template->assign('Width_in','');
+            $template->assign('MinRes','');
+    }
+        
     if (isset($_POST['delete']))
     {
       check_input_parameter('delete', $_POST, false, PATTERN_ID);
@@ -457,26 +688,45 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['SizeName']) and isset($_POST['AltSizeName']) and isset($_POST['Ratio']) and isset($_POST['Height_cm']) and isset($_POST['Width_cm']) and isset($_POST['Height_in']) and isset($_POST['Width_in']) and isset($_POST['MinRes']))
+    else if (isset($_POST['SizeId']) and isset($_POST['SizeName']) and isset($_POST['AltSizeName']) and isset($_POST['RatioId']) and isset($_POST['Height_cm']) and isset($_POST['Width_cm']) and isset($_POST['Height_in']) and isset($_POST['Width_in']) and isset($_POST['MinRes']))
     {      
-      single_insert(
-        PPPPP_SIZES_TABLE,
-        array(
-          'SizeName' => pwg_db_real_escape_string($_POST['SizeName']),
-          'AltSizeName' => pwg_db_real_escape_string($_POST['AltSizeName']),
-          'Ratio' => pwg_db_real_escape_string($_POST['Ratio']),
-          'Height_cm' => pwg_db_real_escape_string($_POST['Height_cm']),
-          'Width_cm' => pwg_db_real_escape_string($_POST['Width_cm']),
-          'Height_in' => pwg_db_real_escape_string($_POST['Height_in']),
-          'Width_in' => pwg_db_real_escape_string($_POST['Width_in']),
-          'MinRes' => pwg_db_real_escape_string($_POST['MinRes']),
-            )
-        );
-
+        if (intval($_POST['SizeId'])>0)
+        {
+            single_update(
+             PPPPP_SIZES_TABLE,
+             array(
+               'SizeName' => pwg_db_real_escape_string($_POST['SizeName']),
+               'AltSizeName' => pwg_db_real_escape_string($_POST['AltSizeName']),
+               'Ratio' => pwg_db_real_escape_string($_POST['RatioId']),
+               'Height_cm' => pwg_db_real_escape_string($_POST['Height_cm']),
+               'Width_cm' => pwg_db_real_escape_string($_POST['Width_cm']),
+               'Height_in' => pwg_db_real_escape_string($_POST['Height_in']),
+               'Width_in' => pwg_db_real_escape_string($_POST['Width_in']),
+               'MinRes' => pwg_db_real_escape_string($_POST['MinRes']),
+                ),
+              array('Id' => $_POST['SizeId'])
+              );
+        }
+        else
+        {
+            single_insert(
+             PPPPP_SIZES_TABLE,
+             array(
+               'SizeName' => pwg_db_real_escape_string($_POST['SizeName']),
+               'AltSizeName' => pwg_db_real_escape_string($_POST['AltSizeName']),
+               'Ratio' => pwg_db_real_escape_string($_POST['RatioId']),
+               'Height_cm' => pwg_db_real_escape_string($_POST['Height_cm']),
+               'Width_cm' => pwg_db_real_escape_string($_POST['Width_cm']),
+               'Height_in' => pwg_db_real_escape_string($_POST['Height_in']),
+               'Width_in' => pwg_db_real_escape_string($_POST['Width_in']),
+               'MinRes' => pwg_db_real_escape_string($_POST['MinRes']),
+                )
+            );
+        }
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $query='SELECT DISTINCT T1.Id AS Id, SizeName, AltSizeName, T2.RatioName AS Ratio, Width_cm, Height_cm,  Width_in, Height_in, MinRes'.
+    $query='SELECT DISTINCT T1.Id AS Id, SizeName, AltSizeName, T2.RatioName AS Ratio, Width_cm, Height_cm,  Width_in, Height_in, MinRes, T2.Id AS RatioId'.
             ' FROM '.PPPPP_SIZES_TABLE.' T1'.
             ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T2'.
             ' ON T1.Ratio=T2.Id'.
@@ -496,77 +746,30 @@ SELECT id,name,uppercats,global_rank
  
     break;
   
-    case 'ratio':
-    
-    if (isset($_POST['delete']))
-    {
-      check_input_parameter('delete', $_POST, false, PATTERN_ID);
-      
-      pwg_query('DELETE FROM '.PPPPP_RATIO_TABLE.' WHERE id = '.$_POST['delete'].';');
-
-      $page['infos'][] = l10n('Your configuration settings are saved');
-    }
-    else if (isset($_POST['RatioName']) and isset($_POST['RatioValue']))
-    {
-      single_insert(
-        PPPPP_RATIO_TABLE,
-        array(
-          'RatioName' => pwg_db_real_escape_string($_POST['RatioName']),
-          'RatioValue' => pwg_db_real_escape_string($_POST['RatioValue']),
-            )
-        );
-
-      $page['infos'][] = l10n('Your configuration settings are saved');
-    }
-    
-    $query='SELECT * FROM '.PPPPP_RATIO_TABLE.';';
-    $result = pwg_query($query);
-    while($row = pwg_db_fetch_assoc($result))
-    {
-      $template->append('ppppp_array_ratio',$row);
-    }
-    
-    break;
-        
-  case 'code':
-    
-    if (isset($_POST['delete']))
-    {
-      check_input_parameter('delete', $_POST, false, PATTERN_ID);
-      
-      pwg_query('DELETE FROM '.PPPPP_PROMOCODE_TABLE.' WHERE id = '.$_POST['delete'].';');
-
-      $page['infos'][] = l10n('Your configuration settings are saved');
-    }
-    else if (isset($_POST['code']) and isset($_POST['reduc_rel']))
-    {
-      single_insert(
-        PPPPP_PROMOCODE_TABLE,
-        array(
-          'code' => pwg_db_real_escape_string($_POST['code']),
-          'reduc_rel' => pwg_db_real_escape_string($_POST['reduc_rel']),
-          'reduc_abs' => pwg_db_real_escape_string($_POST['reduc_abs']),
-          'reduc_ship' => pwg_db_real_escape_string($_POST['reduc_ship']),
-      )
-        );
-
-      $page['infos'][] = l10n('Your configuration settings are saved');
-    }
-    
-    $query='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.';';
-    $result = pwg_query($query);
-    while($row = pwg_db_fetch_assoc($result))
-    {
-      $template->append('ppppp_array_promocode',$row);
-    }
-    
-    break;
-
-      case 'price':
-    
+// PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE - PRICE //
+    case 'price':
          
     $where_clause =' WHERE 1';      
           
+    if(isset($_POST['IdToEdit']))
+       {
+            $template->assign('PriceId',$_POST['IdToEdit']);
+            $template->assign('SupportId',$_POST['SupportIdToEdit']);
+            $template->assign('SizeId',$_POST['SizeIdToEdit']);
+            $template->assign('ProviderId',$_POST['ProviderIdToEdit']);
+            $template->assign('Price',$_POST['PriceToEdit']);
+            $template->assign('Shipping',$_POST['ShippingToEdit']);
+       }
+    else
+    {
+            $template->assign('PriceId','0');
+            $template->assign('SupportId','0');
+            $template->assign('SizeId','0');
+            $template->assign('ProviderId','0');
+            $template->assign('Price','');
+            $template->assign('Shipping','');
+    }
+        
     if (isset($_POST['delete']))
     {
       check_input_parameter('delete', $_POST, false, PATTERN_ID);
@@ -575,66 +778,125 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['price']) and isset($_POST['shipping']) and isset($_POST['support']) and isset($_POST['provider']) and isset($_POST['size']))
-    {
-      single_insert(
-        PPPPP_PRICE_TABLE,
-        array(
-          'Provider' => pwg_db_real_escape_string($_POST['provider']),
-          'Size' => pwg_db_real_escape_string($_POST['size']),
-          'Support' => pwg_db_real_escape_string($_POST['support']),
-          'Price' => pwg_db_real_escape_string($_POST['price']),
-          'Shipping' => pwg_db_real_escape_string($_POST['shipping']),
-            )
-        );
-
+    else if (isset($_POST['PriceId']) and isset($_POST['Price']) and isset($_POST['Shipping']) and isset($_POST['SupportId']) and isset($_POST['ProviderId']) and isset($_POST['SizeId']))
+        {
+        if (intval($_POST['PriceId'])>0)
+            {
+            single_update(
+              PPPPP_PRICE_TABLE,
+              array(
+                'Provider' => pwg_db_real_escape_string($_POST['ProviderId']),
+                'Size' => pwg_db_real_escape_string($_POST['SizeId']),
+                'Support' => pwg_db_real_escape_string($_POST['SupportId']),
+                'Price' => pwg_db_real_escape_string($_POST['Price']),
+                'Shipping' => pwg_db_real_escape_string($_POST['Shipping']),
+                  ),
+              array('Id' => $_POST['PriceId'])
+              );
+        }
+        else
+        {
+            single_insert(
+              PPPPP_PRICE_TABLE,
+              array(
+                'Provider' => pwg_db_real_escape_string($_POST['ProviderId']),
+                'Size' => pwg_db_real_escape_string($_POST['SizeId']),
+                'Support' => pwg_db_real_escape_string($_POST['SupportId']),
+                'Price' => pwg_db_real_escape_string($_POST['Price']),
+                'Shipping' => pwg_db_real_escape_string($_POST['Shipping']),
+                  )
+              );
+        }
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['filter']))
+    
+    if (isset($_POST['filter']))
     {
-      $template->assign('ppppp_material_filt',$_POST['filtMaterial']);
-      $template->assign('ppppp_option1_filt',$_POST['filtOption1']);
-      $template->assign('ppppp_option2_filt',$_POST['filtOption2']);
-      $template->assign('ppppp_ratio_filt',$_POST['filtRatio']);
-      $template->assign('ppppp_size_filt',$_POST['filtSize']);
-      $template->assign('ppppp_altsize_filt',$_POST['filtAltSize']);
-      $template->assign('ppppp_height_filt',$_POST['filtHeight']);
-      $template->assign('ppppp_width_filt',$_POST['filtWidth']);
-      $template->assign('ppppp_provider_filt',$_POST['filtProvider']);
-      
-     $clause_count=false; 
-     $where_clause =' WHERE ';      
-     if($_POST['filtMaterial']!='*'){ $where_clause.='T9.Id = '.$_POST['filtMaterial']; $clause_count=true;}
-     if($_POST['filtOption1']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T3.Id = '.$_POST['filtOption1']; $clause_count=true;}
-     if($_POST['filtOption2']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T4.Id = '.$_POST['filtOption2']; $clause_count=true;}     
-     if($_POST['filtSize']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.SizeName = "'.$_POST['filtSize'].'"'; $clause_count=true;}     
-     if($_POST['filtAltSize']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.AltSizeName = "'.$_POST['filtAltSize'].'"'; $clause_count=true;}     
-     if($_POST['filtRatio']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T6.Id = '.$_POST['filtRatio']; $clause_count=true;}     
-     if($_POST['filtHeight']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.Height_cm = '.$_POST['filtHeight']; $clause_count=true;}     
-     if($_POST['filtWidth']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.Width_cm = '.$_POST['filtWidth']; $clause_count=true;}     
-     if($_POST['filtProvider']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T8.Id = '.$_POST['filtProvider']; $clause_count=true;}     
-     if(!$clause_count){$where_clause.='1';}
-      
+
+     $price_filter_array=array(
+             'Mat' => $_POST['filtMaterial'],
+             'Op1' => $_POST['filtOption1'],
+             'Op2' => $_POST['filtOption2'],
+             'Siz' => $_POST['filtSize'],
+             'Alt' => $_POST['filtAltSize'],
+             'Rat' => $_POST['filtRatio'],
+             'Hei' => $_POST['filtHeight'],
+             'Wid' => $_POST['filtWidth'],
+             'Prv' => $_POST['filtProvider'],
+             'ClC' => !($_POST['filtMaterial']=='*' and $_POST['filtOption1']=='*' and $_POST['filtOption2']=='*' and $_POST['filtSize']=='*' and $_POST['filtAltSize']=='*' 
+                      and $_POST['filtRatio']=='*' and $_POST['filtHeight']=='*' and $_POST['filtWidth']=='*' and $_POST['filtProvider']=='*'),
+     );
+     
+    $conf['PayPalShoppingCart']['price_filter'] = $price_filter_array;
+    conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
+
+    $page['infos'][] = l10n('Your configuration settings are saved');     
+     
     }
     else if (isset($_POST['reset']))
     {
-      $template->assign('ppppp_material_filt','*');
-      $template->assign('ppppp_option1_filt','*');
-      $template->assign('ppppp_option2_filt','*');
-      $template->assign('ppppp_ratio_filt','*');
-      $template->assign('ppppp_size_filt','*');
-      $template->assign('ppppp_altsize_filt','*');
-      $template->assign('ppppp_height_filt','*');
-      $template->assign('ppppp_width_filt','*');
-      $template->assign('ppppp_provider_filt','*');    
 
-      $where_clause =' WHERE 1';        
-    }    
+        $price_filter_array=array(
+             'Mat' => '*',
+             'Op1' => '*',
+             'Op2' => '*',
+             'Siz' => '*',
+             'Alt' => '*',
+             'Rat' => '*',
+             'Hei' => '*',
+             'Wid' => '*',
+             'Prv' => '*',
+             'ClC' => false
+        );
+            
+        $conf['PayPalShoppingCart']['price_filter'] = $price_filter_array;
+        conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
+
+        $page['infos'][] = l10n('Your configuration settings are saved');
+     }
+ 
+    $price_filter_array=$conf['PayPalShoppingCart']['price_filter'];
+
+    $template->assign('ppppp_material_filt',$price_filter_array['Mat']);
+    $template->assign('ppppp_option1_filt',$price_filter_array['Op1']);
+    $template->assign('ppppp_option2_filt',$price_filter_array['Op2']);
+    $template->assign('ppppp_ratio_filt',$price_filter_array['Siz']);
+    $template->assign('ppppp_size_filt',$price_filter_array['Alt']);
+    $template->assign('ppppp_altsize_filt',$price_filter_array['Rat']);
+    $template->assign('ppppp_height_filt',$price_filter_array['Hei']);
+    $template->assign('ppppp_width_filt',$price_filter_array['Wid']);
+    $template->assign('ppppp_provider_filt',$price_filter_array['Prv']);
+    $template->assign('ppppp_filter_active',$price_filter_array['ClC']);
+    
+    if($price_filter_array['ClC'])
+    {
+
+        $clause_count=false; 
+
+        $where_clause =' WHERE ';      
+        if($price_filter_array['Mat']!='*'){ $where_clause.='T9.Id = '.$price_filter_array['Mat']; $clause_count=true;}
+        if($price_filter_array['Op1']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T3.Id = '.$price_filter_array['Op1']; $clause_count=true;}
+        if($price_filter_array['Op2']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T4.Id = '.$price_filter_array['Op2']; $clause_count=true;}     
+        if($price_filter_array['Siz']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.SizeName = "'.$price_filter_array['Siz'].'"'; $clause_count=true;}     
+        if($price_filter_array['Alt']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.AltSizeName = "'.$price_filter_array['Alt'].'"'; $clause_count=true;}     
+        if($price_filter_array['Rat']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T6.Id = '.$price_filter_array['Rat']; $clause_count=true;}     
+        if($price_filter_array['Hei']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.Height_cm = '.$price_filter_array['Hei']; $clause_count=true;}     
+        if($price_filter_array['Wid']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.Width_cm = '.$price_filter_array['Wid']; $clause_count=true;}     
+        if($price_filter_array['Prv']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T8.Id = '.$price_filter_array['Prv']; $clause_count=true;}     
+        if(!$clause_count){$where_clause.='1';}
+    }
+    else
+    {
+        $where_clause =' WHERE 1';
+    }  
+     
+        
 //    echo('<pre>'.$where_clause.'</pre>' );
     
     $query='SELECT DISTINCT T1.Id AS Id, T2.SupportMaterial AS Support, T3.OptionName AS SupportOption1, T4.OptionName AS SupportOption2,'.
             ' T5.SizeName AS Size, T5.AltSizeName AS AltSize, T6.RatioName AS Ratio, T5.Height_cm AS Height, T5.Width_cm AS Width, '.
-            ' T8.Name AS Provider, T1.Price, T1.Shipping, T7.Currency AS Currency, T9.Material as SupportMaterial'.
+            ' T8.Name AS Provider, T1.Price, T1.Shipping, T7.Currency AS Currency, T9.Material as SupportMaterial,'.
+            ' T2.Id AS SupportId, T5.Id AS SizeId, T8.Id AS ProviderId'.
             ' FROM '.PPPPP_PRICE_TABLE.' T1'.
             ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T2 ON T1.Support = T2.Id'.
             ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T9 ON T2.SupportMaterial = T9.Id'.
@@ -761,14 +1023,84 @@ SELECT id,name,uppercats,global_rank
     
     break;
 
-  case 'FB_catalog':
+// PROMOCODE - PROMOCODE - PROMOCODE - PROMOCODE - PROMOCODE - PROMOCODE - PROMOCODE - PROMOCODE - PROMOCODE - PROMOCODE - PROMOCODE - PROMOCODE //
+    case 'code':
     
-    if (isset($_POST['Brand']) and isset($_POST['GoogleId']) and is_numeric($_POST['GoogleId']) and isset($_POST['FBId']) and is_numeric($_POST['FBId']))
+    if(isset($_POST['IdToEdit']))
+       {
+            $template->assign('CodeId',$_POST['IdToEdit']);
+            $template->assign('CodeValue',$_POST['CodeValueToEdit']);
+            $template->assign('Relative',$_POST['RelToEdit']);
+            $template->assign('Absolute',$_POST['AbsToEdit']);
+            $template->assign('Shipping',$_POST['ShipToEdit']);
+       }
+    else
+    {
+            $template->assign('CodeId','0');
+            $template->assign('CodeValue','');
+            $template->assign('Relative','');
+            $template->assign('Absolute','');
+            $template->assign('Shipping','');
+    }
+        
+    if (isset($_POST['delete']))
+    {
+      check_input_parameter('delete', $_POST, false, PATTERN_ID);
+      
+      pwg_query('DELETE FROM '.PPPPP_PROMOCODE_TABLE.' WHERE id = '.$_POST['delete'].';');
+
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    else if (isset($_POST['Code']) and isset($_POST['Reduc_rel']) and isset($_POST['Reduc_abs']) and isset($_POST['Reduc_ship']))
+    {
+        if (intval($_POST['CodeId'])>0)
+            {
+            single_update(
+                PPPPP_PROMOCODE_TABLE,
+                array(
+                  'code' => pwg_db_real_escape_string($_POST['Code']),
+                  'reduc_rel' => pwg_db_real_escape_string($_POST['Reduc_rel']),
+                  'reduc_abs' => pwg_db_real_escape_string($_POST['Reduc_abs']),
+                  'reduc_ship' => pwg_db_real_escape_string($_POST['Reduc_ship']),
+                    ),
+                array('Id' => $_POST['CodeId'])
+                );
+        }
+        else
+        {
+        single_insert(
+           PPPPP_PROMOCODE_TABLE,
+           array(
+             'code' => pwg_db_real_escape_string($_POST['Code']),
+             'reduc_rel' => pwg_db_real_escape_string($_POST['Reduc_rel']),
+             'reduc_abs' => pwg_db_real_escape_string($_POST['Reduc_abs']),
+             'reduc_ship' => pwg_db_real_escape_string($_POST['Reduc_ship']),
+                )
+            );
+        }
+        
+      $page['infos'][] = l10n('Your configuration settings are saved');
+    }
+    
+    $query='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.';';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_promocode',$row);
+    }
+    
+    break;
+
+// CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG //
+    case 'Catalog':
+    
+    if (isset($_POST['Brand']) and isset($_POST['GoogleId']) and is_numeric($_POST['GoogleId']) and isset($_POST['FBId']) and is_numeric($_POST['FBId']) and isset($_POST['filename']))
     {
       $conf['PayPalShoppingCart']['Brand'] = $_POST['Brand'];
       $conf['PayPalShoppingCart']['GoogleId'] = $_POST['GoogleId'];
       $conf['PayPalShoppingCart']['FBId'] = $_POST['FBId'];
       $conf['PayPalShoppingCart']['Ref_country'] = $_POST['Ref_country'];
+      $conf['PayPalShoppingCart']['CatalogFileName'] = $_POST['filename'];
       conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
       
       $page['infos'][] = l10n('Your configuration settings are saved');
@@ -776,10 +1108,11 @@ SELECT id,name,uppercats,global_rank
     
     if (isset($conf['PayPalShoppingCart']['Brand']) and isset($conf['PayPalShoppingCart']['GoogleId']) and isset($conf['PayPalShoppingCart']['FBId'])  and isset($conf['PayPalShoppingCart']['Ref_country']))
     {
-        $template->assign('ppppp_fb_brand', $conf['PayPalShoppingCart']['Brand']);
-        $template->assign('ppppp_fb_googleId', $conf['PayPalShoppingCart']['GoogleId']);
-        $template->assign('ppppp_fb_fbId', $conf['PayPalShoppingCart']['FBId']);
-        $template->assign('ppppp_fb_ref_country', $conf['PayPalShoppingCart']['Ref_country']);
+        $template->assign('ppppp_cat_brand', $conf['PayPalShoppingCart']['Brand']);
+        $template->assign('ppppp_cat_googleId', $conf['PayPalShoppingCart']['GoogleId']);
+        $template->assign('ppppp_cat_fbId', $conf['PayPalShoppingCart']['FBId']);
+        $template->assign('ppppp_cat_ref_country', $conf['PayPalShoppingCart']['Ref_country']);
+        $template->assign('ppppp_cat_filenamebasis', $conf['PayPalShoppingCart']['CatalogFileName']);
     }
     
     $query='SELECT DISTINCT T2.Id AS Id, T2.CountryName, T2.CountryCode, T2.Currency, T3.Name AS SupplierName FROM '.PPPPP_PRICE_TABLE.' T1'.
@@ -792,27 +1125,32 @@ SELECT id,name,uppercats,global_rank
       $template->append('ppppp_array_country',$row);
     }
     
-    if ( isset($_POST['submit']) )
+    if (isset($_POST['catalog_country']))
     {
      //echo('<pre>'.var_export($_POST,true).'</pre>' );
 
-    if ( $_POST['filename'] != '' )
-      $filenameBasis = $_POST['filename'];
-      $filename = $_POST['filename'].'_'.$_POST['catalog_country'].'.xml';
+    $filenameBasis = $conf['PayPalShoppingCart']['CatalogFileName'];
+    $filename = $filenameBasis.'_'.$_POST['catalog_country'].'.xml';
       
     set_make_full_url();
 
-      if (isset($_POST['catalog_country']))
-      {
-          $ref_cat=($_POST['catalog_country']==$conf['PayPalShoppingCart']['Ref_country']);
-          $countryCode = $_POST['catalog_country'];
-      }
-      else
-      {
-          $ref_cat=true;
-          $countryCode = $conf['PayPalShoppingCart']['Ref_country'];
-      }
-      
+//      if (isset($_POST['catalog_country']))
+//      {
+        $countryCode = $_POST['catalog_country'];
+        $ref_cat=($countryCode==$conf['PayPalShoppingCart']['Ref_country']);
+        $template->assign('ppppp_catalog_country', $countryCode);
+        $template->assign( array(
+          'FILENAME' => $filename,
+          'U_FILENAME' => get_root_url().$filename,
+            )
+          );
+//      }
+//      else
+//      {
+//          $ref_cat=true;
+//          $countryCode = $conf['PayPalShoppingCart']['Ref_country'];
+//      }
+//      
       switch($countryCode){
           case 'FR':
               $XMLlang = array(
@@ -964,26 +1302,20 @@ SELECT id,name,uppercats,global_rank
 
     $page['infos'][] = 'Catalog generated. '.$item_count.' items listed in catalog';
 
-      }
-      else
-      {
-        $filenameBasis = 'FB_catalog';
-        $filename = 'FB_catalog.xml';
-      }
+    }
+//      else
+//      {
+//        $filenameBasis = 'FB_catalog';
+//        $filename = 'FB_catalog.xml';
+//      }
 
     // END AS GUEST
     //$user = $save_user;
 
-    if (isset($_POST['catalog_country']))
-    {
-        $template->assign('ppppp_catalog_country', $countryCode);
-    }
-    $template->assign( array(
-      'FILENAME' => $filename,
-      'FILENAMEBASIS' => $filenameBasis,
-      'U_FILENAME' => get_root_url().$filename,
-        )
-      );
+//    if (isset($_POST['catalog_country']))
+//    {
+//    }
+
  
     break;
 }

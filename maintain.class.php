@@ -246,6 +246,19 @@ SELECT COUNT(*)
       'GoogleId' => '500044',
       'FBId' => '999',
       'Ref_country' => 'FR',
+      'CatalogFileName' => 'Catalog_',
+      'price_filter' => array(
+             'Mat' => '*',
+             'Op1' => '*',
+             'Op2' => '*',
+             'Siz' => '*',
+             'Alt' => '*',
+             'Rat' => '*',
+             'Hei' => '*',
+             'Wid' => '*',
+             'Prv' => '*',
+             'ClC' => false
+              ),
       );
     
     // move the content of table ppppp_config into $conf['PayPalShoppingCart'], serialized
