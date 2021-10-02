@@ -55,7 +55,21 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
   {
     $xml.='<g:id>'.$row['item']."_".$row['item_option'].'</g:id>'."\r"."\n";
     $xml.='<g:item_group_id>'.substr($row['item'],0,8).'</g:item_group_id>'."\r"."\n";
-    $xml.='<g:material>'.$row['item_option'].'</g:material>'."\r"."\n";
+    switch($row['item_option']){
+        case('Poster'):
+            $mat_desc=$XMLlang['Poster'];
+            $print_desc=$XMLlang['support_poster'];
+            break;
+        case('Canvas'):
+            $mat_desc=$XMLlang['Canvas'];
+            $print_desc=$XMLlang['support_canvas'];
+        break;
+        case('Dibond®'):
+            $mat_desc=$XMLlang['Dibond'];
+            $print_desc=$XMLlang['support_dibond'];
+        break;
+    }
+    $xml.='<g:material>'.$mat_desc.'</g:material>'."\r"."\n";
   }
   else
   {
@@ -88,19 +102,7 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
     
      $xml.='<g:title>'.htmlspecialchars($croppedTitle).'</g:title>'."\r"."\n";
   }
-  
-  switch($row['item_option']){
-      case('Poster'):
-          $print_desc=$XMLlang['support_poster'];
-      break;
-      case('Canvas'):
-          $print_desc=$XMLlang['support_canvas'];
-      break;
-      case('Dibond®'):
-          $print_desc=$XMLlang['support_dibond'];
-      break;
-  }
-  
+    
   switch($XMLlang['units']){
       case('cm'):
           $MinSize=$row['minSize_cm'].'x'.round($row['minSize_cm']/$row['Ratio'],0).'cm';
