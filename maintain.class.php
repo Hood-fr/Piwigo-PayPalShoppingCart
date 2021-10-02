@@ -96,10 +96,10 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_sizes (
       $query = "
 CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_promocode (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
-  code varchar(40) NOT NULL,
-  reduc_rel float NOT NULL,
-  reduc_abs float NOT NULL,
-  reduc_ship float NOT NULL,
+  Code varchar(40) NOT NULL,
+  Promo_rel float NOT NULL,
+  Promo_abs float NOT NULL,
+  Promo_ship float NOT NULL,
   PRIMARY KEY (Id),
   UNIQUE KEY code (code)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8
@@ -222,10 +222,10 @@ SELECT COUNT(*)
       single_insert(
         $prefixeTable."ppppp_promocode",
         array(
-          'code' => 'CODE',
-          'reduc_rel' => 0,
-          'reduc_abs' => 0,
-          'reduc_ship' => 0,
+          'Code' => 'CODE',
+          'Promo_rel' => 0,
+          'Promo_abs' => 0,
+          'Promo_ship' => 0,
           )
         );
     }

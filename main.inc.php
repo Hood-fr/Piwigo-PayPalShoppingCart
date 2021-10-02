@@ -116,8 +116,8 @@ function pppppPriceCompute(){
     var pos = selectedOption2.value.indexOf("&");
     var raw_price = selectedOption2.value.slice(0,pos);
     var raw_shipping =  selectedOption2.value.slice(pos+1,selectedOption2.value.length);
-    var final_price = Math.round(raw_price*(100-reduc_rel)/100-reduc_abs);
-    var final_shipping = Math.round(raw_shipping-reduc_ship);
+    var final_price = Math.round(raw_price*(100-promo_rel)/100-promo_abs);
+    var final_shipping = Math.round(raw_shipping-promo_ship);
     var final_total = final_price+final_shipping;
     document.ppppp_price.price.value=final_price + currency;
     document.ppppp_shipping.shipping.value=final_shipping + currency;
@@ -204,19 +204,19 @@ self.location.href=new_page;
 }
 
 function pppppGetPromoCode(){
-    reduc_rel=0;
-    reduc_abs=0;
-    reduc_ship=0;
+    promo_rel=0;
+    promo_abs=0;
+    promo_ship=0;
     code_array={/literal}{$ppppp_array_promocode|@json_encode}{literal}
     code=document.ppppp_promocode_form.promocode.value;
-    code_array.find(getReduc);
+    code_array.find(getPromo);
 }
 
-function getReduc(item,index){
-    if (item.code==code){
-        reduc_rel=item.reduc_rel;
-        reduc_abs=item.reduc_abs;
-        reduc_ship=item.reduc_ship;
+function getPromo(item,index){
+    if (item.Code==code){
+        promo_rel=item.Promo_rel;
+        promo_abs=item.Promo_abs;
+        promo_ship=item.Promo_ship;
     }
 }
 
@@ -634,10 +634,10 @@ function ppppp_picture_handler($content,$current_picture)
      $ppppp_promocode='Insert promo code';
       $array_no_promo = array(
       'Id'=>'1',
-      'code'=>'Insert promo code',
-      'reduc_abs'=>'0',
-      'reduc_rel'=>'0',
-      'reduc_ship'=>'0',
+      'Code'=>'Insert promo code',
+      'Promo_abs'=>'0',
+      'Promo_rel'=>'0',
+      'Promo_ship'=>'0',
       );
 
       $template->assign(

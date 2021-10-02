@@ -503,8 +503,9 @@ jQuery(document).ready(function() {
 <br>
     <table align="left">
         <tr>
-            <td align="center">{'Support'|@translate}<br>
+            <td align="center">
                 <input type=hidden name=PriceId value="{$PriceId}">
+                {'Support'|@translate}<br>
                 <select name="SupportId" >
                 {foreach from=$ppppp_array_support item=ppppp_row_support}
                 <option value="{$ppppp_row_support.Id}"{if $SupportId==$ppppp_row_support.Id} selected{/if}>{$ppppp_row_support.SupportMaterial|@translate}{if $ppppp_row_support.SupportOption1!='None'}  {$ppppp_row_support.SupportOption1|@translate}{/if}{if $ppppp_row_support.SupportOption2!='None'} {$ppppp_row_support.SupportOption2|@translate}{/if}</option>
@@ -522,8 +523,8 @@ jQuery(document).ready(function() {
                 <option value="{$ppppp_row_provider.Id}"{if $ProviderId==$ppppp_row_provider.Id} selected{/if}>{$ppppp_row_provider.Name} ({$ppppp_row_provider.Currency})</option>
                 {/foreach}
                 </select></td>
-            <td align="center">{'Price'|@translate}<br> <input type=text name=price size="6" value="{$Price}"></td>
-            <td align="center">{'Shipping fees'|@translate}<br> <input type=text name=shipping size="6" value="{$Shipping}"></td>
+            <td align="center">{'Price'|@translate}<br> <input type=text name=Price size="6" value="{$Price}"></td>
+            <td align="center">{'Shipping fees'|@translate}<br> <input type=text name=Shipping size="6" value="{$Shipping}"></td>
         </tr>
         <tr>
             <td colspan="5">
@@ -671,9 +672,9 @@ jQuery(document).ready(function() {
 <legend>{'Append promo code'|@translate}</legend>
 <input type=hidden name=CodeId value="{$CodeId}">
 {'Code'|@translate} <input type=text name=Code value="{$CodeValue}"></td>
-{'Promo relative'|@translate} <input type=text name=Reduc_rel size="3" value="{$Relative}">%
-{'Promo absolute'|@translate} <input type=text name=Reduc_abs value="{$Absolute}">
-{'Promo shipping'|@translate} <input type=text name=Reduc_ship value="{$Shipping}">
+{'Promo relative'|@translate} <input type=text name=Promo_rel size="3" value="{$Relative}">%
+{'Promo absolute'|@translate} <input type=text name=Promo_abs value="{$Absolute}">
+{'Promo shipping'|@translate} <input type=text name=Promo_ship value="{$Shipping}">
 <br>
 <br>
 <input type=submit value="{if $CodeId==0}{'Append data'|@translate}{else}{'Update data'|@translate}{/if}">
@@ -692,10 +693,10 @@ jQuery(document).ready(function() {
 {foreach from=$ppppp_array_promocode item=ppppp_row_promocode name=ppppp_row_promcoode_loop}
 <tr class="{if $smarty.foreach.ppppp_row_promocode_loop.index is odd}row1{else}row2{/if}">
 <td align="center">{$ppppp_row_promocode.Id}</td>
-<td align="center">{$ppppp_row_promocode.code}</td>
-<td align="center">{$ppppp_row_promocode.reduc_rel}</td>
-<td align="center">{$ppppp_row_promocode.reduc_abs}</td>
-<td align="center">{$ppppp_row_promocode.reduc_ship}</td>
+<td align="center">{$ppppp_row_promocode.Code}</td>
+<td align="center">{$ppppp_row_promocode.Promo_rel}</td>
+<td align="center">{$ppppp_row_promocode.Promo_abs}</td>
+<td align="center">{$ppppp_row_promocode.Promo_ship}</td>
 <td>
     <form method=post>
     <input type=hidden name=delete value='{$ppppp_row_promocode.Id}'>
@@ -705,10 +706,10 @@ jQuery(document).ready(function() {
 <td>
     <form method=post>
     <input type=hidden name=IdToEdit value='{$ppppp_row_promocode.Id}'>
-    <input type=hidden name=CodeValueToEdit value='{$ppppp_row_promocode.code}'>
-    <input type=hidden name=RelToEdit value='{$ppppp_row_promocode.reduc_rel}'>
-    <input type=hidden name=AbsToEdit value='{$ppppp_row_promocode.reduc_abs}'>
-    <input type=hidden name=ShipToEdit value='{$ppppp_row_promocode.reduc_ship}'>
+    <input type=hidden name=CodeValueToEdit value='{$ppppp_row_promocode.Code}'>
+    <input type=hidden name=RelToEdit value='{$ppppp_row_promocode.Promo_rel}'>
+    <input type=hidden name=AbsToEdit value='{$ppppp_row_promocode.Promo_abs}'>
+    <input type=hidden name=ShipToEdit value='{$ppppp_row_promocode.Promo_ship}'>
     <input type=submit value="{'Edit data'|@translate}">
     </form>
 </td>

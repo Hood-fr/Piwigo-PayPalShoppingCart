@@ -1051,17 +1051,17 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['Code']) and isset($_POST['Reduc_rel']) and isset($_POST['Reduc_abs']) and isset($_POST['Reduc_ship']))
+    else if (isset($_POST['CodeId']) and isset($_POST['Code']) and isset($_POST['Promo_rel']) and isset($_POST['Promo_abs']) and isset($_POST['Promo_ship']))
     {
         if (intval($_POST['CodeId'])>0)
             {
             single_update(
                 PPPPP_PROMOCODE_TABLE,
                 array(
-                  'code' => pwg_db_real_escape_string($_POST['Code']),
-                  'reduc_rel' => pwg_db_real_escape_string($_POST['Reduc_rel']),
-                  'reduc_abs' => pwg_db_real_escape_string($_POST['Reduc_abs']),
-                  'reduc_ship' => pwg_db_real_escape_string($_POST['Reduc_ship']),
+                  'Code' => pwg_db_real_escape_string($_POST['Code']),
+                  'Promo_rel' => pwg_db_real_escape_string($_POST['Promo_rel']),
+                  'Promo_abs' => pwg_db_real_escape_string($_POST['Promo_abs']),
+                  'Promo_ship' => pwg_db_real_escape_string($_POST['Promo_ship']),
                     ),
                 array('Id' => $_POST['CodeId'])
                 );
@@ -1071,10 +1071,10 @@ SELECT id,name,uppercats,global_rank
         single_insert(
            PPPPP_PROMOCODE_TABLE,
            array(
-             'code' => pwg_db_real_escape_string($_POST['Code']),
-             'reduc_rel' => pwg_db_real_escape_string($_POST['Reduc_rel']),
-             'reduc_abs' => pwg_db_real_escape_string($_POST['Reduc_abs']),
-             'reduc_ship' => pwg_db_real_escape_string($_POST['Reduc_ship']),
+             'Code' => pwg_db_real_escape_string($_POST['Code']),
+             'Promo_rel' => pwg_db_real_escape_string($_POST['Promo_rel']),
+             'Promo_abs' => pwg_db_real_escape_string($_POST['Promo_abs']),
+             'Promo_ship' => pwg_db_real_escape_string($_POST['Promo_ship']),
                 )
             );
         }
