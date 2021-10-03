@@ -332,6 +332,7 @@ SELECT id,name,uppercats,global_rank
             $template->assign('CountryId',$_POST['IdToEdit']);
             $template->assign('CountryName',$_POST['CountryNameToEdit']);
             $template->assign('CountryCode',$_POST['CountryCodeToEdit']);
+            $template->assign('CountryLang',$_POST['CountryLangToEdit']);
             $template->assign('CountryCurrency',$_POST['CurrencyToEdit']);
             $template->assign('ProviderId',$_POST['ProviderIdToEdit']);
         }
@@ -340,6 +341,7 @@ SELECT id,name,uppercats,global_rank
             $template->assign('CountryId','0');
             $template->assign('CountryName','');
             $template->assign('CountryCode','');
+            $template->assign('CountryLang','');
             $template->assign('CountryCurrency','');        
             $template->assign('ProviderId','0');
         }
@@ -354,35 +356,68 @@ SELECT id,name,uppercats,global_rank
     }
     else if (isset($_POST['CountryId']) and isset($_POST['CountryName']) and isset($_POST['CountryCode']) and isset($_POST['Currency']) and isset($_POST['Provider']))
     {
-        if (intval($_POST['CountryId'])>0)
+        if (isset($_POST['CountryLang']))
         {
-            single_update(
-               PPPPP_COUNTRY_TABLE,
-              array(
-                'CountryName' => pwg_db_real_escape_string($_POST['CountryName']),
-                'CountryCode' => pwg_db_real_escape_string($_POST['CountryCode']),
-                'Currency' => pwg_db_real_escape_string($_POST['Currency']),
-                'Provider' => pwg_db_real_escape_string($_POST['Provider']),
-                ),
-              array('Id' => $_POST['CountryId'])
-              );
+            if (intval($_POST['CountryId'])>0)
+            {
+                single_update(
+                   PPPPP_COUNTRY_TABLE,
+                  array(
+                    'CountryName' => pwg_db_real_escape_string($_POST['CountryName']),
+                    'CountryCode' => pwg_db_real_escape_string($_POST['CountryCode']),
+                    'CountryLang' => pwg_db_real_escape_string($_POST['CountryLang']),
+                    'Currency' => pwg_db_real_escape_string($_POST['Currency']),
+                    'Provider' => pwg_db_real_escape_string($_POST['Provider']),
+                    ),
+                  array('Id' => $_POST['CountryId'])
+                  );
+            }
+            else
+            {
+                single_insert(
+                  PPPPP_COUNTRY_TABLE,
+                  array(
+                    'CountryName' => pwg_db_real_escape_string($_POST['CountryName']),
+                    'CountryCode' => pwg_db_real_escape_string($_POST['CountryCode']),
+                    'CountryLang' => pwg_db_real_escape_string($_POST['CountryLang']),
+                    'Currency' => pwg_db_real_escape_string($_POST['Currency']),
+                    'Provider' => pwg_db_real_escape_string($_POST['Provider']),
+                    )
+            );
+            }
         }
         else
         {
-            single_insert(
-              PPPPP_COUNTRY_TABLE,
-              array(
-                'CountryName' => pwg_db_real_escape_string($_POST['CountryName']),
-                'CountryCode' => pwg_db_real_escape_string($_POST['CountryCode']),
-                'Currency' => pwg_db_real_escape_string($_POST['Currency']),
-                'Provider' => pwg_db_real_escape_string($_POST['Provider']),
-                )
-        );
+            if (intval($_POST['CountryId'])>0)
+            {
+                single_update(
+                   PPPPP_COUNTRY_TABLE,
+                  array(
+                    'CountryName' => pwg_db_real_escape_string($_POST['CountryName']),
+                    'CountryCode' => pwg_db_real_escape_string($_POST['CountryCode']),
+                    'Currency' => pwg_db_real_escape_string($_POST['Currency']),
+                    'Provider' => pwg_db_real_escape_string($_POST['Provider']),
+                    ),
+                  array('Id' => $_POST['CountryId'])
+                  );
+            }
+            else
+            {
+                single_insert(
+                  PPPPP_COUNTRY_TABLE,
+                  array(
+                    'CountryName' => pwg_db_real_escape_string($_POST['CountryName']),
+                    'CountryCode' => pwg_db_real_escape_string($_POST['CountryCode']),
+                    'Currency' => pwg_db_real_escape_string($_POST['Currency']),
+                    'Provider' => pwg_db_real_escape_string($_POST['Provider']),
+                    )
+            );
+            }
         }
-      $page['infos'][] = l10n('Your configuration settings are saved');
+        $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    $query='SELECT T1.Id, T1.CountryName, T1.CountryCode, T1.Currency, T2.Id as ProviderId , T2.Name as ProviderName FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.
+    $query='SELECT T1.Id, T1.CountryName, T1.CountryCode, T1.CountryLang, T1.Currency, T2.Id as ProviderId , T2.Name as ProviderName FROM '.PPPPP_COUNTRY_TABLE.' T1 LEFT JOIN '.
             PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider=T2.Id ORDER BY T1.Provider, T1.CountryName;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
@@ -1127,9 +1162,21 @@ SELECT id,name,uppercats,global_rank
         $template->assign('ppppp_cat_filenamebasis', $conf['PayPalShoppingCart']['CatalogFileName']);
     }
     
-    $query='SELECT DISTINCT T2.Id AS Id, T2.CountryName, T2.CountryCode, T2.Currency, T3.Name AS SupplierName FROM '.PPPPP_PRICE_TABLE.' T1'.
+    $query='SELECT DISTINCT T3.Name, T2.CountryCode, T2.CountryName, T3.Currency, T3.Name AS SupplierName FROM '.PPPPP_PRICE_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T3 ON T1.Provider=T3.Id'.
+            ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T2 ON T1.Provider=T2.Provider'.
+            ' WHERE T2.CountryLang IS NULL'.
+            ' ORDER BY T3.Name;';
+    $result = pwg_query($query);
+    while($row = pwg_db_fetch_assoc($result))
+    {
+      $template->append('ppppp_array_provider',$row);
+    }
+
+    $query='SELECT DISTINCT T2.Id AS Id, T2.CountryName, T2.CountryCode, T2.CountryLang, T2.Currency, T3.Name AS SupplierName FROM '.PPPPP_PRICE_TABLE.' T1'.
             ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T2 ON T1.Provider=T2.Provider'.
             ' LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T3 ON T1.Provider=T3.Id'.
+            ' WHERE T2.CountryLang IS NOT NULL'.
             ' ORDER BY T2.CountryName;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
@@ -1137,32 +1184,26 @@ SELECT id,name,uppercats,global_rank
       $template->append('ppppp_array_country',$row);
     }
     
-    if (isset($_POST['catalog_country']))
+    if (isset($_POST['catalog_provider']))
     {
      //echo('<pre>'.var_export($_POST,true).'</pre>' );
 
     $filenameBasis = $conf['PayPalShoppingCart']['CatalogFileName'];
-    $filename = $filenameBasis.'_'.$_POST['catalog_country'].'.xml';
+    $filename = $filenameBasis.'_'.$_POST['catalog_provider'].'.xml';
       
     set_make_full_url();
 
-//      if (isset($_POST['catalog_country']))
-//      {
-        $countryCode = $_POST['catalog_country'];
+        $countryCode = $_POST['catalog_provider'];
         $ref_cat=($countryCode==$conf['PayPalShoppingCart']['Ref_country']);
-        $template->assign('ppppp_catalog_country', $countryCode);
+        $template->assign('ppppp_catalog_provider', $countryCode);
         $template->assign( array(
+          'CATALOG' => true,
+          'TRANSLATION' => false,
           'FILENAME' => $filename,
           'U_FILENAME' => get_root_url().$filename,
             )
           );
-//      }
-//      else
-//      {
-//          $ref_cat=true;
-//          $countryCode = $conf['PayPalShoppingCart']['Ref_country'];
-//      }
-//      
+
       switch($countryCode){
           case 'FR':
               $XMLlang = array(
@@ -1191,7 +1232,7 @@ SELECT id,name,uppercats,global_rank
                     'Poster' => 'Photo print',
                     'Canvas' => 'Canvas print',
                     'Dibond' => 'Alu Dibond® print',
-                    'support' => 'Print on ',
+//                    'support' => 'Print on ',
                     'size0' => 'Size: ',
                     'size1' => 'Available sizes from ',
                     'size2' => ' to ',
@@ -1209,7 +1250,7 @@ SELECT id,name,uppercats,global_rank
                     'Poster' => 'Photo print',
                     'Canvas' => 'Canvas print',
                     'Dibond' => 'Alu Dibond® print',
-                    'support' => 'Print on ',
+//                    'support' => 'Print on ',
                     'size0' => 'Size: ',
                     'size1' => 'Available sizes from ',
                     'size2' => ' to ',
@@ -1227,7 +1268,7 @@ SELECT id,name,uppercats,global_rank
                     'Poster' => 'Photo print',
                     'Canvas' => 'Canvas print',
                     'Dibond' => 'Alu Dibond® print',
-                    'support' => 'Print on ',
+//                    'support' => 'Print on ',
                     'size0' => 'Size: ',
                     'size1' => 'Available sizes from ',
                     'size2' => ' to ',
@@ -1245,7 +1286,7 @@ SELECT id,name,uppercats,global_rank
                     'Poster' => 'Photo print',
                     'Canvas' => 'Canvas print',
                     'Dibond' => 'Alu Dibond® print',
-                    'support' => 'Print on ',
+//                    'support' => 'Print on ',
                     'size0' => 'Size: ',
                     'size1' => 'Available sizes from ',
                     'size2' => ' to ',
@@ -1315,18 +1356,159 @@ SELECT id,name,uppercats,global_rank
     $page['infos'][] = 'Catalog generated. '.$item_count.' items listed in catalog';
 
     }
-//      else
-//      {
-//        $filenameBasis = 'FB_catalog';
-//        $filename = 'FB_catalog.xml';
-//      }
 
-    // END AS GUEST
-    //$user = $save_user;
+    if (isset($_POST['catalog_country']))
+    {
+     //echo('<pre>'.var_export($_POST,true).'</pre>' );
 
-//    if (isset($_POST['catalog_country']))
-//    {
-//    }
+    $filenameBasis = $conf['PayPalShoppingCart']['CatalogFileName'];
+    $filename = $filenameBasis.'_'.$_POST['catalog_country'].'.xml';
+      
+    set_make_full_url();
+
+        $countryLang = $_POST['catalog_country'];
+        $ref_cat=false;
+        $template->assign('ppppp_catalog_country', $countryLang);
+        $template->assign( array(
+          'CATALOG' => false,
+          'TRANSLATION' => true,
+          'FILENAME' => $filename,
+          'U_FILENAME' => get_root_url().$filename,
+            )
+          );
+
+      switch($countryLang){
+          case 'it_IT':
+              $XMLlang = array(
+                    'title' => 'Catalogo online del negozio online Daedalum Photos - Italiano',
+                    'description' => 'Catalogo online del negozio online Daedalum Photos - Italiano',
+                    'support_poster' => 'Stampa fotografica on carta PH Premium 250gr, opaca o lucida. ',
+                    'support_canvas' => 'Stampa su tela, tesa su telaio (25mm o 38mm), con bordo specchiato, ripiegato, bianco o nero. ',
+                    'support_dibond' => 'Stampa su alluminio Dibond®, con opzionale stampa diretta, stampa su carta foto PH Premium (opoca o lucida) o stampa alluminio spazzolato ButlerFinish®. ',
+                    'Poster' => 'Stampa Poster',
+                    'Canvas' => 'Stampa su tela',
+                    'Dibond' => 'Stampa alluminio Dibond®',
+                    'size0' => 'Dimensioni : ',
+                    'size1' => 'Taglie disponibili da ',
+                    'size2' => ' a ',
+                    'size3' => ' di larghezza.',
+                    'units' => 'cm',
+                  );
+              break;
+          case 'es_XX':
+              $XMLlang = array(
+                    'title' => 'Catálogo en linea de la tienda en linea Daedalum Photos - Español',
+                    'description' => 'Catálogo en linea de la tienda en linea Daedalum Photos - Español',
+                    'support_poster' => 'Copia fotográfica en PH Premium 250gr foto papel mate o brilllante. ',
+                    'support_canvas' => 'Lienzo en bastidor estable de madera maciza. ',
+                    'support_dibond' => 'Impresión en aluminium Dibond®, con opcional impresión directa, impresión en foto papel PH Premium (mate or brillante) o cepillado aluminium sellado ButlerFinish®. ',
+                    'Poster' => 'Copia fotográfica',
+                    'Canvas' => 'Lienzo en bastidor',
+                    'Dibond' => 'Impresión Alu Dibond®',
+                    'size0' => 'Talla: ',
+                    'size1' => 'Tallas disponibles de ',
+                    'size2' => ' a ',
+                    'size3' => ' de ancho.',
+                    'units' => 'cm',
+                  );
+              break;
+          case 'de_DE':
+              $XMLlang = array(
+                    'title' => 'Online-Katalog des Daedalum Photos Online-Shops - Deutsch',
+                    'description' => 'Online-Katalog des Daedalum Photos Online-Shops - Deutsch',
+                    'support_poster' => 'Foto-Abzug auf PH Premium 250gr in matt oder glänzend. ',
+                    'support_canvas' => 'Foto-Leinwand auf einem hochwertigen Trägerrahmen aufgespannt (25mm oder 38mm). ',
+                    'support_dibond' => 'Foto-Druck auf Alu-Dibond®, optionen : Direktdruck oder gedruckt Foto-Abzug auf PH Premium 250gr (in matt oder glänzend) oder Foto-Druck  Butlerfinish®. ',
+                    'Poster' => 'Foto-abzug',
+                    'Canvas' => 'Foto-Leinwand',
+                    'Dibond' => 'Foto-Druck Alu-Dibond®',
+                    'size0' => 'Größe: ',
+                    'size1' => 'Verfügbare Größen von ',
+                    'size2' => ' bis ',
+                    'size3' => ' Breite.',
+                    'units' => 'cm',
+                  );
+              break;
+          case 'nl_NL':
+              $XMLlang = array(
+                    'title' => 'Online catalogus van de Daedalum Photos online winkel - Nederlands',
+                    'description' => 'Online catalogus van de Daedalum Photos online winkel - Nederlands',
+                    'support_poster' => 'Posters afdruk op Sterk 250gr HP-posterpapier, mat of glanzend. ',
+                    'support_canvas' => 'Foto op canvas, op massief houten frame (25 mm of 38 mm), optioneel: spiegel, gevouwen, witte of zwarte randen. ',
+                    'support_dibond' => 'Foto op aluminium Dibond®, optioneel : directdruk, afdruk p Premium HP-fotopapier 250gr (mat of glanzend), of geborsteld aluminium ButlerFinish®. ',
+                    'Poster' => 'Posters afdrukken',
+                    'Canvas' => 'Foto op canvas',
+                    'Dibond' => 'Foto op aluminium',
+                    'size0' => 'Dimensies: ',
+                    'size1' => 'Afmetingen beschikbaar van ',
+                    'size2' => ' tot ',
+                    'size3' => ' breed.',
+                    'units' => 'cm',
+                  );
+              break;
+          default:
+              $XMLlang = array(
+                    'title' => 'Online catalog for Daedalum Photos online shop',
+                    'description' => 'Online catalog for Daedalum Photos online shop',
+                    'support_poster' => 'Poster print on Fuji photo paper. ',
+                    'support_canvas' => 'Canvas print stretched on a wooden frame. ',
+                    'support_dibond' => 'Print on Dibond® aluminum plate. ',
+                    'Poster' => 'Photo print',
+                    'Canvas' => 'Canvas print',
+                    'Dibond' => 'Alu Dibond® print',
+                    'size0' => 'Size: ',
+                    'size1' => 'Available sizes from ',
+                    'size2' => ' to ',
+                    'size3' => ' wide.',
+                    'units' => 'cm',
+                  );
+              break;
+          }
+      
+ 
+    $query ='SELECT T10.name AS title, T10.comment AS item, T10.file AS file, MIN(T2.Width_cm) AS minSize_cm, MAX(T2.Width_cm) AS maxSize_cm,'.
+            ' MIN(T2.Width_in) AS minSize_in, MAX(T2.Width_in) AS maxSize_in, T10.path, T7.Material AS item_option, T10.Id AS imageId, T5.CountryLang AS langISOcode, T12.Id AS categoryId, T9.RatioValue as Ratio, '.
+            ' T12.name AS categoryName, T12.permalink as categoryPL '.
+           'FROM '.PPPPP_PRICE_TABLE.' T1 '.
+           'CROSS JOIN '.IMAGES_TABLE.' T10 '.
+           'LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size = T2.Id '.
+           'LEFT JOIN '.PPPPP_RATIO_TABLE.' T9 ON T2.Ratio = T9.Id '.
+           'LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id '.
+           'LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T7 ON T6.SupportMaterial = T7.Id '.
+           'LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T6.SupportOption1 = T3.Id '.
+           'LEFT JOIN '.PPPPP_OPTION_TABLE.' T8 ON T6.SupportOption2 = T8.Id '.
+           'LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio = T4.Id '.
+           'LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider '.
+           'LEFT JOIN '.IMAGE_CATEGORY_TABLE.' T11 ON T10.Id = T11.image_Id '.
+           'LEFT JOIN '.CATEGORIES_TABLE.' T12 ON T11.category_id = T12.Id '.
+           'WHERE T4.RatioValue= IF(T10.width>T10.height, ROUND(T10.width/T10.height, 1), ROUND(T10.height/T10.width, 1)) '.
+           'AND T2.Height_in<T10.height*'.$min_res_tolerance.'/T2.MinRes '.
+           'AND T5.CountryLang = "'.$countryLang.'" '.
+           'AND T12.status = "public" '.
+           'AND T12.visible = "true" '.
+           'AND T12.paypal_active = TRUE '.
+           'AND ISNULL(T10.comment) = 0 '.
+           'GROUP BY Item, T7.Material '.
+           'ORDER BY Item, T1.Price, T7.Id, T3.Id, T8.Id';
+  //echo '<pre>'; print_r($query); echo '</pre>';
+      $result = pwg_query($query);
+      
+      
+    //ECRITURE DU FICHIER XML (fonctions définies dans FB_catalog.php)  
+    start_xml($filename, $XMLlang);
+
+    
+    while ($row = pwg_db_fetch_assoc($result))
+      {
+        add_item_lang($row, $XMLlang);
+      }
+
+    unset_make_full_url();
+    end_xml();
+
+    $page['infos'][] = 'Catalog generated. '.$item_count.' items listed in catalog';
+
+    }
 
  
     break;

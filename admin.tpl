@@ -147,6 +147,7 @@ jQuery(document).ready(function() {
 <input type=hidden name=CountryId value="{$CountryId}">
 {'Name'|@translate} <input type=text name=CountryName value="{$CountryName}">
 {'Country code'|@translate} <input type=text name=CountryCode value="{$CountryCode}">
+{'Country language'|@translate} <input type=text name=CountryLang value="{$CountryLang}">
 {'Currency'|@translate}
 <select name=Currency>
 {foreach from=$ppppp_array_currency item=currency_label key=currency_code}
@@ -170,6 +171,7 @@ jQuery(document).ready(function() {
 <th>{'Id'|@translate}</th>
 <th>{'Name'|@translate}</th>
 <th>{'Country code'|@translate}</th>
+<th>{'Country language'|@translate}</th>
 <th>{'Currency'|@translate}</th>
 <th>{'Provider'|@translate}</th>
 <th colspan="2">{'Action'|@translate}</th>
@@ -179,6 +181,7 @@ jQuery(document).ready(function() {
 <td align="center">{$ppppp_row_country.Id}</td>
 <td align="center">{$ppppp_row_country.CountryName}</td>
 <td align="center">{$ppppp_row_country.CountryCode}</td>
+<td align="center">{$ppppp_row_country.CountryLang}</td>
 <td align="center">{$ppppp_row_country.Currency}</td>
 <td align="center">{$ppppp_row_country.ProviderName}</td>
 <td>
@@ -192,6 +195,7 @@ jQuery(document).ready(function() {
 <input type=hidden name=IdToEdit value='{$ppppp_row_country.Id}'>
 <input type=hidden name=CountryNameToEdit value='{$ppppp_row_country.CountryName}'>
 <input type=hidden name=CountryCodeToEdit value='{$ppppp_row_country.CountryCode}'>
+<input type=hidden name=CountryLangToEdit value='{$ppppp_row_country.CountryLang}'>
 <input type=hidden name=CurrencyToEdit value='{$ppppp_row_country.Currency}'>
 <input type=hidden name=ProviderIdToEdit value='{$ppppp_row_country.ProviderId}'>
 <input type=submit value="{'Edit data'|@translate}">
@@ -737,10 +741,10 @@ jQuery(document).ready(function() {
         </tr>
         <tr>
             <td>
-            {'Reference country'|@translate}</td><td>
+            {'Reference catalog'|@translate}</td><td>
             <select name=Ref_country>
-            {foreach from=$ppppp_array_country item=ppppp_row_country}
-            <option value="{$ppppp_row_country.CountryCode}"{if $ppppp_cat_ref_country==$ppppp_row_country.CountryCode} selected{/if}>{$ppppp_row_country.CountryName}</option>
+            {foreach from=$ppppp_array_provider item=ppppp_row_provider}
+            <option value="{$ppppp_row_provider.CountryCode}"{if $ppppp_cat_ref_country==$ppppp_row_provider.CountryCode} selected{/if}>{$ppppp_row_provider.CountryName} ({$ppppp_row_provider.SupplierName} / {$ppppp_row_provider.Currency})</option>
             {/foreach}
             </select>
             </td>
@@ -761,14 +765,35 @@ jQuery(document).ready(function() {
 
 <form method=post>
 <fieldset>
-<legend>{'Select country for catalog'|@translate}</legend>
+<legend>{'Select provider for catalog'|@translate}</legend>
+
+<select name=catalog_provider>
+{foreach from=$ppppp_array_provider item=ppppp_row_provider}
+<option value="{$ppppp_row_provider.CountryCode}"{if $ppppp_catalog_provider==$ppppp_row_provider.CountryCode} selected{/if}>{$ppppp_row_provider.Name} ({$ppppp_row_provider.CountryCode})</option>
+{/foreach}
+</select>
+{if $CATALOG}
+<a href="{$U_FILENAME}">{$FILENAME}</a>
+{/if}
+<br>
+<br>
+
+<input type=submit class="submit" value="{'Generate catalog'|@translate}" name="submit">
+</fieldset>
+</form>
+
+<form method=post>
+<fieldset>
+<legend>{'Select country for catalog translation'|@translate}</legend>
 
 <select name=catalog_country>
 {foreach from=$ppppp_array_country item=ppppp_row_country}
-<option value="{$ppppp_row_country.CountryCode}"{if $ppppp_catalog_country==$ppppp_row_country.CountryCode} selected{/if}>{$ppppp_row_country.CountryName} ({$ppppp_row_country.SupplierName})</option>
+<option value="{$ppppp_row_country.CountryLang}"{if $ppppp_catalog_country==$ppppp_row_country.CountryLang} selected{/if}>{$ppppp_row_country.CountryName} ({$ppppp_row_country.SupplierName})</option>
 {/foreach}
 </select>
+{if $TRANSLATION}
 <a href="{$U_FILENAME}">{$FILENAME}</a>
+{/if}
 <br>
 <br>
 

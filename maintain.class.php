@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS ".$prefixeTable."ppppp_countries (
   Id tinyint(4) NOT NULL AUTO_INCREMENT,
   CountryName varchar(20) NOT NULL,
   CountryCode varchar(2) NOT NULL,
+  CountryLang varchar(5) NULL,
   Currency varchar(3) NOT NULL,
   PRIMARY KEY (Id)
   ) ENGINE=MyISAM DEFAULT CHARSET=utf8

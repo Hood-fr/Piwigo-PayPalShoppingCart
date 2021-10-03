@@ -164,6 +164,100 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
   out_xml($xml);
 }
 
+function add_item_lang($row, $XMLlang)
+{
+    
+  $xml='<item>'."\r"."\n";
+
+  if ( isset($row['item_option']) and strlen($row['item_option'])>0 )
+  {
+    $xml.='<g:id>'.$row['item']."_".$row['item_option'].'</g:id>'."\r"."\n";
+    $xml.='<g:item_group_id>'.substr($row['item'],0,8).'</g:item_group_id>'."\r"."\n";
+    switch($row['item_option']){
+        case('Poster'):
+            $mat_desc=$XMLlang['Poster'];
+            $print_desc=$XMLlang['support_poster'];
+            break;
+        case('Canvas'):
+            $mat_desc=$XMLlang['Canvas'];
+            $print_desc=$XMLlang['support_canvas'];
+        break;
+        case('Dibond®'):
+            $mat_desc=$XMLlang['Dibond'];
+            $print_desc=$XMLlang['support_dibond'];
+        break;
+    }
+    $xml.='<g:material>'.$mat_desc.'</g:material>'."\r"."\n";
+  }
+  else
+  {
+    $xml.='<g:id>'.$row['item'].'</g:id>'."\r"."\n";
+  }
+
+  if ( isset($row['title']) and strlen($row['title'])>0 )
+  {
+    // Limite la longueur du titre à 65 caracteres, en pratique au dernier mot avant le 65 chara  
+    $lastPos = 0;
+    $MaxPos = strlen($row['title']);
+
+    if ($MaxPos>65)
+    {
+        while (($lastPos = strpos($row['title'], ' ', $lastPos))!== false) {
+            if($lastPos<65)
+            {
+                $MaxPos=$lastPos;
+            }
+            $lastPos = $lastPos + 1; 
+        }
+    }
+    
+    $croppedTitle =substr($row['title'],0,$MaxPos);
+    if (strcmp(substr($croppedTitle, -2),' -')==0)
+    {
+       $croppedTitle=substr($croppedTitle,0,$MaxPos-2); 
+    }
+
+    
+     $xml.='<g:title>'.htmlspecialchars($croppedTitle).'</g:title>'."\r"."\n";
+  }
+    
+  switch($XMLlang['units']){
+      case('cm'):
+          $MinSize=$row['minSize_cm'].'x'.round($row['minSize_cm']/$row['Ratio'],0).'cm';
+          $MaxSize=$row['maxSize_cm'].'x'.round($row['maxSize_cm']/$row['Ratio'],0).'cm';
+      break;
+      case('in'):
+          $MinSize=$row['minSize_in'].'x'.round($row['minSize_in']/$row['Ratio'],0).'in';
+          $MaxSize=$row['maxSize_in'].'x'.round($row['maxSize_in']/$row['Ratio'],0).'in';
+      break;
+  }
+  
+  if ( $MinSize == $MaxSize )
+  {
+      $xml.='<g:description>'.$print_desc.$XMLlang['size0'].$MinSize.'</g:description>'."\r"."\n";
+  }
+  else
+  {
+      $xml.='<g:description>'.$print_desc.$XMLlang['size1'].$MinSize.$XMLlang['size2'].$MaxSize.$XMLlang['size3'].'</g:description>'."\r"."\n";
+  }
+  
+    $xml.='<g:availability>'.'in_stock'.'</g:availability>'."\r"."\n";
+    $xml.='<g:condition>'.'new'.'</g:condition>'."\r"."\n";
+
+    if ( isset($row['langISOcode']) and strlen($row['langISOcode'])==5 )
+    {
+       $xml.='<g:override>'.$row['langISOcode'].'</g:override>'."\r"."\n";
+    }
+  
+
+  $xml.='</item>'."\r"."\n";
+    
+
+  global $item_count;
+  $item_count++;
+  out_xml($xml);
+}
+
 
 include_once(PHPWG_ROOT_PATH.'admin/include/functions.php');
 check_status(ACCESS_ADMINISTRATOR);
