@@ -830,7 +830,7 @@ SELECT id,name,uppercats,global_rank
     $conf['PayPalShoppingCart']['price_filter'] = $price_filter_array;
     conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
 
-    $page['infos'][] = l10n('Your configuration settings are saved');     
+//    $page['infos'][] = l10n('Your configuration settings are saved');     
      
     }
     else if (isset($_POST['reset']))
@@ -852,7 +852,7 @@ SELECT id,name,uppercats,global_rank
         $conf['PayPalShoppingCart']['price_filter'] = $price_filter_array;
         conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
 
-        $page['infos'][] = l10n('Your configuration settings are saved');
+//        $page['infos'][] = l10n('Your configuration settings are saved');
      }
  
     $price_filter_array=$conf['PayPalShoppingCart']['price_filter'];
@@ -880,8 +880,8 @@ SELECT id,name,uppercats,global_rank
         if($price_filter_array['Siz']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.SizeName = "'.$price_filter_array['Siz'].'"'; $clause_count=true;}     
         if($price_filter_array['Alt']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.AltSizeName = "'.$price_filter_array['Alt'].'"'; $clause_count=true;}     
         if($price_filter_array['Rat']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T6.Id = '.$price_filter_array['Rat']; $clause_count=true;}     
-        if($price_filter_array['Hei']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.Height_cm = '.$price_filter_array['Hei']; $clause_count=true;}     
-        if($price_filter_array['Wid']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.Width_cm = '.$price_filter_array['Wid']; $clause_count=true;}     
+        if($price_filter_array['Hei']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.Height_cm LIKE "'.$price_filter_array['Hei'].'"'; $clause_count=true;}     
+        if($price_filter_array['Wid']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T5.Width_cm LIKE "'.$price_filter_array['Wid'].'"'; $clause_count=true;}     
         if($price_filter_array['Prv']!='*'){if($clause_count){$where_clause.=' AND ';} $where_clause.='T8.Id = '.$price_filter_array['Prv']; $clause_count=true;}     
         if(!$clause_count){$where_clause.='1';}
     }
@@ -954,21 +954,30 @@ SELECT id,name,uppercats,global_rank
 
 // QUERIES pour alimenter les selecteurs de filtres
 
-    $query='SELECT DISTINCT Id, Material FROM '.PPPPP_MATERIAL_TABLE.' ORDER BY Material;';
+    $query='SELECT DISTINCT T3.Id, T3.Material FROM '.PPPPP_PRICE_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T2 ON T1.Support = T2.Id'.
+            ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T3 ON T2.SupportMaterial = T3.Id'.
+            ' ORDER BY T3.Material;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
       $template->append('ppppp_array_material_filt',$row);
     }
 
-    $query='SELECT DISTINCT T2.Id, T2.OptionName FROM '.PPPPP_SUPPORT_TABLE.' T1 LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption1 = T2.Id ORDER BY T2.Id;';
+    $query='SELECT DISTINCT T2.Id, T2.OptionName FROM '.PPPPP_PRICE_TABLE.' T3'.
+           ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T1 ON T3.Support = T1.Id'.
+           ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption1 = T2.Id'.
+           ' ORDER BY T2.Id;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
       $template->append('ppppp_array_option1_filt',$row);
     }
 
-    $query='SELECT DISTINCT T2.Id, T2.OptionName FROM '.PPPPP_SUPPORT_TABLE.' T1 LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption2 = T2.Id ORDER BY T2.Id;';
+    $query='SELECT DISTINCT T2.Id, T2.OptionName FROM '.PPPPP_PRICE_TABLE.' T3'.
+           ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T1 ON T3.Support = T1.Id'.
+           ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T2 ON T1.SupportOption2 = T2.Id'.
+           ' ORDER BY T2.Id;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
@@ -976,7 +985,10 @@ SELECT id,name,uppercats,global_rank
     }
 
     
-    $query='SELECT DISTINCT Id, RatioName FROM '.PPPPP_RATIO_TABLE.' ORDER BY RatioValue;';
+    $query='SELECT DISTINCT T3.Id, T3.RatioName FROM '.PPPPP_PRICE_TABLE.' T1'.
+            ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size = T2.Id'.
+            ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T3 ON T2.Ratio = T3.Id'.            
+            ' ORDER BY T3.RatioValue;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
@@ -984,35 +996,35 @@ SELECT id,name,uppercats,global_rank
     }
 
     
-    $query='SELECT DISTINCT SizeName FROM '.PPPPP_SIZES_TABLE.' ORDER BY Width_cm, Height_cm;';
+    $query='SELECT DISTINCT T2.SizeName FROM '.PPPPP_PRICE_TABLE.' T1 LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size = T2.Id ORDER BY T2.Width_cm, T2.Height_cm;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
       $template->append('ppppp_array_size_filt',$row);
     }
     
-    $query='SELECT DISTINCT AltSizeName FROM '.PPPPP_SIZES_TABLE.' ORDER BY Width_cm, Height_cm;';
+    $query='SELECT DISTINCT T2.AltSizeName FROM '.PPPPP_PRICE_TABLE.' T1 LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size = T2.Id ORDER BY T2.Width_cm, T2.Height_cm;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
       $template->append('ppppp_array_altsize_filt',$row);
     }
  
-    $query='SELECT DISTINCT Height_cm FROM '.PPPPP_SIZES_TABLE.' ORDER BY Height_cm;';
+    $query='SELECT DISTINCT T2.Height_cm FROM '.PPPPP_PRICE_TABLE.' T1 LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size = T2.Id ORDER BY T2.Height_cm;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
       $template->append('ppppp_array_height_filt',$row);
     }
  
-    $query='SELECT DISTINCT Width_cm FROM '.PPPPP_SIZES_TABLE.' ORDER BY Width_cm;';
+    $query='SELECT DISTINCT T2.Width_cm FROM '.PPPPP_PRICE_TABLE.' T1 LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size = T2.Id ORDER BY T2.Width_cm;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {
       $template->append('ppppp_array_width_filt',$row);
     }    
     
-    $query='SELECT DISTINCT Id, Name FROM '.PPPPP_PROVIDER_TABLE.' ORDER BY Name;';
+    $query='SELECT DISTINCT T2.Id, T2.Name FROM '.PPPPP_PRICE_TABLE.' T1 LEFT JOIN '.PPPPP_PROVIDER_TABLE.' T2 ON T1.Provider = T2.Id ORDER BY T2.Name;';
     $result = pwg_query($query);
     while($row = pwg_db_fetch_assoc($result))
     {

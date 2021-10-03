@@ -556,55 +556,55 @@ jQuery(document).ready(function() {
     <form method=post>
     <fieldset>
     <td><input type=hidden name=filter value='{$ppppp_row_filter_act}'></td>
-    <td align="center"><select name="filtMaterial">
+    <td align="center"><select name="filtMaterial" onchange="submit()">
         <option value="*"{if $ppppp_material_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_material_filt item=ppppp_row_material_filt}
         <option value="{$ppppp_row_material_filt.Id}"{if $ppppp_row_material_filt.Id==$ppppp_material_filt} selected{/if}>{$ppppp_row_material_filt.Material|@translate}</option>
         {/foreach}
     </select></td>
-    <td align="center"><select name="filtOption1">
+    <td align="center"><select name="filtOption1" onchange="submit()">
         <option value="*"{if $ppppp_option1_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_option1_filt item=ppppp_row_option1_filt}
         <option value="{$ppppp_row_option1_filt.Id}"{if $ppppp_row_option1_filt.Id==$ppppp_option1_filt} selected{/if}>{$ppppp_row_option1_filt.OptionName|@translate}</option>
         {/foreach}
     </select></td>
-    <td align="center"><select name="filtOption2">
+    <td align="center"><select name="filtOption2" onchange="submit()">
         <option value="*"{if $ppppp_option2_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_option2_filt item=ppppp_row_option2_filt}
         <option value="{$ppppp_row_option2_filt.Id}"{if $ppppp_row_option2_filt.Id==$ppppp_option2_filt} selected{/if}>{$ppppp_row_option2_filt.OptionName|@translate}</option>
         {/foreach}
     </select></td>
-    <td align="center"><select name="filtSize">
+    <td align="center"><select name="filtSize" onchange="submit()">
         <option value="*"{if $ppppp_size_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_size_filt item=ppppp_row_size_filt}
         <option value="{$ppppp_row_size_filt.SizeName}"{if $ppppp_row_size_filt.SizeName==$ppppp_size_filt} selected{/if}>{$ppppp_row_size_filt.SizeName}</option>
         {/foreach}
     </select></td>
-    <td align="center"><select name="filtAltSize">
+    <td align="center"><select name="filtAltSize" onchange="submit()">
         <option value="*"{if $ppppp_altsize_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_altsize_filt item=ppppp_row_altsize_filt}
         <option value="{$ppppp_row_altsize_filt.AltSizeName}"{if $ppppp_row_altsize_filt.AltSizeName==$ppppp_altsize_filt} selected{/if}>{$ppppp_row_altsize_filt.AltSizeName}</option>
         {/foreach}
     </select></td>
-    <td align="center"><select name="filtRatio">
+    <td align="center"><select name="filtRatio" onchange="submit()">
         <option value="*"{if $ppppp_ratio_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_ratio_filt item=ppppp_row_ratio_filt}
         <option value="{$ppppp_row_ratio_filt.Id}"{if $ppppp_row_ratio_filt.Id==$ppppp_ratio_filt} selected{/if}>{$ppppp_row_ratio_filt.RatioName|@translate}</option>
         {/foreach}
     </select></td>
-    <td align="center"><select name="filtHeight">
+    <td align="center"><select name="filtHeight" onchange="submit()">
         <option value="*"{if $ppppp_row_height_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_height_filt item=ppppp_row_height_filt}
         <option value="{$ppppp_row_height_filt.Height_cm}"{if $ppppp_row_height_filt.Height_cm==$ppppp_height_filt} selected{/if}>{$ppppp_row_height_filt.Height_cm|@translate}</option>
         {/foreach}
     </select></td>
-    <td align="center"><select name="filtWidth">
+    <td align="center"><select name="filtWidth" onchange="submit()">
         <option value="*"{if $ppppp_row_width_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_width_filt item=ppppp_row_width_filt}
         <option value="{$ppppp_row_width_filt.Width_cm}"{if $ppppp_row_width_filt.Width_cm==$ppppp_width_filt} selected{/if}>{$ppppp_row_width_filt.Width_cm|@translate}</option>
         {/foreach}
     </select></td>
-    <td align="center"><select name="filtProvider">
+    <td align="center"><select name="filtProvider" onchange="submit()">
         <option value="*"{if $ppppp_row_provider_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_provider_filt item=ppppp_row_provider_filt}
         <option value="{$ppppp_row_provider_filt.Id}"{if $ppppp_row_provider_filt.Id==$ppppp_provider_filt} selected{/if}>{$ppppp_row_provider_filt.Name}</option>
