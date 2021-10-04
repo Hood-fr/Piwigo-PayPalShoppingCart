@@ -1429,7 +1429,7 @@ SELECT id,name,uppercats,global_rank
                     'units' => 'cm',
                   );
               break;
-          case 'nl_NL':
+          case 'nl_XX':
               $XMLlang = array(
                     'title' => 'Online catalogus van de Daedalum Photos online winkel - Nederlands',
                     'description' => 'Online catalogus van de Daedalum Photos online winkel - Nederlands',
