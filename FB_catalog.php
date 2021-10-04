@@ -46,9 +46,12 @@ function end_xml()
 
 $item_count=0;
 
+
 function add_item($row, $ref_cat, $conf, $links, $XMLlang)
 {
-    
+  $options=array();
+  $option_images=array();    
+  
   $xml='<item>'."\r"."\n";
 
   if ( isset($row['item_option']) and strlen($row['item_option'])>0 )
@@ -59,20 +62,20 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
         case('Poster'):
             $mat_desc=$XMLlang['Poster'];
             $print_desc=$XMLlang['support_poster'];
-            if(isset($XMLlang['Poster_options'])) $options=$XMLlang['Poster_options'];
-            if(isset($XMLlang['Poster_images'])) $option_images=$XMLlang['Poster_images'];
+            if(isset($XMLlang['Poster_options'])){ $options=$XMLlang['Poster_options'];}
+            if(isset($XMLlang['Poster_images'])){ $option_images=$XMLlang['Poster_images'];}
             break;
         case('Canvas'):
             $mat_desc=$XMLlang['Canvas'];
             $print_desc=$XMLlang['support_canvas'];
-            if(isset($XMLlang['Canvas_options'])) $options=$XMLlang['Canvas_options'];
-            if(isset($XMLlang['Canvas_images'])) $option_images=$XMLlang['Canvas_images'];
+            if(isset($XMLlang['Canvas_options'])){ $options=$XMLlang['Canvas_options'];}
+            if(isset($XMLlang['Canvas_images'])){ $option_images=$XMLlang['Canvas_images'];}
         break;
         case('Dibond®'):
             $mat_desc=$XMLlang['Dibond'];
             $print_desc=$XMLlang['support_dibond'];
-            if(isset($XMLlang['Dibond_options'])) $options=$XMLlang['Dibond_options'];
-            if(isset($XMLlang['Dibond images'])) $option_images=$XMLlang['Dibond_images'];
+            if(isset($XMLlang['Dibond_options'])){ $options=$XMLlang['Dibond_options'];}
+            if(isset($XMLlang['Dibond images'])){ $option_images=$XMLlang['Dibond_images'];}
         break;
     }
     $xml.='<g:material>'.$mat_desc.'</g:material>'."\r"."\n";

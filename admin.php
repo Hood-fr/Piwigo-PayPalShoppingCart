@@ -1231,21 +1231,21 @@ SELECT id,name,uppercats,global_rank
                         'Impression' => array('Direct','FineArt mat','FineArt brillant','Alu brossé'),
                         ),
                     'Poster_images' => array(
-                        '/local/plugins/PayPalShoppingCart/poster_mat.jpg',
-                        '/local/plugins/PayPalShoppingCart/poster_bri.jpg',
+                        'local/plugins/PayPalShoppingCart/poster_mat.jpg',
+                        'local/plugins/PayPalShoppingCart/poster_bri.jpg',
                         ),
                     'Canvas_images' => array(
-                        '/local/plugins/PayPalShoppingCart/edges_stretched.jpg',
-                        '/local/plugins/PayPalShoppingCart/edges_mirrored.jpg',
-                        '/local/plugins/PayPalShoppingCart/cadre20mm.jpg',
-                        '/local/plugins/PayPalShoppingCart/cadre40mm.jpg',
+                        'local/plugins/PayPalShoppingCart/edges_stretched.jpg',
+                        'local/plugins/PayPalShoppingCart/edges_mirrored.jpg',
+                        'local/plugins/PayPalShoppingCart/cadre20mm.jpg',
+                        'local/plugins/PayPalShoppingCart/cadre40mm.jpg',
                         ),
                     'Dibond_images' => array(
-                        '/local/plugins/PayPalShoppingCart/dibond_det.jpg',
-                        '/local/plugins/PayPalShoppingCart/fineart_det.jpg',
-                        '/local/plugins/PayPalShoppingCart/fineart_mat.jpg',
-                        '/local/plugins/PayPalShoppingCart/fineart_bri.jpg',
-                        '/local/plugins/PayPalShoppingCart/brushed_det.jpg',
+                        'local/plugins/PayPalShoppingCart/dibond_det.jpg',
+                        'local/plugins/PayPalShoppingCart/fineart_det.jpg',
+                        'local/plugins/PayPalShoppingCart/fineart_mat.jpg',
+                        'local/plugins/PayPalShoppingCart/fineart_bri.jpg',
+                        'local/plugins/PayPalShoppingCart/brushed_det.jpg',
                         ),
                   );
               break;
