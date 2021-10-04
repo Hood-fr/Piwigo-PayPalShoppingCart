@@ -59,14 +59,20 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
         case('Poster'):
             $mat_desc=$XMLlang['Poster'];
             $print_desc=$XMLlang['support_poster'];
+            if(isset($XMLlang['Poster_options'])) $options=$XMLlang['Poster_options'];
+            if(isset($XMLlang['Poster_images'])) $option_images=$XMLlang['Poster_images'];
             break;
         case('Canvas'):
             $mat_desc=$XMLlang['Canvas'];
             $print_desc=$XMLlang['support_canvas'];
+            if(isset($XMLlang['Canvas_options'])) $options=$XMLlang['Canvas_options'];
+            if(isset($XMLlang['Canvas_images'])) $option_images=$XMLlang['Canvas_images'];
         break;
         case('Dibond®'):
             $mat_desc=$XMLlang['Dibond'];
             $print_desc=$XMLlang['support_dibond'];
+            if(isset($XMLlang['Dibond_options'])) $options=$XMLlang['Dibond_options'];
+            if(isset($XMLlang['Dibond images'])) $option_images=$XMLlang['Dibond_images'];
         break;
     }
     $xml.='<g:material>'.$mat_desc.'</g:material>'."\r"."\n";
@@ -122,6 +128,17 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
   {
       $xml.='<g:description>'.$print_desc.$XMLlang['size1'].$MinSize.$XMLlang['size2'].$MaxSize.$XMLlang['size3'].'</g:description>'."\r"."\n";
   }
+
+    if(sizeof($options)>0){
+        $xml.='<additional_variant_attribute>'."\r"."\n";        
+        foreach ($options as $optionname => $optionarray){
+            $xml.='<label>'.$optionname.'</label>'."\r"."\n";
+            foreach ($optionarray as $optionvalue){
+                $xml.='<value>'.$optionvalue.'</value>'."\r"."\n";            
+            }       
+        }
+        $xml.='</additional_variant_attribute>'."\r"."\n"; 
+    }
   
     $xml.='<g:availability>'.'in_stock'.'</g:availability>'."\r"."\n";
     $xml.='<g:condition>'.'new'.'</g:condition>'."\r"."\n";
@@ -130,12 +147,18 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
     $xml.='<g:link>'.$links['item_url'].'</g:link>'."\r"."\n";
     $xml.='<g:custom_label_0>'.$row['categoryName'].'</g:custom_label_0>'."\r"."\n";
     $xml.='<g:custom_label_1>'.$row['categoryPL'].'</g:custom_label_1>'."\r"."\n";
-    
+   
   if ( $ref_cat)
   {
     $xml.='<g:image_link>'.$links['image_link1'].'</g:image_link>'."\r"."\n";      
-    $xml.='<g:additionnal_image_link>'.$links['image_link2'].'</g:additionnal_image_link>'."\r"."\n";      
+    $xml.='<additionnal_image_link>'.$links['image_link2'].'</additionnal_image_link>'."\r"."\n";
+    if(sizeof($option_images)>0){
+        foreach ($option_images as $imageURL){
+            $xml.='<additionnal_image_link>'.get_root_url().$imageURL.'</additionnal_image_link>'."\r"."\n";        
+        }
+    }
     $xml.='<g:google_product_category>'.$conf['PayPalShoppingCart']['GoogleId'].'</g:google_product_category>'."\r"."\n";
+    $xml.='<product_type>Home &amp; Garden &gt; Decor &gt; Artwork &gt; Posters, Prints, &amp; Visual Artwork</product_type>'."\r"."\n"; 
     $xml.='<g:fb_product_category>'.$conf['PayPalShoppingCart']['FBId'].'</g:fb_product_category>'."\r"."\n";
    }
   else
