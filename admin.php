@@ -1220,32 +1220,37 @@ SELECT id,name,uppercats,global_rank
                     'size2' => ' à ',
                     'size3' => ' de largeur.',
                     'units' => 'cm',
-                    'Poster_options' => array(
-                        'Rendu' => array('Mat','Brillant'),
-                        ),
-                    'Canvas_options' => array(
-                        'Bords' => array('Etirés','Mirroir','Blancs','Noirs'),
-                        'Cadre' => array('25mm','38mm'),
-                        ),
-                    'Dibond_options' => array(
-                        'Impression' => array('Direct','FineArt mat','FineArt brillant','Alu brossé'),
-                        ),
+//                    'Poster_options' => array(
+//                        'Rendu' => array('Mat','Brillant'),
+//                        ),
+//                    'Canvas_options' => array(
+//                        'Bords' => array('Etirés','Mirroir','Blancs','Noirs'),
+//                        'Cadre' => array('25mm','38mm'),
+//                        ),
+//                    'Dibond_options' => array(
+//                        'Impression' => array('Direct','FineArt mat','FineArt brillant','Alu brossé'),
+//                        ),
                     'Poster_images' => array(
+                        'local/plugins/PayPalShoppingCart/poster_det.jpg',
                         'local/plugins/PayPalShoppingCart/poster_mat.jpg',
                         'local/plugins/PayPalShoppingCart/poster_bri.jpg',
+                        'local/plugins/PayPalShoppingCart/poster_silk.jpg',
                         ),
                     'Canvas_images' => array(
+                        'local/plugins/PayPalShoppingCart/canvas_lrg.jpg',
                         'local/plugins/PayPalShoppingCart/edges_stretched.jpg',
-                        'local/plugins/PayPalShoppingCart/edges_mirrored.jpg',
+                        'local/plugins/PayPalShoppingCart/edges_mirror.jpg',
                         'local/plugins/PayPalShoppingCart/cadre20mm.jpg',
                         'local/plugins/PayPalShoppingCart/cadre40mm.jpg',
                         ),
                     'Dibond_images' => array(
+                        'local/plugins/PayPalShoppingCart/dibond_lrg.jpg',
                         'local/plugins/PayPalShoppingCart/dibond_det.jpg',
                         'local/plugins/PayPalShoppingCart/fineart_det.jpg',
                         'local/plugins/PayPalShoppingCart/fineart_mat.jpg',
                         'local/plugins/PayPalShoppingCart/fineart_bri.jpg',
                         'local/plugins/PayPalShoppingCart/brushed_det.jpg',
+                        'local/plugins/PayPalShoppingCart/dibond_rail.jpg',
                         ),
                   );
               break;
@@ -1265,16 +1270,16 @@ SELECT id,name,uppercats,global_rank
                     'size2' => ' to ',
                     'size3' => ' wide.',
                     'units' => 'in',
-                    'Poster_options' => array(
-                        'Finish' => array('Matte','Glossy','Silky'),
-                        ),
-                    'Canvas_options' => array(
-                        'Edges' => array('Stretched','Mirror'),
-                        'Frame' => array('13/16in (20mm)','1in 9/16 (40mm)'),
-                        ),
-                    'Dibond_options' => array(
-                        'Print' => array('Direct print','Photo print mat','Photo print glossy','Brushed Alu'),
-                        ),
+//                    'Poster_options' => array(
+//                        'Finish' => array('Matte','Glossy','Silky'),
+//                        ),
+//                    'Canvas_options' => array(
+//                        'Edges' => array('Stretched','Mirror'),
+//                        'Frame' => array('13/16in (20mm)','1in 9/16 (40mm)'),
+//                        ),
+//                    'Dibond_options' => array(
+//                        'Print' => array('Direct print','Photo print mat','Photo print glossy','Brushed Alu'),
+//                        ),
                   );
               break;
           case 'GB':
@@ -1321,16 +1326,16 @@ SELECT id,name,uppercats,global_rank
                     'size2' => ' to ',
                     'size3' => ' wide.',
                     'units' => 'cm',
-                    'Poster_options' => array(
-                        'Finish' => array('Matte','Glossy','Silky'),
-                        ),
-                    'Canvas_options' => array(
-                        'Edges' => array('Stretched','Mirror'),
-                        'Frame' => array('20mm','40mm'),
-                        ),
-                    'Dibond_options' => array(
-                        'Print' => array('Direct print','Photo print mat','Photo print glossy','Brushed Alu'),
-                        ),
+//                    'Poster_options' => array(
+//                        'Finish' => array('Matte','Glossy','Silky'),
+//                        ),
+//                    'Canvas_options' => array(
+//                        'Edges' => array('Stretched','Mirror'),
+//                        'Frame' => array('20mm','40mm'),
+//                        ),
+//                    'Dibond_options' => array(
+//                        'Print' => array('Direct print','Photo print mat','Photo print glossy','Brushed Alu'),
+//                        ),
                   );
               break;
           default:
