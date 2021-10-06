@@ -563,19 +563,19 @@ jQuery(document).ready(function() {
     <td align="center"><select name="filtMaterial" onchange="submit()">
         <option value="*"{if $ppppp_material_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_material_filt item=ppppp_row_material_filt}
-        <option value="{$ppppp_row_material_filt.Id}"{if $ppppp_row_material_filt.Id==$ppppp_material_filt} selected{/if}>{$ppppp_row_material_filt.Material|@translate}</option>
+        <option value="{$ppppp_row_material_filt.Id}"{if $ppppp_row_material_filt.Id==$ppppp_material_filt} selected{/if}>{$ppppp_row_material_filt.Material}</option>
         {/foreach}
     </select></td>
     <td align="center"><select name="filtOption1" onchange="submit()">
         <option value="*"{if $ppppp_option1_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_option1_filt item=ppppp_row_option1_filt}
-        <option value="{$ppppp_row_option1_filt.Id}"{if $ppppp_row_option1_filt.Id==$ppppp_option1_filt} selected{/if}>{$ppppp_row_option1_filt.OptionName|@translate}</option>
+        <option value="{$ppppp_row_option1_filt.Id}"{if $ppppp_row_option1_filt.Id==$ppppp_option1_filt} selected{/if}>{$ppppp_row_option1_filt.OptionName}</option>
         {/foreach}
     </select></td>
     <td align="center"><select name="filtOption2" onchange="submit()">
         <option value="*"{if $ppppp_option2_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_option2_filt item=ppppp_row_option2_filt}
-        <option value="{$ppppp_row_option2_filt.Id}"{if $ppppp_row_option2_filt.Id==$ppppp_option2_filt} selected{/if}>{$ppppp_row_option2_filt.OptionName|@translate}</option>
+        <option value="{$ppppp_row_option2_filt.Id}"{if $ppppp_row_option2_filt.Id==$ppppp_option2_filt} selected{/if}>{$ppppp_row_option2_filt.OptionName}</option>
         {/foreach}
     </select></td>
     <td align="center"><select name="filtSize" onchange="submit()">
@@ -593,19 +593,19 @@ jQuery(document).ready(function() {
     <td align="center"><select name="filtRatio" onchange="submit()">
         <option value="*"{if $ppppp_ratio_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_ratio_filt item=ppppp_row_ratio_filt}
-        <option value="{$ppppp_row_ratio_filt.Id}"{if $ppppp_row_ratio_filt.Id==$ppppp_ratio_filt} selected{/if}>{$ppppp_row_ratio_filt.RatioName|@translate}</option>
+        <option value="{$ppppp_row_ratio_filt.Id}"{if $ppppp_row_ratio_filt.Id==$ppppp_ratio_filt} selected{/if}>{$ppppp_row_ratio_filt.RatioName}</option>
         {/foreach}
     </select></td>
     <td align="center"><select name="filtHeight" onchange="submit()">
         <option value="*"{if $ppppp_row_height_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_height_filt item=ppppp_row_height_filt}
-        <option value="{$ppppp_row_height_filt.Height_cm}"{if $ppppp_row_height_filt.Height_cm==$ppppp_height_filt} selected{/if}>{$ppppp_row_height_filt.Height_cm|@translate}</option>
+        <option value="{$ppppp_row_height_filt.Height_cm}"{if $ppppp_row_height_filt.Height_cm==$ppppp_height_filt} selected{/if}>{$ppppp_row_height_filt.Height_cm}</option>
         {/foreach}
     </select></td>
     <td align="center"><select name="filtWidth" onchange="submit()">
         <option value="*"{if $ppppp_row_width_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_width_filt item=ppppp_row_width_filt}
-        <option value="{$ppppp_row_width_filt.Width_cm}"{if $ppppp_row_width_filt.Width_cm==$ppppp_width_filt} selected{/if}>{$ppppp_row_width_filt.Width_cm|@translate}</option>
+        <option value="{$ppppp_row_width_filt.Width_cm}"{if $ppppp_row_width_filt.Width_cm==$ppppp_width_filt} selected{/if}>{$ppppp_row_width_filt.Width_cm}</option>
         {/foreach}
     </select></td>
     <td align="center"><select name="filtProvider" onchange="submit()">
@@ -675,13 +675,34 @@ jQuery(document).ready(function() {
 <fieldset>
 <legend>{'Append promo code'|@translate}</legend>
 <input type=hidden name=CodeId value="{$CodeId}">
-{'Code'|@translate} <input type=text name=Code value="{$CodeValue}"></td>
-{'Promo relative'|@translate} <input type=text name=Promo_rel size="3" value="{$Relative}">%
-{'Promo absolute'|@translate} <input type=text name=Promo_abs value="{$Absolute}">
-{'Promo shipping'|@translate} <input type=text name=Promo_ship value="{$Shipping}">
+<table align="left">
+    <tr>
+        <td>{'Code'|@translate}</td>
+        <td><input type=text name=Code value="{$CodeValue}"></td>
+    </tr>
+    <tr>
+        <td>{'Promo relative'|@translate}</td>
+        <td><input type=text name=Promo_rel size="3" value="{$Relative}">%</td>
+    </tr>
+    <tr>
+        <td>{'Promo absolute'|@translate}</td>
+        <td><input type=text name=Promo_abs size="3" value="{$Absolute}"></td>
+    </tr>
+    <tr>
+        <td>{'Promo shipping'|@translate}</td>
+        <td> <input type=text name=Promo_ship size="3" value="{$Shipping}"></td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <input type=submit value="{if $CodeId==0}{'Append data'|@translate}{else}{'Update data'|@translate}{/if}">
+        </td>
+    </tr>
+</table>
+
+
 <br>
 <br>
-<input type=submit value="{if $CodeId==0}{'Append data'|@translate}{else}{'Update data'|@translate}{/if}">
+
 </fieldset>
 </form>
 <fieldset>
@@ -750,11 +771,11 @@ jQuery(document).ready(function() {
             </td>
         </tr>
         <tr>
-            <td>{'Filename'|@translate}</td><td> <input type="input" name="filename" value="{$ppppp_cat_filenamebasis}" /></label></td>
+            <td>{'Filename'|@translate}</td><td> <input type="input" name="filename" value="{$ppppp_cat_filenamebasis}" /></label>.xml</td>
         </tr>
         <tr>
             <td>
-                <input type=submit value="{'Save settings'|@translate}">
+                <input type=submit value="{'Save Settings'|@translate}">
             </td>
         </tr>
     </table>

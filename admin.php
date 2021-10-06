@@ -1479,7 +1479,7 @@ SELECT id,name,uppercats,global_rank
                     'title' => 'Online-Katalog des Daedalum Photos Online-Shops - Deutsch',
                     'description' => 'Online-Katalog des Daedalum Photos Online-Shops - Deutsch',
                     'support_poster' => 'Foto-Abzug auf PH Premium 250gr in matt oder glänzend. ',
-                    'support_canvas' => 'Foto-Leinwand auf einem hochwertigen Trägerrahmen aufgespannt (25mm oder 38mm). ',
+                    'support_canvas' => 'Foto-Leinwand auf einem hochwertigen Trägerrahmen aufgespannt (25mm oder 38mm), optionen : umgeschlagen, gespiegelte, weißer oder schwarzer Rand. ',
                     'support_dibond' => 'Foto-Druck auf Alu-Dibond®, optionen : Direktdruck oder gedruckt Foto-Abzug auf PH Premium 250gr (in matt oder glänzend) oder Foto-Druck  Butlerfinish®. ',
                     'Poster' => 'Foto-abzug',
                     'Canvas' => 'Foto-Leinwand',

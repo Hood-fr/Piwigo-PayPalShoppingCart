@@ -288,7 +288,7 @@ function pppppCleanPromo(){
     <form name="ppppp_option1" action="{$ppppp_option1_action}" method="get">
         <select name="option1" onChange="pppppUpdateOpt()"> 
 	  {foreach from=$ppppp_array_option1 item=ppppp_row_option1}	
-          <option value="{$ppppp_row_option1.Id}"{if $ppppp_row_option1.Id==$ppppp_option1_id} selected{/if}>{$ppppp_row_option1.SupportOption1}</option>
+          <option value="{$ppppp_row_option1.Id}"{if $ppppp_row_option1.Id==$ppppp_option1_id} selected{/if}>{$ppppp_row_option1.SupportOption1|@translate}</option>
 	  {/foreach}
         </select>
     </form>
@@ -300,7 +300,7 @@ function pppppCleanPromo(){
     <form name="ppppp_option2" method="post" onSubmit="javascript:pppppChangeOption2()">
         <select name="option2" onChange="pppppPriceCompute()"> 
 	  {foreach from=$ppppp_array_option2 item=ppppp_row_option2}	
-          <option value="{$ppppp_row_option2.Price}&{$ppppp_row_option2.Shipping}">{$ppppp_row_option2.SupportOption2}</option>
+          <option value="{$ppppp_row_option2.Price}&{$ppppp_row_option2.Shipping}">{$ppppp_row_option2.SupportOption2|@translate}</option>
 	  {/foreach}
         </select>
     </form>
