@@ -154,10 +154,10 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
   if ( $ref_cat)
   {
     $xml.='<g:image_link>'.$links['image_link1'].'</g:image_link>'."\r"."\n";      
-    $xml.='<additionnal_image_link>'.$links['image_link2'].'</additionnal_image_link>'."\r"."\n";
+    $xml.='<g:additional_image_link>'.$links['image_link2'].'</g:additionnal_image_link>'."\r"."\n";
     if(sizeof($option_images)>0){
         foreach ($option_images as $imageURL){
-            $xml.='<additionnal_image_link>'.get_root_url().$imageURL.'</additionnal_image_link>'."\r"."\n";        
+            $xml.='<g:additional_image_link>'.get_root_url().$imageURL.'</g:additional_image_link>'."\r"."\n";        
         }
     }
     $xml.='<g:google_product_category>'.$conf['PayPalShoppingCart']['GoogleId'].'</g:google_product_category>'."\r"."\n";
