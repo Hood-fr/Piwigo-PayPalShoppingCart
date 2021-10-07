@@ -1240,8 +1240,8 @@ SELECT id,name,uppercats,global_rank
                         'local/plugins/PayPalShoppingCart/canvas_lrg.jpg',
                         'local/plugins/PayPalShoppingCart/edges_stretched.jpg',
                         'local/plugins/PayPalShoppingCart/edges_mirror.jpg',
-                        'local/plugins/PayPalShoppingCart/cadre20mm.jpg',
-                        'local/plugins/PayPalShoppingCart/cadre40mm.jpg',
+                        'local/plugins/PayPalShoppingCart/cadre25mm.jpg',
+                        'local/plugins/PayPalShoppingCart/cadre38mm.jpg',
                         ),
                     'Dibond_images' => array(
                         'local/plugins/PayPalShoppingCart/dibond_lrg.jpg',
@@ -1298,16 +1298,16 @@ SELECT id,name,uppercats,global_rank
                     'size2' => ' to ',
                     'size3' => ' wide.',
                     'units' => 'cm',
-                    'Poster_options' => array(
-                        'Finish' => array('Matte','Glossy','Silky'),
-                        ),
-                    'Canvas_options' => array(
-                        'Edges' => array('Stretched','Mirror'),
-                        'Frame' => array('20mm','40mm'),
-                        ),
-                    'Dibond_options' => array(
-                        'Print' => array('Direct print','Photo print mat','Photo print glossy','Brushed Alu'),
-                        ),
+//                    'Poster_options' => array(
+//                        'Finish' => array('Matte','Glossy','Silky'),
+//                        ),
+//                    'Canvas_options' => array(
+//                        'Edges' => array('Stretched','Mirror'),
+//                        'Frame' => array('20mm','40mm'),
+//                        ),
+//                    'Dibond_options' => array(
+//                        'Print' => array('Direct print','Photo print mat','Photo print glossy','Brushed Alu'),
+//                        ),
                   );
               break;
           case 'CA':
@@ -1462,8 +1462,8 @@ SELECT id,name,uppercats,global_rank
                     'title' => 'Catálogo en linea de la tienda en linea Daedalum Photos - Español',
                     'description' => 'Catálogo en linea de la tienda en linea Daedalum Photos - Español',
                     'support_poster' => 'Copia fotográfica en PH Premium 250gr foto papel mate o brilllante. ',
-                    'support_canvas' => 'Lienzo en bastidor estable de madera maciza. ',
-                    'support_dibond' => 'Impresión en aluminium Dibond®, con opcional impresión directa, impresión en foto papel PH Premium (mate or brillante) o cepillado aluminium sellado ButlerFinish®. ',
+                    'support_canvas' => 'Lienzo en bastidor estable de madera maciza (25 o 38mm), opciones : márgenes de espejo, doblodo, blancos o negros ',
+                    'support_dibond' => 'Impresión en aluminium Dibond®, con opcional impresión directa, impresión en foto papel PH Premium (mate or brillante) o cepillado aluminium ButlerFinish®. ',
                     'Poster' => 'Copia fotográfica',
                     'Canvas' => 'Lienzo en bastidor',
                     'Dibond' => 'Impresión Alu Dibond®',
@@ -1497,7 +1497,7 @@ SELECT id,name,uppercats,global_rank
                     'description' => 'Online catalogus van de Daedalum Photos online winkel - Nederlands',
                     'support_poster' => 'Posters afdruk op Sterk 250gr HP-posterpapier, mat of glanzend. ',
                     'support_canvas' => 'Foto op canvas, op massief houten frame (25 mm of 38 mm), optioneel: spiegel, gevouwen, witte of zwarte randen. ',
-                    'support_dibond' => 'Foto op aluminium Dibond®, optioneel : directdruk, afdruk p Premium HP-fotopapier 250gr (mat of glanzend), of geborsteld aluminium ButlerFinish®. ',
+                    'support_dibond' => 'Foto op aluminium Dibond®, optioneel : directdruk, afdruk op Premium HP-fotopapier 250gr (mat of glanzend), of geborsteld aluminium ButlerFinish®. ',
                     'Poster' => 'Posters afdrukken',
                     'Canvas' => 'Foto op canvas',
                     'Dibond' => 'Foto op aluminium',

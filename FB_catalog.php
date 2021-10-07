@@ -75,7 +75,7 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
             $mat_desc=$XMLlang['Dibond'];
             $print_desc=$XMLlang['support_dibond'];
             if(isset($XMLlang['Dibond_options'])){ $options=$XMLlang['Dibond_options'];}
-            if(isset($XMLlang['Dibond images'])){ $option_images=$XMLlang['Dibond_images'];}
+            if(isset($XMLlang['Dibond_images'])){ $option_images=$XMLlang['Dibond_images'];}
         break;
     }
     $xml.='<g:material>'.$mat_desc.'</g:material>'."\r"."\n";

@@ -127,7 +127,7 @@ function pppppPriceCompute(){
 function pppppUpdateOpt(){
     fillInPromoText()
     var code=document.ppppp_promocode_form.promocode.value;
-    if(code=="Insert promo code"){
+    if(code=="{/literal}{\'Insert promo code\'|@translate}{literal}"){
         var promocode="";
     }
     else{
@@ -155,7 +155,7 @@ self.location.href=new_page;
 
 function pppppUpdateSize(){
     var code=document.ppppp_promocode_form.promocode.value;
-    if(code=="Insert promo code"){
+    if(code=="{/literal}{\'Insert promo code\'|@translate}{literal}"){
         var promocode="";
     }
     else{
@@ -181,7 +181,7 @@ self.location.href=new_page;
 
 function pppppUpdateMat(){
     var code=document.ppppp_promocode_form.promocode.value;
-    if(code=="Insert promo code"){
+    if(code=="{/literal}{\'Insert promo code\'|@translate}{literal}"){
         var promocode="";
     }
     else{
@@ -227,7 +227,7 @@ function fillInPromoText(){
 }
 
 function pppppCleanPromo(){
-    if (code==="Insert promo code"){
+    if (code==="{/literal}{\'Insert promo code\'|@translate}{literal}"){
         document.ppppp_promocode_form.promocode.value="";
     }
 }
@@ -505,7 +505,7 @@ function ppppp_picture_handler($content,$current_picture)
        {
          $material_Id=$first_row_material_index;
        }
-     $query_sizes='SELECT DISTINCT T2.Id AS Id, T2.SizeName AS Size, T2.AltSizeName AS AltSize, T3.RatioValue, T2.Height_cm AS Height, T2.Width_cm AS Width'.
+     $query_sizes='SELECT DISTINCT T2.Id AS Id, T2.SizeName AS Size, T2.AltSizeName AS AltSize'. //, T3.RatioValue, T2.Height_cm AS Height, T2.Width_cm AS Width'.
              ' FROM '.PPPPP_PRICE_TABLE.' T1'.
              ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
              ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id'.
@@ -513,10 +513,10 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T3 ON T2.Ratio=T3.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T4 ON T1.Provider = T4.Provider'.
              ' WHERE T3.RatioValue='.$IMG_ratio.
-             ' AND Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
+             ' AND T2.Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
              ' AND T4.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
-             ' ORDER BY T1.Price, Height;';
+             ' ORDER BY T1.Price, T2.Height_cm;';
   //    echo '<pre>'; print_r($query_sizes); echo '</pre>';
       $result_sizes = pwg_query($query_sizes);
       $sizes_count=0;
@@ -546,7 +546,7 @@ function ppppp_picture_handler($content,$current_picture)
        {
          $sizes_Id=$first_row_sizes_index;
        }
-     $query_option1='SELECT DISTINCT T3.Id AS Id, T3.OptionName AS SupportOption1, T4.RatioValue, T2.Height_cm AS Height, T2.Width_cm AS Width, T1.Price, T1.Shipping'.
+     $query_option1='SELECT DISTINCT T3.Id AS Id, T3.OptionName AS SupportOption1'. //, T4.RatioValue, T2.Height_cm AS Height, T2.Width_cm AS Width, T1.Price, T1.Shipping'.
              ' FROM '.PPPPP_PRICE_TABLE.' T1'.
              ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
              ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id'.
@@ -555,7 +555,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio=T4.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
              ' WHERE T4.RatioValue='.$IMG_ratio.
-             ' AND Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
+             ' AND T2.Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
              ' AND T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
              ' AND T2.Id="'.$sizes_Id."\"".
@@ -589,7 +589,7 @@ function ppppp_picture_handler($content,$current_picture)
        {
          $option1_Id=$first_row_option1_index;
         }
-      $query_option2='SELECT DISTINCT T8.OptionName AS SupportOption2, T4.RatioValue, T2.Height_cm AS Height, T2.Width_cm AS Width, T1.Price, T1.Shipping'.
+      $query_option2='SELECT DISTINCT T8.OptionName AS SupportOption2, T1.Price, T1.Shipping'. //, T4.RatioValue, T2.Height_cm AS Height, T2.Width_cm AS Width'.
              ' FROM '.PPPPP_PRICE_TABLE.' T1'.
              ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T2 ON T1.Size=T2.Id'.
              ' LEFT JOIN '.PPPPP_SUPPORT_TABLE.' T6 ON T1.Support = T6.Id'.
@@ -599,7 +599,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio=T4.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
              ' WHERE T4.RatioValue='.$IMG_ratio.
-             ' AND Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
+             ' AND T2.Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
              ' AND T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
              ' AND T2.Id="'.$sizes_Id."\"".
