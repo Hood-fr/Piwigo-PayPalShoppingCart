@@ -77,7 +77,7 @@ $lang['Promo code'] = 'Code promo';
 $lang['Promo codes'] = 'Codes promo';
 
 $lang['Add to cart'] = 'Ajouter au panier';
-$lang['Insert promo code'] = 'Renseigner votre code promo';
+$lang['Insert promo code'] = 'Renseigner votre code promo'; // Eviter les codes HTML dans les traductions de Insert promo code
 $lang['Shipping country'] = 'Pays d\'exp&eacute;dition';
 $lang['Shipping fees'] = 'Co&ucirc;t d\'exp&eacute;dition';
 $lang['View Shopping Cart'] = 'Voir mon panier';

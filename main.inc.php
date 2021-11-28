@@ -480,10 +480,10 @@ function ppppp_picture_handler($content,$current_picture)
         ' LEFT JOIN '.PPPPP_SIZES_TABLE.' T6 ON T1.Size=T6.Id'.
         ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T7 ON T6.Ratio=T7.Id'.
         ' WHERE T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
-        ' AND T7.RatioValue='.$IMG_ratio.
+        ' AND abs(T7.RatioValue-'.$IMG_ratio.') <=1e-2'.
         ' AND T6.Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T6.MinRes'.
         ' ORDER BY T1.Price,T3.Id ;';
- // echo '<pre>'; print_r($query_material); echo '</pre>';
+//  echo '<pre>'; print_r($query_material); echo '</pre>';
   $result_material = pwg_query($query_material);
   $material_count=0;
   while($row_material = pwg_db_fetch_assoc($result_material))
@@ -512,7 +512,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_MATERIAL_TABLE.' T7 ON T6.SupportMaterial = T7.Id'.
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T3 ON T2.Ratio=T3.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T4 ON T1.Provider = T4.Provider'.
-             ' WHERE T3.RatioValue='.$IMG_ratio.
+             ' WHERE abs(T3.RatioValue-'.$IMG_ratio.') <=1e-2'.
              ' AND T2.Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
              ' AND T4.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
@@ -554,7 +554,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T3 ON T6.SupportOption1 = T3.Id'.
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio=T4.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
-             ' WHERE T4.RatioValue='.$IMG_ratio.
+             ' WHERE abs(T4.RatioValue-'.$IMG_ratio.') <=1e-2'.
              ' AND T2.Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
              ' AND T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
@@ -598,7 +598,7 @@ function ppppp_picture_handler($content,$current_picture)
              ' LEFT JOIN '.PPPPP_OPTION_TABLE.' T8 ON T6.SupportOption2 = T8.Id'.
              ' LEFT JOIN '.PPPPP_RATIO_TABLE.' T4 ON T2.Ratio=T4.Id'.
              ' LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider'.
-             ' WHERE T4.RatioValue='.$IMG_ratio.
+             ' WHERE abs(T4.RatioValue-'.$IMG_ratio.') <=1e-2'.
              ' AND T2.Height_in<'.$IMG_Height.'*'.$min_res_tolerance.'/T2.MinRes'.
              ' AND T5.Currency= "'.$conf['PayPalShoppingCart']['currency']."\"".
              ' AND T7.Id="'.$material_Id."\"".
