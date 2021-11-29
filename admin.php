@@ -1543,7 +1543,7 @@ SELECT id,name,uppercats,global_rank
            'LEFT JOIN '.PPPPP_COUNTRY_TABLE.' T5 ON T1.Provider = T5.Provider '.
            'LEFT JOIN '.IMAGE_CATEGORY_TABLE.' T11 ON T10.Id = T11.image_Id '.
            'LEFT JOIN '.CATEGORIES_TABLE.' T12 ON T11.category_id = T12.Id '.
-           'WHERE T4.RatioValue= IF(T10.width>T10.height, ROUND(T10.width/T10.height, 1), ROUND(T10.height/T10.width, 1)) '.
+           'WHERE abs(T4.RatioValue - IF(T10.width>T10.height, ROUND(T10.width/T10.height, 1), ROUND(T10.height/T10.width, 1))) <= 1e-2 '.
            'AND T2.Height_in<T10.height*'.$min_res_tolerance.'/T2.MinRes '.
            'AND T5.CountryLang = "'.$countryLang.'" '.
            'AND T12.status = "public" '.

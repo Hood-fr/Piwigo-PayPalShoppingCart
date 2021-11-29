@@ -114,12 +114,12 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
     
   switch($XMLlang['units']){
       case('cm'):
-          $MinSize=$row['minSize_cm'].'x'.round($row['minSize_cm']/$row['Ratio'],0).'cm';
-          $MaxSize=$row['maxSize_cm'].'x'.round($row['maxSize_cm']/$row['Ratio'],0).'cm';
+          $MinSize=round($row['minSize_cm'],0).'x'.round($row['minSize_cm']/$row['Ratio'],0).'cm';
+          $MaxSize=round($row['maxSize_cm'],0).'x'.round($row['maxSize_cm']/$row['Ratio'],0).'cm';
       break;
       case('in'):
-          $MinSize=$row['minSize_in'].'x'.round($row['minSize_in']/$row['Ratio'],0).'in';
-          $MaxSize=$row['maxSize_in'].'x'.round($row['maxSize_in']/$row['Ratio'],0).'in';
+          $MinSize=round($row['minSize_in'],0).'x'.round($row['minSize_in']/$row['Ratio'],0).'in';
+          $MaxSize=round($row['maxSize_in'],0).'x'.round($row['maxSize_in']/$row['Ratio'],0).'in';
       break;
   }
   
