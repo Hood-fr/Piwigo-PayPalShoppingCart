@@ -895,9 +895,9 @@ SELECT id,name,uppercats,global_rank
     $template->assign('ppppp_material_filt',$price_filter_array['Mat']);
     $template->assign('ppppp_option1_filt',$price_filter_array['Op1']);
     $template->assign('ppppp_option2_filt',$price_filter_array['Op2']);
-    $template->assign('ppppp_ratio_filt',$price_filter_array['Siz']);
-    $template->assign('ppppp_size_filt',$price_filter_array['Alt']);
-    $template->assign('ppppp_altsize_filt',$price_filter_array['Rat']);
+    $template->assign('ppppp_size_filt',$price_filter_array['Siz']);
+    $template->assign('ppppp_altsize_filt',$price_filter_array['Alt']);
+    $template->assign('ppppp_ratio_filt',$price_filter_array['Rat']);
     $template->assign('ppppp_height_filt',$price_filter_array['Hei']);
     $template->assign('ppppp_width_filt',$price_filter_array['Wid']);
     $template->assign('ppppp_provider_filt',$price_filter_array['Prv']);
