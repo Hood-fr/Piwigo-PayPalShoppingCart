@@ -720,14 +720,14 @@ function ppppp_index_handler(){
 
 add_event_handler('loc_begin_index', 'ppppp_index_handler');*/
 
-//fonction supprimée par passage à Piwigo 12
-/*function ppppp_admin_menu($menu){
+//fonction ci-dessous normalement supprimee suite au passage a Piwigo 12
+function ppppp_admin_menu($menu){
  load_language('plugin.lang', PPPPP_PATH);
  array_push($menu, array(
   'NAME' => l10n('PayPal Shopping Cart'),
   'URL' => get_admin_plugin_menu_link(PPPPP_PATH . 'admin.php')));
  return $menu;
- }*/
+ }
 
 add_event_handler('get_admin_plugin_menu_links', 'ppppp_admin_menu');
 
