@@ -1,11 +1,12 @@
 <?php
 /*
 Plugin Name: PayPal Shopping Cart
-Version: 2.7.c
+Version: 12.a
 Description: Append PayPal Shopping Cart on Piwigo to sell photos
 Plugin URI: http://piwigo.org/ext/extension_view.php?eid=499
 Author: queguineur.fr
 Author URI: http://www.queguineur.fr
+Has Settings: webmaster
 */
 /*
   Plugin Panier PayPal Pour Piwigo
@@ -77,7 +78,7 @@ define('PPPPP_RATIO_TABLE', $prefixeTable.'ppppp_ratio');
 define('PPPPP_VERSION', '2.7.c');
 
 
-function ppppp_append_form($tpl_source, &$smarty)
+function ppppp_append_form($tpl_source)
 {
   global $theme;
   
@@ -694,7 +695,7 @@ add_event_handler('render_element_content', 'ppppp_picture_handler', EVENT_HANDL
 // Decommenter les lignes ci dessous pour faire apparaitre un lien "View shopping cart" dans le menu de gauche.
 // D�sactiv� car ne marchait pas !
 
-/*function ppppp_append_js($tpl_source, &$smarty){
+/*function ppppp_append_js($tpl_source){
  load_language('plugin.lang', PPPPP_PATH);
  if(strstr($tpl_source,"{'Menu'|@translate}")==false)
   return $tpl_source;
@@ -719,13 +720,14 @@ function ppppp_index_handler(){
 
 add_event_handler('loc_begin_index', 'ppppp_index_handler');*/
 
-function ppppp_admin_menu($menu){
+//fonction supprimée par passage à Piwigo 12
+/*function ppppp_admin_menu($menu){
  load_language('plugin.lang', PPPPP_PATH);
  array_push($menu, array(
   'NAME' => l10n('PayPal Shopping Cart'),
   'URL' => get_admin_plugin_menu_link(PPPPP_PATH . 'admin.php')));
  return $menu;
- }
+ }*/
 
 add_event_handler('get_admin_plugin_menu_links', 'ppppp_admin_menu');
 
