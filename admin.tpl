@@ -597,19 +597,19 @@ jQuery(document).ready(function() {
         {/foreach}
     </select></td>
     <td align="center"><select name="filtHeight" onchange="submit()">
-        <option value="*"{if $ppppp_row_height_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        <option value="*"{if $ppppp_height_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_height_filt item=ppppp_row_height_filt}
         <option value="{$ppppp_row_height_filt.Height_cm}"{if $ppppp_row_height_filt.Height_cm==$ppppp_height_filt} selected{/if}>{$ppppp_row_height_filt.Height_cm}</option>
         {/foreach}
     </select></td>
     <td align="center"><select name="filtWidth" onchange="submit()">
-        <option value="*"{if $ppppp_row_width_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        <option value="*"{if $ppppp_width_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_width_filt item=ppppp_row_width_filt}
         <option value="{$ppppp_row_width_filt.Width_cm}"{if $ppppp_row_width_filt.Width_cm==$ppppp_width_filt} selected{/if}>{$ppppp_row_width_filt.Width_cm}</option>
         {/foreach}
     </select></td>
     <td align="center"><select name="filtProvider" onchange="submit()">
-        <option value="*"{if $ppppp_row_provider_filt=='*'} selected{/if}>{'All'|@translate}</option>
+        <option value="*"{if $ppppp_provider_filt=='*'} selected{/if}>{'All'|@translate}</option>
         {foreach from=$ppppp_array_provider_filt item=ppppp_row_provider_filt}
         <option value="{$ppppp_row_provider_filt.Id}"{if $ppppp_row_provider_filt.Id==$ppppp_provider_filt} selected{/if}>{$ppppp_row_provider_filt.Name}</option>
         {/foreach}
@@ -790,12 +790,12 @@ jQuery(document).ready(function() {
 
 <select name=catalog_provider>
 {foreach from=$ppppp_array_provider item=ppppp_row_provider}
-<option value="{$ppppp_row_provider.CountryCode}"{if $ppppp_catalog_provider==$ppppp_row_provider.CountryCode} selected{/if}>{$ppppp_row_provider.Name} ({$ppppp_row_provider.CountryCode})</option>
+<option value="{$ppppp_row_provider.CountryCode}"{if !empty($ppppp_catalog_provider)}{if $ppppp_catalog_provider==$ppppp_row_provider.CountryCode} selected{/if}{/if}>{$ppppp_row_provider.Name} ({$ppppp_row_provider.CountryCode})</option>
 {/foreach}
 </select>
-{if $CATALOG}
+{if !empty($CATALOG)}{if $CATALOG}
 <a href="{$U_FILENAME}">{$FILENAME}</a>
-{/if}
+{/if}{/if}
 <br>
 <br>
 
@@ -809,12 +809,12 @@ jQuery(document).ready(function() {
 
 <select name=catalog_country>
 {foreach from=$ppppp_array_country item=ppppp_row_country}
-<option value="{$ppppp_row_country.CountryLang}"{if $ppppp_catalog_country==$ppppp_row_country.CountryLang} selected{/if}>{$ppppp_row_country.CountryName} ({$ppppp_row_country.SupplierName})</option>
+<option value="{$ppppp_row_country.CountryLang}"{if !empty($ppppp_catalog_country)}{if $ppppp_catalog_country==$ppppp_row_country.CountryLang} selected{/if}{/if}>{$ppppp_row_country.CountryName} ({$ppppp_row_country.SupplierName})</option>
 {/foreach}
 </select>
-{if $TRANSLATION}
+{if !empty($TRANSLATION)}{if $TRANSLATION}
 <a href="{$U_FILENAME}">{$FILENAME}</a>
-{/if}
+{/if}{/if}
 <br>
 <br>
 
