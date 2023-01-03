@@ -262,7 +262,7 @@ function pppppCleanPromo(){
   <tr>
     <td class="label">{\'Select material\'|@translate}</td>
     <td>
-    <form name="ppppp_material" action="{$ppppp_material_action}" method="get">
+    <form name="ppppp_material" method="get">
         <select name="material" onChange="pppppUpdateMat()"> 
          {foreach from=$ppppp_array_material item=ppppp_row_material}
          <option value="{$ppppp_row_material.Id}"{if $ppppp_row_material.Id==$ppppp_material_id} selected{/if}>{$ppppp_row_material.Material|@translate}</option>
@@ -274,7 +274,7 @@ function pppppCleanPromo(){
  <tr>
     <td class="label">{\'Select size\'|@translate}</td>
     <td>
-    <form name="ppppp_size" action="{$ppppp_sizes_action}" method="get">
+    <form name="ppppp_size" method="get">
         <select name="size" onChange="pppppUpdateSize()"> 
 	  {foreach from=$ppppp_array_sizes item=ppppp_row_sizes}	
           <option value="{$ppppp_row_sizes.Id}"{if $ppppp_row_sizes.Id==$ppppp_sizes_id} selected{/if}>{$ppppp_row_sizes.Size} ({$ppppp_row_sizes.AltSize})</option>
@@ -286,7 +286,7 @@ function pppppCleanPromo(){
   <tr>
     <td class="label">{\'Select first option\'|@translate}</td>
     <td>
-    <form name="ppppp_option1" action="{$ppppp_option1_action}" method="get">
+    <form name="ppppp_option1" method="get">
         <select name="option1" onChange="pppppUpdateOpt()"> 
 	  {foreach from=$ppppp_array_option1 item=ppppp_row_option1}	
           <option value="{$ppppp_row_option1.Id}"{if $ppppp_row_option1.Id==$ppppp_option1_id} selected{/if}>{$ppppp_row_option1.SupportOption1|@translate}</option>
