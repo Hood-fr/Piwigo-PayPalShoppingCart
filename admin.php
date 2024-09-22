@@ -1529,7 +1529,7 @@ SELECT id,name,uppercats,global_rank
       
  
     $query ='SELECT T10.name AS title, T10.comment AS item, T10.file AS file, MIN(T2.Width_cm) AS minSize_cm, MAX(T2.Width_cm) AS maxSize_cm,'.
-            ' MIN(T2.Width_in) AS minSize_in, MAX(T2.Width_in) AS maxSize_in, T10.path, T7.Material AS item_option, T10.Id AS imageId, T5.CountryLang AS langISOcode, T12.Id AS categoryId, T4.RatioValue as Ratio, '.
+            ' MIN(T2.Width_in) AS minSize_in, MAX(T2.Width_in) AS maxSize_in, T10.path, T7.Material AS item_option, T10.Id AS imageId, T5.CountryLang AS langISOcode, T5.CountryCode AS countryISOcode,  T1.Shipping AS shipping, T5.Currency AS currency, T12.Id AS categoryId, T4.RatioValue as Ratio, '.
             ' T12.name AS categoryName, T12.permalink as categoryPL '.
            'FROM '.PPPPP_PRICE_TABLE.' T1 '.
            'CROSS JOIN '.IMAGES_TABLE.' T10 '.

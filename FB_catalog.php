@@ -116,10 +116,16 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
       case('cm'):
           $MinSize=round($row['minSize_cm'],0).'x'.round($row['minSize_cm']/$row['Ratio'],0).'cm';
           $MaxSize=round($row['maxSize_cm'],0).'x'.round($row['maxSize_cm']/$row['Ratio'],0).'cm';
+          $ShipLength = $row['maxSize_cm'].' cm';
+          $ShipWidth = round($row['maxSize_cm']/$row['Ratio'],0).' cm';
+          $ShipHeight= '10 cm';
       break;
       case('in'):
           $MinSize=round($row['minSize_in'],0).'x'.round($row['minSize_in']/$row['Ratio'],0).'in';
           $MaxSize=round($row['maxSize_in'],0).'x'.round($row['maxSize_in']/$row['Ratio'],0).'in';
+          $ShipLength = $row['maxSize_in'].' in';
+          $ShipWidth = round($row['maxSize_in']/$row['Ratio'],0).'in';
+          $ShipHeight= '4 in';
       break;
   }
   
@@ -181,7 +187,11 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
     $xml.='<g:min_transit_time>7</g:min_transit_time>'."\r"."\n";
     $xml.='<g:max_transit_time>14</g:max_transit_time>'."\r"."\n";
   $xml.='</g:shipping>'."\r"."\n";  
-
+  $xml.='<g:shipping_label>'.$row['shipping'].' '.$row['currency'].'</g:shipping_label>'."\r"."\n";
+  $xml.='<g:shipping_weight>'.$row['shipping'].' kg </g:shipping_weight>'."\r"."\n";
+  $xml.='<g:shipping_length>'.$ShipLength.'</g:shipping_length>'."\r"."\n";
+  $xml.='<g:shipping_width>'.$ShipWidth.'</g:shipping_width>'."\r"."\n";
+  $xml.='<g:shipping_height>'.$ShipHeight.'</g:shipping_height>'."\r"."\n";
   $xml.='</item>'."\r"."\n";
     
 
@@ -247,14 +257,21 @@ function add_item_lang($row, $XMLlang)
      $xml.='<g:title>'.htmlspecialchars($croppedTitle).'</g:title>'."\r"."\n";
   }
     
+    
   switch($XMLlang['units']){
       case('cm'):
           $MinSize=$row['minSize_cm'].'x'.round($row['minSize_cm']/$row['Ratio'],0).'cm';
           $MaxSize=$row['maxSize_cm'].'x'.round($row['maxSize_cm']/$row['Ratio'],0).'cm';
+          $ShipLength = $row['maxSize_cm'].' cm';
+          $ShipWidth = round($row['maxSize_cm']/$row['Ratio'],0).' cm';
+          $ShipHeight= '10 cm';
       break;
       case('in'):
           $MinSize=$row['minSize_in'].'x'.round($row['minSize_in']/$row['Ratio'],0).'in';
           $MaxSize=$row['maxSize_in'].'x'.round($row['maxSize_in']/$row['Ratio'],0).'in';
+          $ShipLength = $row['maxSize_in'].' in';
+          $ShipWidth = round($row['maxSize_in']/$row['Ratio'],0).'in';
+          $ShipHeight= '4 in';
       break;
   }
   
@@ -269,7 +286,22 @@ function add_item_lang($row, $XMLlang)
   
     $xml.='<g:availability>'.'in_stock'.'</g:availability>'."\r"."\n";
     $xml.='<g:condition>'.'new'.'</g:condition>'."\r"."\n";
-
+      $xml.='<g:shipping>'."\r"."\n";
+        $xml.='<g:country>'.$row['countryISOcode'].'</g:country>'."\r"."\n";
+        $xml.='<g:service>'.'Tracked delivery'.'</g:service>'."\r"."\n";
+        $xml.='<g:price>'.$row['shipping'].' '.$row['currency'].'</g:price>'."\r"."\n";
+        $xml.='<g:min_handling_time>1</g:min_handling_time>'."\r"."\n";
+        $xml.='<g:max_handling_time>3</g:max_handling_time>'."\r"."\n";
+        $xml.='<g:min_transit_time>7</g:min_transit_time>'."\r"."\n";
+        $xml.='<g:max_transit_time>14</g:max_transit_time>'."\r"."\n";
+      $xml.='</g:shipping>'."\r"."\n";  
+      $xml.='<g:shipping_label>'.$row['shipping'].' '.$row['currency'].'</g:shipping_label>'."\r"."\n";
+      $xml.='<g:shipping_weight>'.$row['shipping'].' kg </g:shipping_weight>'."\r"."\n";
+      $xml.='<g:shipping_length>'.$ShipLength.'</g:shipping_length>'."\r"."\n";
+      $xml.='<g:shipping_width>'.$ShipWidth.'</g:shipping_width>'."\r"."\n";
+      $xml.='<g:shipping_height>'.$ShipHeight.'</g:shipping_height>'."\r"."\n";
+  //$xml.='</item>'."\r"."\n";
+    
     if ( isset($row['langISOcode']) and strlen($row['langISOcode'])==5 )
     {
        $xml.='<g:override>'.$row['langISOcode'].'</g:override>'."\r"."\n";
