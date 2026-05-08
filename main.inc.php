@@ -745,7 +745,7 @@ function ppppp_init()
   load_language('plugin.lang', PPPPP_PATH);
   
   // prepare plugin configuration
-  $conf['PayPalShoppingCart'] = safe_unserialize($conf['PayPalShoppingCart']);
+  $conf['PayPalShoppingCart'] = isset($conf['PayPalShoppingCart']) ? safe_unserialize($conf['PayPalShoppingCart']);
 }
 
 // add_event_handler('loc_end_index_thumbnails', 'ppppp_loc_end_index_thumbnails');
