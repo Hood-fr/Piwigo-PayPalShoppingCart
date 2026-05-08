@@ -10,7 +10,7 @@ class PayPalShoppingCart_maintain extends PluginMaintain
     parent::__construct($plugin_id);
   }
 
-  function install($plugin_version, &$errors=array())
+  function install($plugin_version, &$errors=array()) : void
   {
     global $conf, $prefixeTable, $template;
 
@@ -92,7 +92,7 @@ SELECT
     $this->installed = true;
   }
 
-  function activate($plugin_version, &$errors=array())
+  function activate($plugin_version, &$errors=array()) : void
   {
     global $prefixeTable;
     
@@ -102,7 +102,7 @@ SELECT
     }
   }
 
-  function update($old_version, $new_version, &$errors=array())
+  function update($old_version, $new_version, &$errors=array()) : void
   {
     $this->install($new_version, $errors);
   }
