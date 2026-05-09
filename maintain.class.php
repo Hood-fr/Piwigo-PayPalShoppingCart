@@ -10,7 +10,7 @@ class PayPalShoppingCart_maintain extends PluginMaintain
     parent::__construct($plugin_id);
   }
 
-  function install($plugin_version, &$errors=array()) : void
+function install($plugin_version, &$errors = []) : void
   {
     global $conf, $prefixeTable, $template;
 
