@@ -447,7 +447,7 @@ function ppppp_picture_handler($content,$current_picture)
   $template->set_prefilter('picture', 'ppppp_append_form');
   load_language('plugin.lang', PPPPP_PATH);
     
-//  $query_promocode='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.' '.@$conf['PayPalShoppingCart_promocode_order_by'].';';
+// $query_promocode='SELECT * FROM '.PPPPP_PROMOCODE_TABLE.' '.($conf['PayPalShoppingCart_promocode_order_by'] ?? '').';';
 //  $result_promocode = pwg_query($query_promocode);
 //  while($row_promocode = pwg_db_fetch_assoc($result_promocode))
 //  {
@@ -745,7 +745,7 @@ function ppppp_init()
   load_language('plugin.lang', PPPPP_PATH);
   
   // prepare plugin configuration
-  $conf['PayPalShoppingCart'] = isset($conf['PayPalShoppingCart']) ? safe_unserialize($conf['PayPalShoppingCart']);
+  $conf['PayPalShoppingCart'] = safe_unserialize($conf['PayPalShoppingCart'] ?? '');
 }
 
 // add_event_handler('loc_end_index_thumbnails', 'ppppp_loc_end_index_thumbnails');

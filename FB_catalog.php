@@ -21,12 +21,12 @@ function start_xml($filename, $XMLlang)
 //  out_xml('<?xml version="1.0" encoding="UTF-8"?'.'>
 //<?xml-stylesheet type="text/xsl" href="'.get_root_url().'plugins/'.basename(dirname(__FILE__)).'/sitemap.xsl"?'.'>
 //<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">', $gzip );
-  out_xml(  '<?xml version="1.0" encoding="UTF-8"?>'."\r"."\n".
-            '<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">'."\r"."\n".
-            '<channel>'."\r"."\n".
-            '<title>'.$XMLlang['title'].'</title>'."\r"."\n".
-            '<link>'.$url.'</link>'."\r"."\n".
-            '<description>'.$XMLlang['description'].'</description>'."\r"."\n"            
+  out_xml(  '<?xml version="1.0" encoding="UTF-8"?>'. PHP_EOL .
+            '<rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">'. PHP_EOL .
+            '<channel>'. PHP_EOL .
+            '<title>'.$XMLlang['title'].'</title>'. PHP_EOL .
+            '<link>'.$url.'</link>'. PHP_EOL .
+            '<description>'.$XMLlang['description'].'</description>'. PHP_EOL
           );
 }
 
@@ -39,8 +39,8 @@ function out_xml($xml)
 function end_xml()
 {
   global $file;
-  out_xml('</channel>'."\r"."\n".
-          '</rss>'."\r"."\n");           
+  out_xml('</channel>'. PHP_EOL .
+          '</rss>'. PHP_EOL );
   fclose( $file );
 }
 
@@ -52,12 +52,12 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
   $options=array();
   $option_images=array();    
   
-  $xml='<item>'."\r"."\n";
+  $xml='<item>'. PHP_EOL ;
 
   if ( isset($row['item_option']) and strlen($row['item_option'])>0 )
   {
-    $xml.='<g:id>'.$row['item']."_".$row['item_option'].'</g:id>'."\r"."\n";
-    $xml.='<g:item_group_id>'.substr($row['item'],0,8).'</g:item_group_id>'."\r"."\n";
+    $xml.='<g:id>'.$row['item']."_".$row['item_option'].'</g:id>'. PHP_EOL ;
+    $xml.='<g:item_group_id>'.substr($row['item'],0,8).'</g:item_group_id>'. PHP_EOL ;
     switch($row['item_option']){
         case('Poster'):
             $mat_desc=$XMLlang['Poster'];
@@ -78,11 +78,11 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
             if(isset($XMLlang['Dibond_images'])){ $option_images=$XMLlang['Dibond_images'];}
         break;
     }
-    $xml.='<g:material>'.$mat_desc.'</g:material>'."\r"."\n";
+    $xml.='<g:material>'.$mat_desc.'</g:material>'. PHP_EOL ;
   }
   else
   {
-    $xml.='<g:id>'.$row['item'].'</g:id>'."\r"."\n";
+    $xml.='<g:id>'.$row['item'].'</g:id>'. PHP_EOL ;
   }
 
   if ( isset($row['title']) and strlen($row['title'])>0 )
@@ -109,7 +109,7 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
     }
 
     
-     $xml.='<g:title>'.htmlspecialchars($croppedTitle).'</g:title>'."\r"."\n";
+     $xml.='<g:title>'.htmlspecialchars($croppedTitle).'</g:title>'. PHP_EOL ;
   }
     
   switch($XMLlang['units']){
@@ -131,68 +131,68 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
   
   if ( $MinSize == $MaxSize )
   {
-      $xml.='<g:description>'.$print_desc.$XMLlang['size0'].$MinSize.'</g:description>'."\r"."\n";
+      $xml.='<g:description>'.$print_desc.$XMLlang['size0'].$MinSize.'</g:description>'. PHP_EOL ;
   }
   else
   {
-      $xml.='<g:description>'.$print_desc.$XMLlang['size1'].$MinSize.$XMLlang['size2'].$MaxSize.$XMLlang['size3'].'</g:description>'."\r"."\n";
+      $xml.='<g:description>'.$print_desc.$XMLlang['size1'].$MinSize.$XMLlang['size2'].$MaxSize.$XMLlang['size3'].'</g:description>'. PHP_EOL ;
   }
 
     if(sizeof($options)>0){
-        $xml.='<additional_variant_attribute>'."\r"."\n";        
+        $xml.='<additional_variant_attribute>'. PHP_EOL ;
         foreach ($options as $optionname => $optionarray){
-            $xml.='<label>'.$optionname.'</label>'."\r"."\n";
+            $xml.='<label>'.$optionname.'</label>'. PHP_EOL ;
             foreach ($optionarray as $optionvalue){
-                $xml.='<value>'.$optionvalue.'</value>'."\r"."\n";            
+                $xml.='<value>'.$optionvalue.'</value>'. PHP_EOL ;
             }       
         }
-        $xml.='</additional_variant_attribute>'."\r"."\n"; 
+        $xml.='</additional_variant_attribute>'. PHP_EOL ;
     }
   
-    $xml.='<g:availability>'.'in_stock'.'</g:availability>'."\r"."\n";
-    $xml.='<g:condition>'.'new'.'</g:condition>'."\r"."\n";
-    $xml.='<g:brand>'.$conf['PayPalShoppingCart']['Brand'].'</g:brand>'."\r"."\n";
-    $xml.='<g:price>'.$row['price'].' '.$row['currency'].'</g:price>'."\r"."\n";
-    $xml.='<g:link>'.$links['item_url'].'</g:link>'."\r"."\n";
-    $xml.='<g:custom_label_0>'.$row['categoryName'].'</g:custom_label_0>'."\r"."\n";
-    $xml.='<g:custom_label_1>'.$row['categoryPL'].'</g:custom_label_1>'."\r"."\n";
+    $xml.='<g:availability>'.'in_stock'.'</g:availability>'. PHP_EOL ;
+    $xml.='<g:condition>'.'new'.'</g:condition>'. PHP_EOL ;
+    $xml.='<g:brand>'.$conf['PayPalShoppingCart']['Brand'].'</g:brand>'. PHP_EOL ;
+    $xml.='<g:price>'.$row['price'].' '.$row['currency'].'</g:price>'. PHP_EOL ;
+    $xml.='<g:link>'.$links['item_url'].'</g:link>'. PHP_EOL ;
+    $xml.='<g:custom_label_0>'.$row['categoryName'].'</g:custom_label_0>'. PHP_EOL ;
+    $xml.='<g:custom_label_1>'.$row['categoryPL'].'</g:custom_label_1>'. PHP_EOL ;
    
   if ( $ref_cat)
   {
-    $xml.='<g:image_link>'.$links['image_link1'].'</g:image_link>'."\r"."\n";      
-    $xml.='<g:additional_image_link>'.$links['image_link2'].'</g:additional_image_link>'."\r"."\n";
+    $xml.='<g:image_link>'.$links['image_link1'].'</g:image_link>'. PHP_EOL ;
+    $xml.='<g:additional_image_link>'.$links['image_link2'].'</g:additional_image_link>'. PHP_EOL ;
     if(sizeof($option_images)>0){
         foreach ($option_images as $imageURL){
-            $xml.='<g:additional_image_link>'.get_root_url().$imageURL.'</g:additional_image_link>'."\r"."\n";        
+            $xml.='<g:additional_image_link>'.get_root_url().$imageURL.'</g:additional_image_link>'. PHP_EOL ;
         }
     }
-    $xml.='<g:google_product_category>'.$conf['PayPalShoppingCart']['GoogleId'].'</g:google_product_category>'."\r"."\n";
-    $xml.='<product_type>Home &amp; Garden &gt; Decor &gt; Artwork &gt; Posters, Prints, &amp; Visual Artwork</product_type>'."\r"."\n"; 
-    $xml.='<g:fb_product_category>'.$conf['PayPalShoppingCart']['FBId'].'</g:fb_product_category>'."\r"."\n";
+    $xml.='<g:google_product_category>'.$conf['PayPalShoppingCart']['GoogleId'].'</g:google_product_category>'. PHP_EOL ;
+    $xml.='<product_type>Home &amp; Garden &gt; Decor &gt; Artwork &gt; Posters, Prints, &amp; Visual Artwork</product_type>'. PHP_EOL ;
+    $xml.='<g:fb_product_category>'.$conf['PayPalShoppingCart']['FBId'].'</g:fb_product_category>'. PHP_EOL ;
    }
   else
   {
     if ( isset($row['countryISOcode']) and strlen($row['countryISOcode'])==2 )
     {
-       $xml.='<g:override>'.$row['countryISOcode'].'</g:override>'."\r"."\n";
+       $xml.='<g:override>'.$row['countryISOcode'].'</g:override>'. PHP_EOL ;
     }
   }
 
-  $xml.='<g:shipping>'."\r"."\n";
-    $xml.='<g:country>'.$row['countryISOcode'].'</g:country>'."\r"."\n";
-    $xml.='<g:service>'.'Tracked delivery'.'</g:service>'."\r"."\n";
-    $xml.='<g:price>'.$row['shipping'].' '.$row['currency'].'</g:price>'."\r"."\n";
-    $xml.='<g:min_handling_time>1</g:min_handling_time>'."\r"."\n";
-    $xml.='<g:max_handling_time>3</g:max_handling_time>'."\r"."\n";
-    $xml.='<g:min_transit_time>7</g:min_transit_time>'."\r"."\n";
-    $xml.='<g:max_transit_time>14</g:max_transit_time>'."\r"."\n";
-  $xml.='</g:shipping>'."\r"."\n";  
-  $xml.='<g:shipping_label>'.$row['shipping'].' '.$row['currency'].'</g:shipping_label>'."\r"."\n";
-  $xml.='<g:shipping_weight>'.$row['shipping'].' kg </g:shipping_weight>'."\r"."\n";
-  $xml.='<g:shipping_length>'.$ShipLength.'</g:shipping_length>'."\r"."\n";
-  $xml.='<g:shipping_width>'.$ShipWidth.'</g:shipping_width>'."\r"."\n";
-  $xml.='<g:shipping_height>'.$ShipHeight.'</g:shipping_height>'."\r"."\n";
-  $xml.='</item>'."\r"."\n";
+  $xml.='<g:shipping>'. PHP_EOL ;
+    $xml.='<g:country>'.$row['countryISOcode'].'</g:country>'. PHP_EOL ;
+    $xml.='<g:service>'.'Tracked delivery'.'</g:service>'. PHP_EOL ;
+    $xml.='<g:price>'.$row['shipping'].' '.$row['currency'].'</g:price>'. PHP_EOL ;
+    $xml.='<g:min_handling_time>1</g:min_handling_time>'. PHP_EOL ;
+    $xml.='<g:max_handling_time>3</g:max_handling_time>'. PHP_EOL ;
+    $xml.='<g:min_transit_time>7</g:min_transit_time>'. PHP_EOL ;
+    $xml.='<g:max_transit_time>14</g:max_transit_time>'. PHP_EOL ;
+  $xml.='</g:shipping>'. PHP_EOL ;
+  $xml.='<g:shipping_label>'.$row['shipping'].' '.$row['currency'].'</g:shipping_label>'. PHP_EOL ;
+  $xml.='<g:shipping_weight>'.$row['shipping'].' kg </g:shipping_weight>'. PHP_EOL ;
+  $xml.='<g:shipping_length>'.$ShipLength.'</g:shipping_length>'. PHP_EOL ;
+  $xml.='<g:shipping_width>'.$ShipWidth.'</g:shipping_width>'. PHP_EOL ;
+  $xml.='<g:shipping_height>'.$ShipHeight.'</g:shipping_height>'. PHP_EOL ;
+  $xml.='</item>'. PHP_EOL ;
     
 
   global $item_count;
@@ -203,12 +203,12 @@ function add_item($row, $ref_cat, $conf, $links, $XMLlang)
 function add_item_lang($row, $XMLlang)
 {
     
-  $xml='<item>'."\r"."\n";
+  $xml='<item>'. PHP_EOL ;
 
   if ( isset($row['item_option']) and strlen($row['item_option'])>0 )
   {
-    $xml.='<g:id>'.$row['item']."_".$row['item_option'].'</g:id>'."\r"."\n";
-    $xml.='<g:item_group_id>'.substr($row['item'],0,8).'</g:item_group_id>'."\r"."\n";
+    $xml.='<g:id>'.$row['item']."_".$row['item_option'].'</g:id>'. PHP_EOL ;
+    $xml.='<g:item_group_id>'.substr($row['item'],0,8).'</g:item_group_id>'. PHP_EOL ;
     switch($row['item_option']){
         case('Poster'):
             $mat_desc=$XMLlang['Poster'];
@@ -223,11 +223,11 @@ function add_item_lang($row, $XMLlang)
             $print_desc=$XMLlang['support_dibond'];
         break;
     }
-    $xml.='<g:material>'.$mat_desc.'</g:material>'."\r"."\n";
+    $xml.='<g:material>'.$mat_desc.'</g:material>'. PHP_EOL ;
   }
   else
   {
-    $xml.='<g:id>'.$row['item'].'</g:id>'."\r"."\n";
+    $xml.='<g:id>'.$row['item'].'</g:id>'. PHP_EOL ;
   }
 
   if ( isset($row['title']) and strlen($row['title'])>0 )
@@ -254,7 +254,7 @@ function add_item_lang($row, $XMLlang)
     }
 
     
-     $xml.='<g:title>'.htmlspecialchars($croppedTitle).'</g:title>'."\r"."\n";
+     $xml.='<g:title>'.htmlspecialchars($croppedTitle).'</g:title>'. PHP_EOL ;
   }
     
     
@@ -277,38 +277,38 @@ function add_item_lang($row, $XMLlang)
   
   if ( $MinSize == $MaxSize )
   {
-      $xml.='<g:description>'.$print_desc.$XMLlang['size0'].$MinSize.'</g:description>'."\r"."\n";
+      $xml.='<g:description>'.$print_desc.$XMLlang['size0'].$MinSize.'</g:description>'. PHP_EOL ;
   }
   else
   {
-      $xml.='<g:description>'.$print_desc.$XMLlang['size1'].$MinSize.$XMLlang['size2'].$MaxSize.$XMLlang['size3'].'</g:description>'."\r"."\n";
+      $xml.='<g:description>'.$print_desc.$XMLlang['size1'].$MinSize.$XMLlang['size2'].$MaxSize.$XMLlang['size3'].'</g:description>'. PHP_EOL ;
   }
   
-    $xml.='<g:availability>'.'in_stock'.'</g:availability>'."\r"."\n";
-    $xml.='<g:condition>'.'new'.'</g:condition>'."\r"."\n";
-      $xml.='<g:shipping>'."\r"."\n";
-        $xml.='<g:country>'.$row['countryISOcode'].'</g:country>'."\r"."\n";
-        $xml.='<g:service>'.'Tracked delivery'.'</g:service>'."\r"."\n";
-        $xml.='<g:price>'.$row['shipping'].' '.$row['currency'].'</g:price>'."\r"."\n";
-        $xml.='<g:min_handling_time>1</g:min_handling_time>'."\r"."\n";
-        $xml.='<g:max_handling_time>3</g:max_handling_time>'."\r"."\n";
-        $xml.='<g:min_transit_time>7</g:min_transit_time>'."\r"."\n";
-        $xml.='<g:max_transit_time>14</g:max_transit_time>'."\r"."\n";
-      $xml.='</g:shipping>'."\r"."\n";  
-      $xml.='<g:shipping_label>'.$row['shipping'].' '.$row['currency'].'</g:shipping_label>'."\r"."\n";
-      $xml.='<g:shipping_weight>'.$row['shipping'].' kg </g:shipping_weight>'."\r"."\n";
-      $xml.='<g:shipping_length>'.$ShipLength.'</g:shipping_length>'."\r"."\n";
-      $xml.='<g:shipping_width>'.$ShipWidth.'</g:shipping_width>'."\r"."\n";
-      $xml.='<g:shipping_height>'.$ShipHeight.'</g:shipping_height>'."\r"."\n";
-  //$xml.='</item>'."\r"."\n";
+    $xml.='<g:availability>'.'in_stock'.'</g:availability>'. PHP_EOL ;
+    $xml.='<g:condition>'.'new'.'</g:condition>'. PHP_EOL ;
+      $xml.='<g:shipping>'. PHP_EOL ;
+        $xml.='<g:country>'.$row['countryISOcode'].'</g:country>'. PHP_EOL ;
+        $xml.='<g:service>'.'Tracked delivery'.'</g:service>'. PHP_EOL ;
+        $xml.='<g:price>'.$row['shipping'].' '.$row['currency'].'</g:price>'. PHP_EOL ;
+        $xml.='<g:min_handling_time>1</g:min_handling_time>'. PHP_EOL ;
+        $xml.='<g:max_handling_time>3</g:max_handling_time>'. PHP_EOL ;
+        $xml.='<g:min_transit_time>7</g:min_transit_time>'. PHP_EOL ;
+        $xml.='<g:max_transit_time>14</g:max_transit_time>'. PHP_EOL ;
+      $xml.='</g:shipping>'. PHP_EOL ;
+      $xml.='<g:shipping_label>'.$row['shipping'].' '.$row['currency'].'</g:shipping_label>'. PHP_EOL ;
+      $xml.='<g:shipping_weight>'.$row['shipping'].' kg </g:shipping_weight>'. PHP_EOL ;
+      $xml.='<g:shipping_length>'.$ShipLength.'</g:shipping_length>'. PHP_EOL ;
+      $xml.='<g:shipping_width>'.$ShipWidth.'</g:shipping_width>'. PHP_EOL ;
+      $xml.='<g:shipping_height>'.$ShipHeight.'</g:shipping_height>'. PHP_EOL ;
+  //$xml.='</item>'. PHP_EOL ;
     
     if ( isset($row['langISOcode']) and strlen($row['langISOcode'])==5 )
     {
-       $xml.='<g:override>'.$row['langISOcode'].'</g:override>'."\r"."\n";
+       $xml.='<g:override>'.$row['langISOcode'].'</g:override>'. PHP_EOL ;
     }
   
 
-  $xml.='</item>'."\r"."\n";
+  $xml.='</item>'. PHP_EOL ;
     
 
   global $item_count;

@@ -107,7 +107,7 @@ switch($page['tab'])
       'USD'=>'U.S. Dollar'
       );
   
-    if(isset($_POST['currency']) and isset($array_currency[ $_POST['currency'] ]))
+    if(isset($_POST['currency']) && isset($array_currency[ $_POST['currency'] ]))
     {
       $conf['PayPalShoppingCart']['currency'] = $_POST['currency'];
       conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
@@ -127,14 +127,14 @@ switch($page['tab'])
 // SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS - SETTINGS //
     case 'settings':
     
-    if (isset($_POST['PayPalAccountEmail'])and filter_var($_POST['PayPalAccountEmail'], FILTER_VALIDATE_EMAIL))
+    if (isset($_POST['PayPalAccountEmail']) && filter_var($_POST['PayPalAccountEmail'], FILTER_VALIDATE_EMAIL))
     {
       $conf['PayPalShoppingCart']['PayPalAccount'] = $_POST['PayPalAccountEmail'];
       conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
       
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    elseif (isset($_POST['PayPalAccountEmail'])and !filter_var($_POST['PayPalAccountEmail'], FILTER_VALIDATE_EMAIL))
+    elseif (isset($_POST['PayPalAccountEmail']) && !filter_var($_POST['PayPalAccountEmail'], FILTER_VALIDATE_EMAIL))
     {  
       $page['infos'][] = l10n('Invalid account. Please make sure you have entered a valid email address.');
     }
@@ -145,7 +145,7 @@ switch($page['tab'])
 // ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS - ALBUMS //
     case 'albums' :
 
-     if (isset($_POST['apply_to_albums']) and in_array($_POST['apply_to_albums'], array('all', 'list')))
+     if (isset($_POST['apply_to_albums']) && in_array($_POST['apply_to_albums'], array('all', 'list')))
      {
        $conf['PayPalShoppingCart']['apply_to_albums'] = $_POST['apply_to_albums'];
        conf_update_param('PayPalShoppingCart', $conf['PayPalShoppingCart']);
@@ -253,7 +253,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['ProviderId']) and isset($_POST['ProviderName']) and isset($_POST['ProviderUrl']) and isset($_POST['Currency']))
+    else if (isset($_POST['ProviderId']) && isset($_POST['ProviderName']) && isset($_POST['ProviderUrl']) && isset($_POST['Currency']))
     {
         if (intval($_POST['ProviderId'])>0)
         {
@@ -354,7 +354,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['CountryId']) and isset($_POST['CountryName']) and isset($_POST['CountryCode']) and isset($_POST['Currency']) and isset($_POST['Provider']))
+    else if (isset($_POST['CountryId']) && isset($_POST['CountryName']) && isset($_POST['CountryCode']) && isset($_POST['Currency']) && isset($_POST['Provider']))
     {
         if (isset($_POST['CountryLang']))
         {
@@ -512,7 +512,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['OptionId']) and isset($_POST['OptionName']))
+    else if (isset($_POST['OptionId']) && isset($_POST['OptionName']))
     {
         if (intval($_POST['OptionId'])>0)
         {
@@ -571,7 +571,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['SupportId']) and isset($_POST['Material']) and isset($_POST['Option1']) and isset($_POST['Option2']))
+    else if (isset($_POST['SupportId']) && isset($_POST['Material']) && isset($_POST['Option1']) && isset($_POST['Option2']))
     {
          if (intval($_POST['SupportId'])>0)
         {
@@ -652,7 +652,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['RatioId']) and isset($_POST['RatioName']) and isset($_POST['RatioValue']))
+    else if (isset($_POST['RatioId']) && isset($_POST['RatioName']) && isset($_POST['RatioValue']))
     {
         if (intval($_POST['RatioId'])>0)
         {
@@ -723,7 +723,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['SizeId']) and isset($_POST['SizeName']) and isset($_POST['AltSizeName']) and isset($_POST['RatioId']) and isset($_POST['Height_cm']) and isset($_POST['Width_cm']) and isset($_POST['Height_in']) and isset($_POST['Width_in']) and isset($_POST['MinRes']))
+    else if (isset($_POST['SizeId']) && isset($_POST['SizeName']) && isset($_POST['AltSizeName']) && isset($_POST['RatioId']) && isset($_POST['Height_cm']) && isset($_POST['Width_cm']) && isset($_POST['Height_in']) && isset($_POST['Width_in']) && isset($_POST['MinRes']))
     {      
         if (intval($_POST['SizeId'])>0)
         {
@@ -813,7 +813,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['PriceId']) and isset($_POST['Price']) and isset($_POST['Shipping']) and isset($_POST['SupportId']) and isset($_POST['ProviderId']) and isset($_POST['SizeId']))
+    else if (isset($_POST['PriceId']) && isset($_POST['Price']) && isset($_POST['Shipping']) && isset($_POST['SupportId']) && isset($_POST['ProviderId']) && isset($_POST['SizeId']))
         {
         if (intval($_POST['PriceId'])>0)
             {
@@ -858,8 +858,8 @@ SELECT id,name,uppercats,global_rank
              'Hei' => $_POST['filtHeight'],
              'Wid' => $_POST['filtWidth'],
              'Prv' => $_POST['filtProvider'],
-             'ClC' => !($_POST['filtMaterial']=='*' and $_POST['filtOption1']=='*' and $_POST['filtOption2']=='*' and $_POST['filtSize']=='*' and $_POST['filtAltSize']=='*' 
-                      and $_POST['filtRatio']=='*' and $_POST['filtHeight']=='*' and $_POST['filtWidth']=='*' and $_POST['filtProvider']=='*'),
+             'ClC' => !($_POST['filtMaterial']=='*' && $_POST['filtOption1']=='*' && $_POST['filtOption2']=='*' && $_POST['filtSize']=='*' && $_POST['filtAltSize']=='*'
+                      && $_POST['filtRatio']=='*' && $_POST['filtHeight']=='*' && $_POST['filtWidth']=='*' && $_POST['filtProvider']=='*'),
      );
      
     $conf['PayPalShoppingCart']['price_filter'] = $price_filter_array;
@@ -1098,7 +1098,7 @@ SELECT id,name,uppercats,global_rank
 
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
-    else if (isset($_POST['CodeId']) and isset($_POST['Code']) and isset($_POST['Promo_rel']) and isset($_POST['Promo_abs']) and isset($_POST['Promo_ship']))
+    else if (isset($_POST['CodeId']) && isset($_POST['Code']) && isset($_POST['Promo_rel']) && isset($_POST['Promo_abs']) && isset($_POST['Promo_ship']))
     {
         if (intval($_POST['CodeId'])>0)
             {
@@ -1141,7 +1141,7 @@ SELECT id,name,uppercats,global_rank
 // CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG - CATALOG //
     case 'Catalog':
     
-    if (isset($_POST['Brand']) and isset($_POST['GoogleId']) and is_numeric($_POST['GoogleId']) and isset($_POST['FBId']) and is_numeric($_POST['FBId']) and isset($_POST['filename']))
+    if (isset($_POST['Brand']) && isset($_POST['GoogleId']) && is_numeric($_POST['GoogleId']) && isset($_POST['FBId']) && is_numeric($_POST['FBId']) && isset($_POST['filename']))
     {
       $conf['PayPalShoppingCart']['Brand'] = $_POST['Brand'];
       $conf['PayPalShoppingCart']['GoogleId'] = $_POST['GoogleId'];
@@ -1153,7 +1153,7 @@ SELECT id,name,uppercats,global_rank
       $page['infos'][] = l10n('Your configuration settings are saved');
     }
     
-    if (isset($conf['PayPalShoppingCart']['Brand']) and isset($conf['PayPalShoppingCart']['GoogleId']) and isset($conf['PayPalShoppingCart']['FBId'])  and isset($conf['PayPalShoppingCart']['Ref_country']))
+    if (isset($conf['PayPalShoppingCart']['Brand']) and isset($conf['PayPalShoppingCart']['GoogleId']) && isset($conf['PayPalShoppingCart']['FBId'])  && isset($conf['PayPalShoppingCart']['Ref_country']))
     {
         $template->assign('ppppp_cat_brand', $conf['PayPalShoppingCart']['Brand']);
         $template->assign('ppppp_cat_googleId', $conf['PayPalShoppingCart']['GoogleId']);
